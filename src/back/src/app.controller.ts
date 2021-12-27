@@ -1,22 +1,33 @@
-import { PrismaService } from './prisma/prisma.service';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { User } from '@prisma/client';
+import { PrismaService } from './prisma/prisma.service';
+import { CreateUserDto } from './user/dto/create-user.dto';
+import { User } from '@prisma/client'
 
 @Controller()
 export class AppController {
   constructor(
-	  private readonly appService: AppService,
-	  private readonly prismaService: PrismaService,) {}
+    private readonly appService: AppService,
+    private readonly prisma: PrismaService
+  ) {}
 
   @Get()
   getHello(): string {
     return this.appService.getHello();
   }
 
-  @Get('user')
-  getUser(): Promise<User[]> {
-	return this.prismaService.user.findMany();
-	  
+  @Get('users')
+  async users() {
+    return await this.prisma.user.findMany();
+  }
+
+  @Get('users/:id')
+  async user(@Param('id') id: string) {
+    return await this.prisma.user.findUnique({ where: { id: +id } });
+  }
+
+  @Post('user')
+  async addUser(@Body() createUserDto: CreateUserDto) {
+    return await this.prisma.user.create({ data: { email: "fdgds", name: "gdf"}});
   }
 }

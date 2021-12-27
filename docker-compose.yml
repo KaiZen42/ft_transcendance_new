@@ -1,6 +1,21 @@
-version: "3.8"
+version: "3"
 
 services:
+  front:
+    build:
+      context: .
+      dockerfile: react-Dockerfile
+    container_name: front_react
+    image: react
+    ports:
+      - "3000:3000"
+    volumes:
+        - ./src/front:/app
+    networks:
+      - transcendence_network
+    depends_on:
+      - back
+    
   back:
     build:
       context: .
@@ -8,7 +23,7 @@ services:
     container_name: back_nest
     restart: always
     ports:
-      - "3000:3000"
+      - "3001:3001"
     volumes:
       - ./src/back:/app
     networks:
@@ -26,12 +41,11 @@ services:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-    expose: 
-      - 5432
     networks:
       - transcendence_network
     volumes:
       - ./src/database:/var/run/postgresql
+      - ./src/database/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
     env_file:
       - .env
 

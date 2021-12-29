@@ -6,15 +6,14 @@ services:
       context: .
       dockerfile: react-Dockerfile
     container_name: front_react
+    restart: always
     image: react
     ports:
-      - "3000:3000"
+      - "8080:3000"
     volumes:
         - ./src/front:/app
     networks:
       - transcendence_network
-    depends_on:
-      - back
     
   back:
     build:
@@ -23,13 +22,15 @@ services:
     container_name: back_nest
     restart: always
     ports:
-      - "3001:3001"
+      - "3000:3001"
     volumes:
       - ./src/back:/app
     networks:
       - transcendence_network
     depends_on:
       - db
+    env_file:
+      - .env
 
   db:
     image: postgres:latest
@@ -41,15 +42,29 @@ services:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      PG_DATA: /var/lib/postgresql/data
     networks:
       - transcendence_network
     volumes:
-      - ./src/database:/var/run/postgresql
-      - ./src/database/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
+      - ./src/database:/var/run/postgresql/data
+      # - ./src/database/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
     env_file:
       - .env
 
+  # pgadmin:
+  #   container_name: pgadmin4
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: root
+  #   ports:
+  #     - "5050:80"
+  #   networks:
+  #     - transcendence_network
 
+# volumes:
+  # database:
 
 
 networks:

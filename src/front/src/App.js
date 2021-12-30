@@ -1,15 +1,17 @@
-import logo from './logo.svg';
+import React from 'react'
+// import logo from './logo.svg';
+import SignInSide from './pages/sign_in'
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        {/* <img src={logo} className="App-logo" alt="logo" />
         <p>
            !! FT_TRANSCENDANCE !!
-        </p>
-		<br></br>
+        </p> */}
+		{/* <br></br>
 		<p>
 			Edit <code>src/App.js</code> and save to reload.
 		</p>
@@ -21,7 +23,8 @@ function App() {
           rel="noopener noreferrer"
         >
           Learn React
-        </a>
+        </a> */}
+		<SignInSide/>
       </header>
     </div>
   );

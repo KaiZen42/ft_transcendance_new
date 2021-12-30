@@ -1,6 +1,23 @@
 version: "3"
 
 services:
+  nginx:
+    build: 
+      context: .
+      dockerfile: nginx-Dockerfile
+    container_name: nginx
+    restart: always
+    image: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+        - ./src/front/public:/www
+    depends_on:
+      - front
+    networks:
+      - transcendence_network
+  
   front:
     build:
       context: .

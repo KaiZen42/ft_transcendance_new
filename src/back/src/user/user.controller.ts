@@ -4,14 +4,13 @@ import {
   Delete,
   Get,
   Param,
-  Post,
   Put,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
-import { UserService } from './user.service';
+import { LoginUsreDto } from './dto/login-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -26,32 +25,30 @@ export class UserController {
   }
 
   @Get(':id')
-  async getUserById(@Param('id') id: string): Promise<User> {
+  async getById(@Param('id') id: string): Promise<User> {
     return await this.user.getById(id);
   }
 
-  @Get('users/find/:name')
-  async getUserByName(@Param('name') name: string): Promise<User> {
-    return await this.prisma.user.findFirst({ where: { name: name } });
+  @Get(':name')
+  async getByName(@Param('name') name: string): Promise<User> {
+    return await this.prisma.user.findFirst({ where: { name } });
   }
 
-  @Get('user/name')
-  async getUserByNameBody(@Body() user: UpdateUserDto): Promise<User> {
-    return await this.user.getByName(user);
+  @Get(':email')
+  async getByEmail(@Param('email') email: string): Promise<User> {
+    return await this.user.getByEmail(email);
   }
 
-  @Put('users/:id')
-  async updateUser(
+  @Put(':id')
+  async update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() userData: UpdateUserDto,
   ): Promise<User> {
-    return await this.prisma.user.update({
-      where: { id: +id },
-      data: updateUserDto,
-    });
+    return await this.update(id, userData);
   }
-  @Delete('users/:id')
-  async deleteUser(@Param('id') id: string) {
-    return await this.prisma.user.delete({ where: { id: +id } });
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return await this.user.delete(id);
   }
 }

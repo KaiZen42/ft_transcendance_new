@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+import { LoginUsreDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UserService {
@@ -17,22 +22,43 @@ export class UserService {
     return this.prisma.user.findUnique({ where: { id: +id } });
   }
 
-  async getByName(user: UpdateUserDto): Promise<User> {
-    return this.prisma.user.findFirst({ where: { name: user.name } });
+  async getByEmail(email: string): Promise<User> {
+    return this.prisma.user.findFirst({ where: { email } });
   }
 
-	async create(userData: CreateUserDto): Promise<User> {
-		if (userData.password != userData.passwordConfirm) {
-			throw new BadRequestException("Passwords do not math!");
-			
-		}
+  async create(userData: CreateUserDto): Promise<User> {
+    if (userData.password != userData.passwordConfirm) {
+      throw new BadRequestException('Passwords do not math!');
+    }
     const hashed = await bcrypt.hash(userData.password, 12);
-		return this.prisma.user.create({
-			data: {
-				email: userData.email,
-				name: userData.name,
-				password: hashed,
-			}
-		});
+    return this.prisma.user.create({
+      data: {
+        email: userData.email,
+        name: userData.name,
+        password: hashed,
+      },
+    });
+  }
+
+  async update(id: string, userData: UpdateUserDto): Promise<User> {
+    return this.prisma.user.update({
+      where: { id: +id },
+      data: userData,
+    });
+  }
+
+  async delete(id: string) {
+    return this.prisma.user.delete({ where: { id: +id } });
+  }
+
+  async login(userData: LoginUsreDto): Promise<User> {
+    const user = await this.getByEmail(userData.email);
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
+    if (!(await bcrypt.compare(userData.password, user.password))) {
+      throw new BadRequestException('Wrong password!');
+    }
+    return user;
   }
 }

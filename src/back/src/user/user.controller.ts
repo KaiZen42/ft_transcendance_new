@@ -6,16 +6,17 @@ import {
   Param,
   Put,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+// import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '@prisma/client';
+// import { User } from '@prisma/client';
 import { LoginUsreDto } from './dto/login-user.dto';
+import { User } from './models/user.entity';
 
 @Controller('users')
 export class UserController {
   constructor(
-    private readonly prisma: PrismaService,
+    // private readonly prisma: PrismaService,
     private readonly user: UserService,
   ) {}
 
@@ -25,30 +26,26 @@ export class UserController {
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string): Promise<User> {
+  async getById(@Param('id') id: number): Promise<User> {
     return await this.user.getById(id);
   }
 
-  @Get(':name')
-  async getByName(@Param('name') name: string): Promise<User> {
-    return await this.prisma.user.findFirst({ where: { name } });
-  }
-
-  @Get(':email')
+  @Get('email/:email')
   async getByEmail(@Param('email') email: string): Promise<User> {
     return await this.user.getByEmail(email);
   }
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
-    @Body() userData: UpdateUserDto,
-  ): Promise<User> {
-    return await this.update(id, userData);
+    @Param('id') id: number,
+    @Body() userData: UpdateUserDto){
+    await this.user.update(id, userData);
+
+    return this.user.getById(id);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: number) {
     return await this.user.delete(id);
   }
 }

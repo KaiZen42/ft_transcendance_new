@@ -2,7 +2,7 @@ FROM node:lts-alpine
 
 WORKDIR /app
 
-COPY ./src/package*.json .
+COPY ./src/front/package*.json .
 
 RUN npm install
 

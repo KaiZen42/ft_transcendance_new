@@ -18,19 +18,19 @@ services:
 #     networks:
 #       - transcendence_network
   
-  # front:
-  #   build:
-  #     context: .
-  #     dockerfile: react-Dockerfile
-  #   container_name: front_react
-  #   restart: always
-  #   image: react
-  #   ports:
-  #     - "8080:3000"
-  #   volumes:
-  #       - ./src/front:/app
-  #   networks:
-  #     - transcendence_network
+  front:
+    build:
+      context: .
+      dockerfile: react-Dockerfile
+    container_name: front_react
+    restart: always
+    image: react
+    ports:
+      - "8080:3000"
+    volumes:
+        - ./src/front:/app
+    networks:
+      - transcendence_network
     
   back:
     build:

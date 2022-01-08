@@ -63,7 +63,7 @@ services:
     networks:
       - transcendence_network
     volumes:
-      - ./src/database:/var/run/postgresql/data
+      - ./src/database:/var/run/postgresql
       # - ./src/database/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
     env_file:
       - .env

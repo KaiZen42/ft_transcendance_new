@@ -1,4 +1,5 @@
-FROM node:latest 
+# FROM node:latest 
+FROM node:lts-alpine 
 
 WORKDIR /app
 
@@ -6,11 +7,9 @@ COPY ./src/back/package*.json .
 
 RUN npm install
 
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 3001
-
-# ENTRYPOINT [ "npx", "prisma", "migrate", "dev" ]
 
 CMD ["npm", "run", "start:dev"]
 

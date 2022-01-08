@@ -1,9 +1,21 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { User } from '@prisma/client';
+// import { User } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import { LoginUsreDto } from 'src/user/dto/login-user.dto';
+import { Request, Response } from 'express';
+import { User } from '../user/models/user.entity';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller()
 export class AuthController {
   constructor(private readonly user: UserService) {}
@@ -12,9 +24,25 @@ export class AuthController {
   async create(@Body() userData: CreateUserDto): Promise<User> {
     return await this.user.create(userData);
   }
-	
-	@Post('login')
-	async login(@Body() userData: LoginUsreDto): Promise<User> {
-		return await this.user.login(userData);
-	}
+
+  @Post('login')
+  async login(
+    @Body() userData: LoginUsreDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<User> {
+    return await this.user.login(userData, response);
+  }
+
+  @Get('user')
+  async userCookie(@Req() request: Request) {
+    const cookie = request.cookies['token'];
+    return await this.user.userCookie(cookie);
+  }
+
+  @Get('logout')
+  async logout(@Res({ passthrough: true }) response: Response) {
+    return {
+      message: 'Success',
+    };
+  }
 }

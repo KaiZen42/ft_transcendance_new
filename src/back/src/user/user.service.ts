@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+// import { UpdateUserDto } from './dto/update-user.dto';
 // import { PrismaService } from '../prisma/prisma.service';
 // import { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
@@ -12,11 +12,15 @@ import { LoginUsreDto } from './dto/login-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Injectable() // constructor(private readonly prisma: PrismaService,
 export class UserService {
-  
-    constructor(@InjectRepository(User) private readonly userDB: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private readonly userDB: Repository<User>,
+    private readonly jwt: JwtService,
+  ) {}
 
   async getAll(): Promise<User[]> {
     // return this.prisma.user.findMany();
@@ -39,9 +43,9 @@ export class UserService {
     }
     const hashed = await bcrypt.hash(userData.password, 12);
     return this.userDB.save({
-        email: userData.email,
-        name: userData.name,
-        password: hashed,
+      email: userData.email,
+      name: userData.name,
+      password: hashed,
     });
   }
 
@@ -55,7 +59,7 @@ export class UserService {
     return this.userDB.delete({ id });
   }
 
-  async login(userData: LoginUsreDto): Promise<User> {
+  async login(userData: LoginUsreDto, response: Response): Promise<User> {
     const user = await this.getByEmail(userData.email);
     if (!user) {
       throw new NotFoundException('User not found!');
@@ -63,6 +67,14 @@ export class UserService {
     if (!(await bcrypt.compare(userData.password, user.password))) {
       throw new BadRequestException('Wrong password!');
     }
+    const token = await this.jwt.signAsync({ id: user.id });
+
+    response.cookie('token', token, { httpOnly: true });
     return user;
+  }
+
+  async userCookie(cookie): Promise<any> {
+    const data = await this.jwt.verifyAsync(cookie);
+    return this.userDB.findOne({ id: data['id'] });
   }
 }

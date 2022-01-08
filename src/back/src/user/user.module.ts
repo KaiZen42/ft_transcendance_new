@@ -4,10 +4,16 @@ import { UserService } from './user.service';
 // import { PrismaModule } from '../prisma/prisma.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-  TypeOrmModule.forFeature([User])],
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      secret: 'secret',
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
   providers: [UserService],
   controllers: [UserController],
   exports: [UserService],

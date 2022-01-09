@@ -7,13 +7,23 @@ const Menu = () => {
       <div className="position-sticky pt-3">
         <ul className="nav flex-column">
           <li className="nav-item">
-            <Link to={'/'} className="nav-link">
+            <Link to={'/'} className="nav-link active">
               Dashboard
             </Link>
           </li>
           <li className="nav-item">
             <Link to={'/users'} className="nav-link active">
               Users
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to={'/chat'} className="nav-link active">
+              Chat
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to={'/game'} className="nav-link active">
+              Pong game
             </Link>
           </li>
         </ul>

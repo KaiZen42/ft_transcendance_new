@@ -9,7 +9,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-// import { User } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import { LoginUsreDto } from 'src/user/dto/login-user.dto';
 import { Request, Response } from 'express';
@@ -41,6 +40,7 @@ export class AuthController {
 
   @Get('logout')
   async logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('token');
     return {
       message: 'Success',
     };

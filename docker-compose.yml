@@ -46,8 +46,8 @@ services:
       - transcendence_network
     depends_on:
       - db
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
 
   db:
     image: postgres:latest

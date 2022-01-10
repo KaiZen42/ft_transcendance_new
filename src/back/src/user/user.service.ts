@@ -4,9 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
-// import { PrismaService } from '../prisma/prisma.service';
-// import { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { LoginUsreDto } from './dto/login-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,7 +12,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
-@Injectable() // constructor(private readonly prisma: PrismaService,
+@Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userDB: Repository<User>,
@@ -23,12 +20,10 @@ export class UserService {
   ) {}
 
   async getAll(): Promise<User[]> {
-    // return this.prisma.user.findMany();
     return this.userDB.find();
   }
 
   async getById(id: number): Promise<User> {
-    // return this.prisma.user.findUnique({ where: { id: +id } });
     return this.userDB.findOne({ where: { id: id } });
   }
 
@@ -50,12 +45,11 @@ export class UserService {
   }
 
   async update(id: number, userData): Promise<any> {
-    // const hashed = await bcrypt.hash(userData.password, 12);
+  
     return this.userDB.update(id, userData);
   }
 
   async delete(id: number) {
-    // return this.prisma.user.delete({ where: { id: +id } });
     return this.userDB.delete({ id });
   }
 

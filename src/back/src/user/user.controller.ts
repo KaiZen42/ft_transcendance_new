@@ -6,17 +6,14 @@ import {
   Param,
   Put,
 } from '@nestjs/common';
-// import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-// import { User } from '@prisma/client';
 import { LoginUsreDto } from './dto/login-user.dto';
 import { User } from './models/user.entity';
 
 @Controller('users')
 export class UserController {
   constructor(
-    // private readonly prisma: PrismaService,
     private readonly user: UserService,
   ) {}
 

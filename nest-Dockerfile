@@ -1,5 +1,8 @@
-FROM node:latest
-# FROM node:lts-alpine
+# Mac M1 CPU
+# FROM node:latest 
+
+# Intel CPU
+FROM node:lts-alpine 
 
 WORKDIR /app
 

@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -11,14 +12,15 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { Navigate } from "react-router-dom";
 import axios from 'axios'
 
-function Copyright(props) {
+function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="">
+      <Link color="inherit" href="#">
         Transcendance
       </Link>{' '}
       {new Date().getFullYear()}
@@ -30,9 +32,19 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignInSide() {
-  const handleSubmit = (event) => {
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    axios.post("http://localhost:3000/api/login", {
+      // name: this.username,
+      email: data.get('email'),
+      password: data.get('password'),
+      // passwordConfirm: this.passwordConf,
+    }).then(res => {
+      console.log(res.config);
+    });
+
     // eslint-disable-next-line no-console
     console.log({
       email: data.get('email'),
@@ -114,7 +126,7 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/signup" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
@@ -126,4 +138,4 @@ export default function SignInSide() {
       </Grid>
     </ThemeProvider>
   );
-}
+          }

@@ -1,12 +1,17 @@
 import * as React from "react";
 import "../Login.css";
 import axios from "axios";
+import { Navigate} from "react-router-dom";
 
-class SignOut extends React.Component {
+
+class SignUp extends React.Component {
   username = "";
   email = "";
   password = "";
   passwordConf = "";
+  state = {
+    redirect: false
+  };
 
   submit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -19,12 +24,19 @@ class SignOut extends React.Component {
     });
 
     console.log(response.data);
+    this.setState({
+      redirect: true
+    })
   };
   render() {
+
+    if(this.state.redirect){
+        return <Navigate to={'/signin'}/>
+    }
     return (
       <main className="form-signin">
         <form onSubmit={this.submit}>
-          <h1 className="h3 mb-3 fw-normal">Please sign out</h1>
+          <h1 className="h3 mb-3 fw-normal">Please Sign Up</h1>
 
           <input
             className="form-control"
@@ -57,7 +69,7 @@ class SignOut extends React.Component {
           />
 
           <button className="w-100 btn btn-lg btn-primary" type="submit">
-            Sign out
+            Sign Up
           </button>
         </form>
       </main>
@@ -65,4 +77,4 @@ class SignOut extends React.Component {
   }
 }
 
-export default SignOut;
+export default SignUp;

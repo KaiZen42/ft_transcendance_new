@@ -29,7 +29,7 @@ export class UserService {
 
   async getById(id: number): Promise<User> {
     // return this.prisma.user.findUnique({ where: { id: +id } });
-    return this.userDB.findOne({ where: { id } });
+    return this.userDB.findOne({ where: { id: id } });
   }
 
   async getByEmail(email: string): Promise<User> {

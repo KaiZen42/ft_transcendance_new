@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUsreDto } from './dto/login-user.dto';
@@ -13,9 +6,7 @@ import { User } from './models/user.entity';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly user: UserService,
-  ) {}
+  constructor(private readonly user: UserService) {}
 
   @Get()
   async users(): Promise<User[]> {
@@ -33,9 +24,7 @@ export class UserController {
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() userData: UpdateUserDto){
+  async update(@Param('id') id: number, @Body() userData: UpdateUserDto) {
     await this.user.update(id, userData);
 
     return this.user.getById(id);

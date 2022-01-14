@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import Error404 from "./pages/404"
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="*" element={<Error404 />} />
         </Routes>
       </BrowserRouter>
     </div>

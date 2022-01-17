@@ -29,6 +29,7 @@ services:
       - "8080:3000"
     volumes:
         - ./src/front:/app
+        - /app/node_modules
     networks:
       - transcendence_network
     
@@ -42,6 +43,7 @@ services:
       - "3000:3001"
     volumes:
       - ./src/back:/app
+      - /app/node_modules
     networks:
       - transcendence_network
     depends_on:

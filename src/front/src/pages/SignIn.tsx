@@ -19,6 +19,7 @@ import axios from 'axios'
 
 export default function SignInSide() {
 
+  return (<div> <a href="https://api.intra.42.fr/oauth/authorize?client_id=19a6005079dee78a5a9a931731c1ef2a77a4a7a3570c2c3a278a3752e0a1c4a4&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi&response_type=code"><button>Sign in</button></a></div>)
     axios.get("http://localhost:3000/api", {
     }).then(res => {
       console.log(res.data);

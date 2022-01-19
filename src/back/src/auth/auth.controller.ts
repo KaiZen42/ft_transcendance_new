@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Post,
+  Param, 
   Req,
   Res, UseGuards,
   UseInterceptors,
@@ -36,10 +37,14 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('user')
-  async userCookie(@Req() request: Request) {
+  getUserInfo(@Param('code') code: string) {
+    console.log(code);
+    /*return test;*/
+  }
+  /*async userCookie(@Req() request: Request) {
     const cookie = request.cookies['token'];
     return await this.user.userCookie(cookie);
-  }
+  }*/
 
   @UseGuards(AuthGuard)
   @Get('logout')

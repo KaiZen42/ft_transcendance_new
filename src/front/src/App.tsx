@@ -6,7 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
-import Error404 from "./pages/404"
+import Error404 from "./pages/404";
+
 
 function App() {
   return (

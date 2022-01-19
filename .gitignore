@@ -3,6 +3,7 @@
 /dist
 /node_modules
 ./src/node_modules
+./src/database
 
 # Logs
 logs

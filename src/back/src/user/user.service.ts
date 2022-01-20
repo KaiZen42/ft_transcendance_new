@@ -35,15 +35,11 @@ export class UserService {
     return this.userDB.findOne({ where: { email } });
   }
 
-  async create(userData: CreateUserDto): Promise<User> {
-    if (userData.password != userData.passwordConfirm) {
-      throw new BadRequestException('Passwords do not math!');
-    }
-    const hashed = await bcrypt.hash(userData.password, 12);
+  async create(userData: any): Promise<User> {
     return this.userDB.save({
-      email: userData.email,
-      name: userData.name,
-      password: hashed,
+      id : userData.id,
+      username: userData.login,
+      avatar: userData.image_url
     });
   }
 
@@ -63,7 +59,7 @@ export class UserService {
       "client_id" : "19a6005079dee78a5a9a931731c1ef2a77a4a7a3570c2c3a278a3752e0a1c4a4",
       "client_secret" : "2b9c515860b4da8707a15f7658094570c5095547816a182aa6c39c162ad0036d",
       "code": mycode,
-      "redirect_uri" : "http://localhost:3000/api/login"
+      "redirect_uri" : "http://10.11.12.3:3000/api/login"
     };
     let response = await fetch('https://api.intra.42.fr/oauth/token', {
       method: 'post',
@@ -78,8 +74,7 @@ export class UserService {
     data = await response.json() as any;
     token = await this.jwt.signAsync({ id: data.id });
     res.cookie('token', token, { httpOnly: true });
-    return (data);
-    //create()
+    this.create(data);
   }
 
   async userCookie(cookie): Promise<any> {

@@ -8,6 +8,7 @@ import {
   Req,
   Res, UseGuards,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
@@ -26,22 +27,28 @@ export class AuthController {
     return await this.user.create(userData);
   }
 
-
-  @Post('login')
+  @Get('login')
   async login(
-    @Body() userData: LoginUsreDto,
+    @Query('code') code: string,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<User> {
-    return await this.user.login(userData, response);
+  ): Promise<any> {
+    return await this.user.login(code, response);
   }
 
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('user')
   async userCookie(@Req() request: Request) {
-  /*const cookie = request.cookies['token'];
-  return await this.user.userCookie(cookie);*/
-  return false;
+    const cookie = request.cookies['token'];
+    return await this.user.userCookie(cookie);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('checkAuth')
+  ck(): boolean
+  {
+    return true;
+  }
+
 
   @UseGuards(AuthGuard)
   @Get('logout')

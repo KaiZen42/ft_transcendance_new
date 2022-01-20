@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Query
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
@@ -11,6 +12,8 @@ import { User } from './models/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { json } from 'stream/consumers';
+import fetch from 'node-fetch';
 
 @Injectable()
 export class UserService {
@@ -53,18 +56,30 @@ export class UserService {
     return this.userDB.delete({ id });
   }
 
-  async login(userData: LoginUsreDto, response: Response): Promise<User> {
-    const user = await this.getByEmail(userData.email);
-    if (!user) {
-      throw new NotFoundException('User not found!');
-    }
-    if (!(await bcrypt.compare(userData.password, user.password))) {
-      throw new BadRequestException('Wrong password!');
-    }
-    const token = await this.jwt.signAsync({ id: user.id });
-
-    response.cookie('token', token, { httpOnly: true });
-    return user;
+  async login(mycode: string, res: Response): Promise<any> {
+      // TDOO: aggiungere valori a .env
+    const body: any = {
+      "grant_type" : "authorization_code",
+      "client_id" : "19a6005079dee78a5a9a931731c1ef2a77a4a7a3570c2c3a278a3752e0a1c4a4",
+      "client_secret" : "2b9c515860b4da8707a15f7658094570c5095547816a182aa6c39c162ad0036d",
+      "code": mycode,
+      "redirect_uri" : "http://localhost:3000/api/login"
+    };
+    let response = await fetch('https://api.intra.42.fr/oauth/token', {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers: {'Content-Type': 'application/json'}
+    });
+    let data = await response.json() as any;
+    let token: string =  data.access_token;
+    response = await fetch("https://api.intra.42.fr/v2/me", {
+      headers: {'Authorization': 'Bearer '+ token}
+    });
+    data = await response.json() as any;
+    token = await this.jwt.signAsync({ id: data.id });
+    res.cookie('token', token, { httpOnly: true });
+    return (data);
+    //create()
   }
 
   async userCookie(cookie): Promise<any> {

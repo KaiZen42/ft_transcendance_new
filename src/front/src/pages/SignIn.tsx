@@ -16,15 +16,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'*/
 import { Navigate } from "react-router-dom";
 import axios from 'axios'
 
-
 export default function SignInSide() {
-
-  return (<div> <a href="https://api.intra.42.fr/oauth/authorize?client_id=19a6005079dee78a5a9a931731c1ef2a77a4a7a3570c2c3a278a3752e0a1c4a4&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi&response_type=code"><button>Sign in</button></a></div>)
-    axios.get("http://localhost:3000/api", {
+  const href : string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.REACT_APP_CLIENT_ID +"&redirect_uri="+ process.env.REACT_APP_REDIRECT_URI +"&response_type=code";
+  return (<div> <a href={href}><button>Sign in</button></a></div>);
+}
+    /*axios.get("http://localhost:3000/api", {
     }).then(res => {
       console.log(res.data);
     });
-  };
+  };*/
     /*
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />

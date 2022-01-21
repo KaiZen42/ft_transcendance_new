@@ -27,6 +27,9 @@ services:
     image: react
     ports:
       - "8080:3000"
+    environment:
+      REACT_APP_CLIENT_ID: "${CLIENT_ID}"
+      REACT_APP_REDIRECT_URI: "${REDIRECT_URI}"
     volumes:
         - ./src/front:/app
         - /app/node_modules

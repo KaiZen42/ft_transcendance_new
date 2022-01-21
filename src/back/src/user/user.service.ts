@@ -55,7 +55,7 @@ export class UserService {
       // TDOO: aggiungere valori a .env
     const body: any = {
       "grant_type" : "authorization_code",
-		"client_id" : process.env.CLIENT_ID,
+		  "client_id" : process.env.CLIENT_ID,
       "client_secret" : process.env.CLIENT_SECRET,
       "code": mycode,
       "redirect_uri" : process.env.REDIRECT_URI

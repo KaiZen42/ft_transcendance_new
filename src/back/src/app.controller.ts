@@ -19,6 +19,6 @@ export class AppController {
 
   @Get()
   getHello() : string {
-    return ( "ciao");
+    return ( 'ciao' );
   }
 }

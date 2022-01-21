@@ -55,10 +55,10 @@ export class UserService {
       // TDOO: aggiungere valori a .env
     const body: any = {
       "grant_type" : "authorization_code",
-		"client_id" : "19a6005079dee78a5a9a931731c1ef2a77a4a7a3570c2c3a278a3752e0a1c4a4",
-      "client_secret" : "2b9c515860b4da8707a15f7658094570c5095547816a182aa6c39c162ad0036d",
+		"client_id" : process.env.CLIENT_ID,
+      "client_secret" : process.env.CLIENT_SECRET,
       "code": mycode,
-      "redirect_uri" : "http://10.11.12.3:3000/api/login"
+      "redirect_uri" : process.env.REDIRECT_URI
     };
     let response = await fetch('https://api.intra.42.fr/oauth/token', {
       method: 'post',

@@ -8,32 +8,26 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import Error404 from "./pages/404";
 import axios from "axios";
+import ProtectedRoute from "./components/ProtectedRoutes";
 
-async function checkLoginStatus() {
-  const res = await axios.get("http://localhost:3000/api/user");/*.then(res => {*/
-  console.log("ciaoooo");
-  if (res.data === false)
-  {
-    console.log("ciao");
-    return (<Navigate to="/signin"></Navigate>)
-  }
-}
-
-function App() {
+export default function App() {
   return (
     <div className="App">
-       {/* { checkLoginStatus() }  */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Dashboard />}/>
-            <Route path="/users" element={<Users />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/" element={<ProtectedRoute />}>
+              <Route path="/" element={<Dashboard />}/>
+            </Route>
+            <Route path="/users" element={<ProtectedRoute />}>
+              <Route path="/users" element={<Users />}/>
+            </Route>
+            <Route path="/signup" element={<ProtectedRoute />}>
+              <Route path="/signup" element={<SignUp />}/>
+            </Route>
             <Route path="/signin" element={<SignIn />} />
-            <Route path="*" element={<Error404 />} />
+            <Route path="*" element={<Error404 />} /> 
           </Routes>
         </BrowserRouter>
     </div>
   );
 }
-
-export default App;

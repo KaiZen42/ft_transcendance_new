@@ -18,6 +18,8 @@ import axios from 'axios'
 
 export default function SignInSide() {
   const href : string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.REACT_APP_CLIENT_ID +"&redirect_uri="+ process.env.REACT_APP_REDIRECT_URI +"&response_type=code";
+  // TODO: sistemare il sistema di check auth, al momento ogni volta che renderizzo la pagina signin lo setto autenticato
+  localStorage.setItem("isAuthenticated", "true");
   return (<div> <a href={href}><button>Sign in</button></a></div>);
 }
     /*axios.get("http://localhost:3000/api", {

@@ -9,6 +9,7 @@ import {
   Res, UseGuards,
   UseInterceptors,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from '../user/user.service';

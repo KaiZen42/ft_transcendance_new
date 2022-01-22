@@ -3,7 +3,6 @@ import "../Login.css";
 import axios from "axios";
 import { Navigate} from "react-router-dom";
 
-
 class SignUp extends React.Component {
   username = "";
   email = "";

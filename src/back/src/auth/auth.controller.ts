@@ -23,8 +23,12 @@ export class AuthController {
   constructor(private readonly user: UserService) {}
 
   @Post('register')
-  async create(@Body() userData: CreateUserDto): Promise<User> {
-    return await this.user.create(userData);
+  async create(@Body() userData: any): Promise<any> {
+    if (!await this.user.getById(userData.id))
+    {
+      return await this.user.create(userData);
+    }
+    else return this.user.getById(userData.id)
   }
 
   @Get('login')

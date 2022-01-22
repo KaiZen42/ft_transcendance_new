@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { json } from 'stream/consumers';
 import fetch from 'node-fetch';
+import { retry } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -51,7 +52,7 @@ export class UserService {
     return this.userDB.delete({ id });
   }
 
-  async login(mycode: string, res: Response): Promise<any> {
+  async login(mycode: string, res: Response): Promise<User> {
       // TDOO: aggiungere valori a .env
     const body: any = {
       "grant_type" : "authorization_code",
@@ -73,7 +74,10 @@ export class UserService {
     data = await response.json();
     token = await this.jwt.signAsync({ id: data.id });
     res.cookie('token', token, { httpOnly: true });
-    this.create(data);
+    const user : User = await this.getById(data.id)
+    if (!user)
+      return this.create(data);
+    else return user;
   }
 
   async userCookie(cookie): Promise<any> {

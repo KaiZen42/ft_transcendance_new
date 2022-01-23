@@ -3,8 +3,10 @@ import { UserService } from './user.service';
 import { UpdateUserImg, UpdateUserName } from './dto/update-user.dto';
 import { LoginUsreDto } from './dto/login-user.dto';
 import { User } from './models/user.entity';
-import multer, { diskStorage, MulterError } from 'multer';
+//import Multer, { diskStorage, MulterError } from 'multer';
 import { AnyFilesInterceptor, FileInterceptor, MulterModule } from '@nestjs/platform-express';
+import { Multer, diskStorage } from 'multer';
+import { IsNotEmptyObject } from 'class-validator';
 
 @Controller('users')
 export class UserController {
@@ -26,23 +28,25 @@ export class UserController {
   }
 
   @Post('image')
-  @UseInterceptors(FileInterceptor('to_upload', {
-    storage: diskStorage({
-      destination: './imgs',
-    })
+  @UseInterceptors(FileInterceptor("to_upload", {
+	fileFilter: (request, newImage, callback) => {
+		if (!newImage.mimetype.includes('image')) {
+		  return callback(new Error('Provide a valid image'), false);
+		}
+		callback(null, true);
+	},
+	limits: {
+		fileSize: Math.pow(1024, 2)
+	},
+	storage: diskStorage({destination: './imgs'})
   }))
-  async uploadImage(@UploadedFile() newImage: Express.Multer.File) {
-    newImage.destination = "/imgs"
-    newImage.filename = "Id"
-    newImage.path = "/imgs"
-    return newImage.filename
-    //return 'ok'
+  async uploadImage(@Req() user, @UploadedFile() newImage: Express.Multer.File) {
+	return newImage.originalname;
   }
 
 
   @Put('image/:id')
   async updateImg(@Param('id') id: number, @Body() userData: UpdateUserImg) {
-    
     await this.user.update(id, userData);
     return this.user.getById(id);
   }

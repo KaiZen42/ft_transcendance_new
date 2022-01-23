@@ -24,7 +24,7 @@ export class AuthController {
   constructor(private readonly user: UserService) {}
 
   @Post('register')
-  async create(@Body() userData: any): Promise<any> {
+  async create(@Body() userData: CreateUserDto): Promise<User> {
     if (!await this.user.getById(userData.id))
     {
       return await this.user.create(userData);

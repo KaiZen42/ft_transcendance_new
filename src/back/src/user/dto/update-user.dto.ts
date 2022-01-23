@@ -1,8 +1,13 @@
-import { IsEmail } from "class-validator";
+import { IsEmail, IsNotEmpty } from "class-validator";
 
-export class UpdateUserDto {
-  @IsEmail()
-	readonly email?: string;
-  readonly name?: string;
-  readonly password?: string;
+export class UpdateUserImg {
+  @IsNotEmpty()
+  id: number
+  @IsNotEmpty()
+  readonly image_url: string;
+}
+
+export class UpdateUserName {
+  @IsNotEmpty()
+  readonly login: string;
 }

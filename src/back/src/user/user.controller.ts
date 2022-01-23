@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserImg, UpdateUserName } from './dto/update-user.dto';
 import { LoginUsreDto } from './dto/login-user.dto';
 import { User } from './models/user.entity';
+import multer, { diskStorage, MulterError } from 'multer';
+import { AnyFilesInterceptor, FileInterceptor, MulterModule } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -23,10 +25,31 @@ export class UserController {
     return await this.user.getByEmail(email);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: number, @Body() userData: UpdateUserDto) {
-    await this.user.update(id, userData);
+  @Post('image')
+  @UseInterceptors(FileInterceptor('to_upload', {
+    storage: diskStorage({
+      destination: './imgs',
+    })
+  }))
+  async uploadImage(@UploadedFile() newImage: Express.Multer.File) {
+    newImage.destination = "/imgs"
+    newImage.filename = "Id"
+    newImage.path = "/imgs"
+    return newImage.filename
+    //return 'ok'
+  }
 
+
+  @Put('image/:id')
+  async updateImg(@Param('id') id: number, @Body() userData: UpdateUserImg) {
+    
+    await this.user.update(id, userData);
+    return this.user.getById(id);
+  }
+
+  @Put('username/:id')
+  async updateUsername(@Param('id') id: number, @Body() userData: UpdateUserName) {
+    await this.user.update(id, userData);
     return this.user.getById(id);
   }
 
@@ -34,4 +57,6 @@ export class UserController {
   async delete(@Param('id') id: number) {
     return await this.user.delete(id);
   }
+
+
 }

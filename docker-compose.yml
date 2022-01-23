@@ -54,6 +54,7 @@ services:
     volumes:
       - ./src/back:/app
       - /app/node_modules
+      - /app/imgs
     networks:
       - transcendence_network
     depends_on:

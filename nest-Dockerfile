@@ -6,6 +6,8 @@ FROM node:lts-alpine
 
 WORKDIR /app
 
+RUN mkdir imgs
+
 COPY ./src/back/package*.json .
 
 RUN npm install

@@ -8,6 +8,7 @@ npm i --save class-validator class-transformer
 npm install pg --save
 npm install --save @nestjs/jwt passport-jwt
 npm install --save-dev @types/passport-jwt
+npm i -D @types/multer
 
 Front_install:
 

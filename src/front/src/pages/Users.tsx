@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ProtectedRoute from "../components/ProtectedRoutes";
 import Wrapper from "../components/Wrapper";
 
 class Users extends Component {

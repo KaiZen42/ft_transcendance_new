@@ -81,7 +81,11 @@ export class UserService {
   }
 
   async userCookie(cookie): Promise<any> {
+    console.log("arrivo"+cookie);
     const data = await this.jwt.verifyAsync(cookie);
-    return this.userDB.findOne({ id: data['id'] });
+    console.log(data['id']);
+    const user = await this.getById(data['id']);
+    console.log("user="+user.id);
+    return user;
   }
 }

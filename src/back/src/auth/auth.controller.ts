@@ -16,17 +16,22 @@ import { UserService } from '../user/user.service';
 import { LoginUsreDto } from 'src/user/dto/login-user.dto';
 import { Request, Response } from 'express';
 import { User } from '../user/models/user.entity';
-import {AuthGuard} from "./auth.guard";
+import { AuthGuard } from "./auth.guard";
+import { JwtService } from '@nestjs/jwt';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller()
 export class AuthController {
-  constructor(private readonly user: UserService) {}
+	constructor(private readonly user: UserService,
+		private readonly jwt: JwtService,) { }
 
   @Post('register')
-  async create(@Body() userData: CreateUserDto): Promise<User> {
+  async create(@Body() userData: CreateUserDto, @Res({ passthrough: true }) response: Response,): Promise<User> {
     if (!await this.user.getById(userData.id))
-    {
+	{
+	
+    	let token = await this.jwt.signAsync({ id: 12 });
+    	response.cookie('token', token, { httpOnly: true });
       return await this.user.create(userData);
     }
     else return this.user.getById(userData.id)

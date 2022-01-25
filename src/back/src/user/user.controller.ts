@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserImg, UpdateUserName } from './dto/update-user.dto';
 import { LoginUsreDto } from './dto/login-user.dto';
@@ -7,10 +7,13 @@ import { User } from './models/user.entity';
 import { AnyFilesInterceptor, FileInterceptor, MulterModule } from '@nestjs/platform-express';
 import { Multer, diskStorage } from 'multer';
 import { IsNotEmptyObject } from 'class-validator';
+import { JwtService } from '@nestjs/jwt';
+import { Response, Request } from 'express';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly user: UserService) {}
+	constructor(private readonly user: UserService,
+		private readonly jwt: JwtService,) { }
 
   @Get()
   async users(): Promise<User[]> {
@@ -27,23 +30,41 @@ export class UserController {
     return await this.user.getByEmail(email);
   }
 
-  @Post('image')
-  @UseInterceptors(FileInterceptor("to_upload", {
-	fileFilter: (request, newImage, callback) => {
-		if (!newImage.mimetype.includes('image')) {
-		  return callback(new Error('Provide a valid image'), false);
-		}
-		callback(null, true);
-	},
-	limits: {
-		fileSize: Math.pow(1024, 2)
-	},
-	storage: diskStorage({destination: './imgs'})
-  }))
-  async uploadImage(@Req() user, @UploadedFile() newImage: Express.Multer.File) {
-	return newImage.originalname;
+	@Post('image')
+	@UseInterceptors(FileInterceptor("to_upload", {
+		fileFilter: (request, newImage, callback) => {
+			if (!newImage.mimetype.includes('image')) {
+				return callback(new Error('Provide a valid image'), false);
+			}
+			callback(null, true);
+		},
+		limits: {
+			fileSize: Math.pow(1024, 2)
+		},
+		storage: diskStorage({
+			destination: './imgs',
+			filename: (req, file, cb) => {
+				return cb(null, Date.now() + '-' + file.originalname)
+		  
+			}
+		})
+	}))
+	async uploadImage(@Req() request: Request, @UploadedFile() newImage: Express.Multer.File) {
+		const cookie = request.cookies['token'];
+		const data = await this.jwt.verifyAsync(cookie);
+		// const user: User = await this.getById(data['id'])
+    	// if (!user)
+      	this.user.update(data['id'],newImage.path );
+		// 	return "error";
+    	// else return user.avatar;
+	return {url: `http://localhost:3000/api/${newImage.path}`}
   }
 
+	@Get('imgs/:path')
+	async getImage(
+		@Param('path') path,
+		@Res() response: Response
+	  ){response.sendFile(path, {root: 'imgs'})}
 
   @Put('image/:id')
   async updateImg(@Param('id') id: number, @Body() userData: UpdateUserImg) {

@@ -45,7 +45,7 @@ export class UserService {
 
   async update(id: number, userData): Promise<any> {
   
-    return this.userDB.update(id, userData);
+	  return this.userDB.update(id, { avatar: userData });
   }
 
   async delete(id: number) {

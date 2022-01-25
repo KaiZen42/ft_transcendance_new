@@ -19,6 +19,7 @@ import { Request, Response } from 'express';
 import { User } from '../user/models/user.entity';
 import { AuthGuard } from "./auth.guard";
 import { JwtService } from '@nestjs/jwt';
+import fetch from 'node-fetch';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller()
@@ -26,22 +27,18 @@ export class AuthController {
 	constructor(private readonly user: UserService,
 		private readonly jwt: JwtService,) { }
 
-  // @Post('register')
-  // async create(@Body() userData: CreateUserDto): Promise<User> {
-  //   if (!await this.user.getById(userData.id))
-  //   {
-  //     return await this.user.create(userData);
-  //   }
-  //   else return this.user.getById(userData.id)
-  // }
-
   @Get('login')
   async login(
-    @Query('code') code: string,
+    @Query('code') code: string ,
     @Res({ passthrough: true }) response: Response,
   ): Promise<any> {
+    if (typeof code === 'undefined')
+    {
+      const url: string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.CLIENT_ID +"&redirect_uri="+ process.env.REDIRECT_URI +"&response_type=code";
+      return response.redirect(url);
+    }
     await this.user.login(code, response);
-    return response.redirect("http://localhost:8080/");
+    return response.redirect("http://localhost:8080");
   }
 
   //@UseGuards(AuthGuard)

@@ -13,16 +13,39 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles'*/
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import Nav from '../components/Nav';
 
-export default function SignInSide() {
+export default function SignIn() {
+  let location = useLocation();
+
+  let from : any = location.state;
+
+  return (
+    <div>
+      <p>You must log in to view the page at {from.from.pathname}</p>
+      <a href="http://localhost:3000/api/login"><button>Login</button></a>
+    </div>
+  );
+}
+
+//const href : string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.REACT_APP_CLIENT_ID +"&redirect_uri="+ process.env.REACT_APP_REDIRECT_URI +"&response_type=code";
+
+/*export default async function SignInSide() {
+
+  let location = useLocation();
+
+  //console.log(location);
+  let from : any = location.state;
+  console.log(from.from.pathname);
+
+  //let from = location.state?.from?.pathname || "/";
   const href : string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.REACT_APP_CLIENT_ID +"&redirect_uri="+ process.env.REACT_APP_REDIRECT_URI +"&response_type=code";
   // TODO: sistemare il sistema di check auth, al momento ogni volta che renderizzo la pagina signin lo setto autenticato
   //localStorage.setItem("isAuthenticated", "true");
-  return (<div> <a href={href}><button /*onClick={signInUser}*/>Sign in</button></a></div>);
-}
+  return (<div> <button onClick={signInUser(from.from.pathname)}>Sign in</button></div>);
+}*/
     /*axios.get("http://localhost:3000/api", {
     }).then(res => {
       console.log(res.data);

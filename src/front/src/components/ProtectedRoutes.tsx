@@ -1,9 +1,30 @@
 
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-export default class ProtectedRoute extends React.Component {
+export default function ProtectedRoute({ children }: { children: JSX.Element })
+{
+  const [page, setPage] = React.useState<JSX.Element>(<></>);
+  
+  let location = useLocation();
+
+  useEffect(() => {
+    async function getUser() {
+      const res = await fetch("http://localhost:3000/api/user", {credentials: 'include'});
+      const data = await res.json();
+      console.log("data id:" + data.id);
+      if (data.id != null)
+        setPage(children);
+      else
+        setPage(<Navigate to="/signin" state={{ from: location }} replace />);
+    }
+    getUser();
+  });
+
+  return page;
+ /* return children;*/
+}
+/*export default class ProtectedRoute extends React.Component*/ /*{
   state = {
     page: <></>
   }
@@ -21,4 +42,5 @@ export default class ProtectedRoute extends React.Component {
   render() {
     return (this.state.page);
   }
-}
+  return children;
+}*/

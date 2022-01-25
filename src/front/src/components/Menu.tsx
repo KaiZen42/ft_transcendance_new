@@ -13,8 +13,8 @@ const Menu = () => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to={'/users'} className="nav-link active">
-              Users
+            <Link to={'/leaderboard'} className="nav-link active">
+              Leadaerboard
             </Link>
           </li>
           <li className="nav-item">

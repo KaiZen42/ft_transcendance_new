@@ -1,11 +1,24 @@
 
-import { render } from "@testing-library/react";
+
 import React from "react";
-import { Navigate, Outlet, Route } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-export default function ProtectedRoute() {
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-  console.log("this", isAuthenticated);
+export default class ProtectedRoute extends React.Component {
+  state = {
+    page: <></>
+  }
+  async componentDidMount() {
+    //let location = useLocation();
+    const res = await fetch("http://localhost:3000/api/user", {credentials: 'include'});
+    const data = await res.json();
+    console.log("data id:" + data.id);
+    if (data.id != null)
+      this.setState({page: <Outlet/>});
+    else
+      this.setState({page: <Navigate to="/signin"/>});
+  }
 
-  return (isAuthenticated ? <Outlet/> : <Navigate to="/signin" />);
+  render() {
+    return (this.state.page);
+  }
 }

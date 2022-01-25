@@ -15,12 +15,13 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles'*/
 import { Navigate } from "react-router-dom";
 import axios from 'axios'
+import Nav from '../components/Nav';
 
 export default function SignInSide() {
   const href : string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.REACT_APP_CLIENT_ID +"&redirect_uri="+ process.env.REACT_APP_REDIRECT_URI +"&response_type=code";
   // TODO: sistemare il sistema di check auth, al momento ogni volta che renderizzo la pagina signin lo setto autenticato
-  localStorage.setItem("isAuthenticated", "true");
-  return (<div> <a href={href}><button>Sign in</button></a></div>);
+  //localStorage.setItem("isAuthenticated", "true");
+  return (<div> <a href={href}><button /*onClick={signInUser}*/>Sign in</button></a></div>);
 }
     /*axios.get("http://localhost:3000/api", {
     }).then(res => {

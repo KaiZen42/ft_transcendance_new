@@ -1,7 +1,8 @@
 
 import React from 'react'
+import Wrapper from '../components/Wrapper'
 
 export default function PongGame() 
 {
-	return (<h1>PONG GAME</h1>)
+	return (<Wrapper><h1>PONG GAME</h1></Wrapper>)
 }

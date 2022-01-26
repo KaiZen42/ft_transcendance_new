@@ -3,5 +3,5 @@ import Wrapper from "../components/Wrapper";
 
 export default function Dashboard() {
 
-  return (<Wrapper>!!! Our Dashboard !!!</Wrapper>);
+  return (<Wrapper><div>!!! Our Dashboard !!!</div></Wrapper>);
 }

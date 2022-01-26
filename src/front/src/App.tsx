@@ -5,8 +5,6 @@ import { BrowserRouter, Route, Routes , Navigate} from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Chat from "./pages/Chat";
 import Leaderboard from "./pages/Leaderboard";
-import Users from "./pages/Leaderboard";
-import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import Error404 from "./pages/404";
 import ProtectedRoute from "./components/ProtectedRoutes";

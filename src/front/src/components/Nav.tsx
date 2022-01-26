@@ -68,7 +68,7 @@ const Nav = () => {
         </ul>
         <ul className="navbar-nav">
           <li className="nav-item text-nowrap">
-          <img src={`http://localhost:3000/api/users/${user?.avatar}`} className="nav--image"/>
+          <img src={user?.avatar} className="nav--image"/>
           </li>
         </ul>
         </div>

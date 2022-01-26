@@ -34,7 +34,7 @@ export default function Dashboard() {
   return (
     <Wrapper>
       <div>
-        <img src={`http://localhost:3000/api/users/${user?.avatar}`}/>
+        <img src={user?.avatar}/>
         <form onSubmit={submitForm}>
           <input type="file" onChange={handleFileInput} />
           <input type="submit" />

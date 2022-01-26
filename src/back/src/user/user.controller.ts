@@ -30,9 +30,17 @@ export class UserController {
     return await this.user.getByEmail(email);
   }
 
+	// @Post('image')
+	// @UseInterceptors(FileInterceptor('file'))
+	// uploadFile(@UploadedFile() file: Express.Multer.File) {
+	// 	console.log(file);
+	// 	return file;
+	// }
+
 	@Post('image')
 	@UseInterceptors(FileInterceptor("to_upload", {
 		fileFilter: (request, newImage, callback) => {
+			console.log("test")
 			if (!newImage.mimetype.includes('image')) {
 				return callback(new Error('Provide a valid image'), false);
 			}
@@ -44,6 +52,7 @@ export class UserController {
 		storage: diskStorage({
 			destination: './imgs',
 			filename: (req, file, cb) => {
+				
 				return cb(null, Date.now() + '-' + file.originalname)
 		  
 			}
@@ -52,19 +61,21 @@ export class UserController {
 	async uploadImage(@Req() request: Request, @UploadedFile() newImage: Express.Multer.File) {
 		const cookie = request.cookies['token'];
 		const data = await this.jwt.verifyAsync(cookie);
+		console.log(newImage);
 		// const user: User = await this.getById(data['id'])
     	// if (!user)
-      	this.user.update(data['id'],newImage.path );
+		console.log("NEW IMGAE PATH:" + newImage.path)
+      	this.user.update(data['id'], newImage.path );
 		// 	return "error";
     	// else return user.avatar;
-	return {url: `http://localhost:3000/api/${newImage.path}`}
+		return {url: `http://localhost:3000/api/${newImage.path}`}
   }
 
 	@Get('imgs/:path')
 	async getImage(
 		@Param('path') path,
 		@Res() response: Response
-	  ){response.sendFile(path, {root: 'imgs'})}
+		){response.sendFile(path, {root: 'imgs'})}
 
   @Put('image/:id')
   async updateImg(@Param('id') id: number, @Body() userData: UpdateUserImg) {

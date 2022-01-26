@@ -98,3 +98,13 @@ body {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+
+.nav--image {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  /* background-position: 50% 50%; */
+  /* background-size: cover; */
+}

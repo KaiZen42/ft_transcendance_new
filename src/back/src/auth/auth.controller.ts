@@ -41,6 +41,11 @@ export class AuthController {
     return response.redirect("http://localhost:8080");
   }
 
+  /*@Get('login/return')
+  //@UseGuards(AuthGuard)
+  async */
+
+
   //@UseGuards(AuthGuard)
   @Get('user')
   async userCookie(@Req() request: Request) {

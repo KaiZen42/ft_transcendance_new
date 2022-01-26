@@ -2,44 +2,76 @@ import React, {Component, useEffect, useState} from "react";
 import { Navigate } from "react-router";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { User } from "../models/User";
+import { User } from "../models/User.interface";
+import { NavLink } from "react-router-dom";
 
 async function signOutUser() {
   await fetch("http://localhost:3000/api/logout", {credentials: 'include'});
 }
 
 const Nav = () => {
-    const [user, setUser] = useState(new User());
+    const [user, setUser] = useState<User>();
 
     useEffect(() => {(
       async () => {
         const {data} = await axios.get("http://localhost:3000/api/user", {withCredentials: true});
-        setUser(new User(
-          data.id,
-          data.username,
-          data.avatar
-        ));
+        setUser(data);
       }
     )();
     }, []);
     
     return(
-      <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-      <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Transcendance</a>
-      {/* <button className="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon"></span>
-      </button> */}
-      <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"/>
-      <ul className="navbar-nav">
-        <li className="nav-item text-nowrap">
-          <a className="nav-link px-3" href="/">Hello, {user.getUsername}!</a>
+      <header className="navbar navbar-dark sticky-top bg-dark p-5 shadow">
+      <div>
+        <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Transcendance</a>
+      </div>
+      <div className="navbar-nav">
+        <ul>
+          <li className="nav-item">
+            <NavLink to={'/'} className="nav-link">
+              Dashboard
+            </NavLink>
           </li>
-      </ul>
-      <ul className="navbar-nav">
-        <li className="nav-item text-nowrap">
-          <a className="nav-link px-3" href="/" onClick={signOutUser}>Sign out</a>
-        </li>
-      </ul>
+        {/* </ul> */}
+        {/* <ul > */}
+          <li className="nav-item">
+            <NavLink to={'/leaderboard'} className="nav-link">
+              Leadaerboard
+            </NavLink>
+          </li>
+        {/* </ul> */}
+        {/* <ul > */}
+          <li className="nav-item">
+            <NavLink to={'/chat'} className="nav-link">
+              Chat
+            </NavLink>
+          </li>
+        {/* </ul> */}
+        {/* <ul> */}
+          <li className="nav-item">
+            <NavLink to={'/game'} className="nav-link">
+              Pong game
+            </NavLink>
+          </li>
+        </ul>
+        </div>
+        <div>
+        <ul className="navbar-nav">
+          <li className="nav-item text-nowrap">
+            <a className="nav-link" href="/">Hello, {user?.username}!</a>
+          </li>
+        </ul>
+        <ul className="navbar-nav">
+          <li className="nav-item text-nowrap">
+            <a className="nav-link" href="/" onClick={signOutUser}>Sign out</a>
+          </li>
+        </ul>
+        <ul className="navbar-nav">
+          <li className="nav-item text-nowrap">
+          <img src={`http://localhost:3000/api/users/${user?.avatar}`} className="nav--image"/>
+          </li>
+        </ul>
+        </div>
     </header>
     );
 }

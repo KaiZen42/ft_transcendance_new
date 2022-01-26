@@ -1,12 +1,23 @@
-import React, {Component} from "react";
+import React, {Component, useEffect, useState} from "react";
 import { Navigate } from "react-router";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 async function signOutUser() {
   await fetch("http://localhost:3000/api/logout", {credentials: 'include'});
 }
 
-export default function Nav (){
+const Nav = () => {
+    const [user, setUser] = useState({username: ''});
+
+    useEffect(() => {(
+      async () => {
+        const {data} = await axios.get("http://localhost:3000/api/user", {withCredentials: true});
+        setUser(data);
+      }
+    )();
+    }, []);
+    
     return(
       <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
       <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Transcendance</a>
@@ -14,6 +25,12 @@ export default function Nav (){
         <span className="navbar-toggler-icon"></span>
       </button> */}
       <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"/>
+      
+      <ul className="navbar-nav">
+      <li className="nav-item text-nowrap">
+        <a className="nav-link px-3" href="/">Hello, {user?.username}!</a>
+      </li>
+      </ul>
       <ul className="navbar-nav">
         <li className="nav-item text-nowrap">
           <a className="nav-link px-3" href="/" onClick={signOutUser}>Sign out</a>
@@ -22,3 +39,5 @@ export default function Nav (){
     </header>
     );
 }
+
+export default Nav;

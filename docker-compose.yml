@@ -30,6 +30,7 @@ services:
     environment:
       REACT_APP_CLIENT_ID: "${CLIENT_ID}"
       REACT_APP_REDIRECT_URI: "${REDIRECT_URI}"
+      REACT_APP_BASE_IP: ${BASE_IP}
     volumes:
         - ./src/front:/app
         - /app/node_modules
@@ -51,6 +52,7 @@ services:
       CLIENT_ID: "${CLIENT_ID}"
       CLIENT_SECRET: "${CLIENT_SECRET}"
       REDIRECT_URI: "${REDIRECT_URI}"
+      BASE_IP: ${BASE_IP}
     volumes:
       - ./src/back:/app
       - /app/node_modules

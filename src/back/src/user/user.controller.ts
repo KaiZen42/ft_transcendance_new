@@ -53,12 +53,11 @@ export class UserController {
 		const cookie = request.cookies['token'];
 		const data = await this.jwt.verifyAsync(cookie);
 		// const user: User = await this.getById(data['id'])
-    	// if (!user)
-      	this.user.update(data['id'],`http://localhost:3000/api/users/${newImage.path}` );
+    	// if (!user)`http://${process.env.BASE_IP}:8080`
+      	this.user.update(data['id'], `http://${process.env.BASE_IP}:3000/api/users/${newImage.path}` );
 		// 	return "error";
     	// else return user.avatar;
-		console.log(`http://localhost:3000/api/users/${newImage.path}`)
-	return {url: `http://localhost:3000/api/${newImage.path}`}
+		return {url: `http://${process.env.BASE_IP}:3000/api/${newImage.path}`}
   }
 
 	@Get('imgs/:path')

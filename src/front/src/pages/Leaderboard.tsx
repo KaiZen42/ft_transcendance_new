@@ -11,7 +11,7 @@ export default function Leaderboard() {
   useEffect(() => {
     console.log("TEST ");
     async function test(){
-      const response = await axios.get<User[]>('http://localhost:3000/api/users');
+      const response = await axios.get<User[]>(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users`);
       setUsers( response.data );
     }
     test();

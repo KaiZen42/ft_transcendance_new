@@ -38,7 +38,7 @@ export class AuthController {
       return response.redirect(url);
     }
     await this.user.login(code, response);
-    return response.redirect("http://localhost:8080");
+    return response.redirect(`http://${process.env.BASE_IP}:8080`);
   }
 
   /*@Get('login/return')

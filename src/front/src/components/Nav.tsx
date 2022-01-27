@@ -6,7 +6,7 @@ import { User } from "../models/User.interface";
 import { NavLink } from "react-router-dom";
 
 async function signOutUser() {
-  await fetch("http://localhost:3000/api/logout", {credentials: 'include'});
+  await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/logout`, {credentials: 'include'});
 }
 
 const Nav = () => {
@@ -14,7 +14,7 @@ const Nav = () => {
 
     useEffect(() => {(
       async () => {
-        const {data} = await axios.get("http://localhost:3000/api/user", {withCredentials: true});
+        const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {withCredentials: true});
         setUser(data);
       }
     )();

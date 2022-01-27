@@ -5,11 +5,7 @@ import axios from "axios";
 import { User } from "../models/User.interface";
 import { NavLink } from "react-router-dom";
 
-async function signOutUser() {
-  await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/logout`, {credentials: 'include'});
-}
-
-const Nav = () => {
+export default function Nav() {
     const [user, setUser] = useState<User>();
 
     useEffect(() => {(
@@ -20,60 +16,39 @@ const Nav = () => {
     )();
     }, []);
     
-    return(
-      <header className="navbar navbar-dark sticky-top bg-dark p-5 shadow">
-      <div>
-        <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Transcendance</a>
-      </div>
-      <div className="navbar-nav">
-        <ul>
-          <li className="nav-item">
-            <NavLink to={'/'} className="nav-link">
-              Dashboard
-            </NavLink>
-          </li>
-        {/* </ul> */}
-        {/* <ul > */}
-          <li className="nav-item">
-            <NavLink to={'/leaderboard'} className="nav-link">
-              Leadaerboard
-            </NavLink>
-          </li>
-        {/* </ul> */}
-        {/* <ul > */}
-          <li className="nav-item">
-            <NavLink to={'/chat'} className="nav-link">
-              Chat
-            </NavLink>
-          </li>
-        {/* </ul> */}
-        {/* <ul> */}
-          <li className="nav-item">
-            <NavLink to={'/game'} className="nav-link">
-              Pong game
-            </NavLink>
-          </li>
-        </ul>
-        </div>
-        <div>
-        <ul className="navbar-nav">
-          <li className="nav-item text-nowrap">
-            <a className="nav-link" href="/">Hello, {user?.username}!</a>
-          </li>
-        </ul>
-        <ul className="navbar-nav">
-          <li className="nav-item text-nowrap">
-            <a className="nav-link" href="/" onClick={signOutUser}>Sign out</a>
-          </li>
-        </ul>
-        <ul className="navbar-nav">
-          <li className="nav-item text-nowrap">
-          <img src={user?.avatar} className="nav--image"/>
-          </li>
-        </ul>
-        </div>
-    </header>
-    );
-}
+    async function signOutUser() {
+      await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/logout`, {credentials: 'include'});
+      window.location.reload();
+    }
 
-export default Nav;
+    return(
+      <header className="header">
+        <h2 className="header--title">TRASCENDANCE</h2>
+        <ul className="header--icon--list">
+            <li>
+              <NavLink to={'/'}>
+              <i className="bi bi-house header--icon"></i>
+              </NavLink>
+            </li>
+            <li >
+              <NavLink to={'/leaderboard'} >
+                <i className="bi bi-graph-up-arrow header--icon"></i>
+              </NavLink>
+            </li>
+            <li >
+              <NavLink to={'/chat'}>
+                <i className="bi bi-chat header--icon"></i>
+              </NavLink>
+            </li>
+            <li >
+              <NavLink to={'/game'}>
+                <i className="bi bi-joystick header--icon"></i>
+              </NavLink>
+            </li>
+        </ul>
+        <div className="header--signout">
+          <img src={user?.avatar} className="nav--image"/>
+          <i className="bi bi-box-arrow-right header--icon" onClick={signOutUser}></i>
+        </div>
+      </header>)
+}

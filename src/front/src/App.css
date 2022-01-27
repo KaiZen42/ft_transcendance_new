@@ -100,11 +100,115 @@ body {
 }
 
 .nav--image {
-  height: 50px;
-  width: 50px;
+  height: 100px;
+  width:100px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 10px;
-  /* background-position: 50% 50%; */
-  /* background-size: cover; */
+  margin-right: 25px;
+  border: 3px solid white;
+  box-shadow:
+      0 0 7px #fff,
+      0 0 10px #fff,
+      0 0 21px rgb(85, 147, 126),
+      0 0 42px rgb(43, 109, 87)
 }
+
+.header {
+  background-color: black;
+  display: flex;
+  padding: 25px;
+  align-items: center;
+}
+
+.header--title {
+  font-family: Bebas Neue, sans-serif;
+  font-size: 50px;
+  font-style: italic;
+  animation: flicker 1.5s infinite alternate;
+  color: #fff;
+  position:relative; 
+  z-index:1;
+  margin-right: 75px;
+  margin-left: 20px;
+}
+.active {
+  color: #fff;
+  text-shadow:
+      0 0 7px #fff,
+      0 0 10px #fff,
+      0 0 21px #fff,
+      0 0 42px #0fa,
+      0 0 82px #0fa,
+      0 0 92px #0fa,
+      0 0 102px #0fa,
+      0 0 151px #0fa;
+}
+.header--icon--list {
+  margin-right: auto;
+}
+
+.header--icon--list > li {
+  margin-right: 70px;
+  display: inline;
+}
+
+.header--icon {
+  font-size: 2.7rem;
+  color: white;
+  position:relative; 
+  z-index:0;
+  cursor: pointer;
+}
+
+.header--icon:hover {
+  color: #fff;
+  text-shadow:
+      0 0 14px #fff,
+      0 0 20px #fff,
+      0 0 42px #fff,
+      0 0 84px #0fa,
+      0 0 164px #0fa,
+      0 0 184px #0fa,
+      0 0 204px #0fa,
+      0 0 300px #0fa; 
+}
+
+
+.header--text {
+  color: white;
+}
+
+.header--signout > li {
+  display: inline;
+  margin-right: 70px;
+}
+
+.header--signout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flickering animation */
+@keyframes flicker {
+    
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+
+      text-shadow:
+      0 0 4px #fff,
+      0 0 11px #fff,
+      0 0 19px #fff,
+      0 0 40px #0fa,
+      0 0 80px #0fa,
+      0 0 90px #0fa,
+      0 0 100px #0fa,
+      0 0 150px #0fa;
+  
+  }
+  
+  20%, 24%, 55% {        
+      text-shadow: none;
+  }    
+}
+
+

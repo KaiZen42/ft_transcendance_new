@@ -34,7 +34,7 @@ export default function Leaderboard() {
               {
                 users.map((user: User) => {
                   return (
-                    <tr>
+                    <tr key={user.id}>
                       <td><img src={user.avatar} width="40px"/></td>
                       <td>{user.username}</td>
                     </tr>

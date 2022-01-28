@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { User } from "../models/User.interface";
 import { NavLink } from "react-router-dom";
+import "../styles/Nav.css"
+import ProfilePopUp from "./ProfilePopUp";
 
 export default function Nav() {
     const [user, setUser] = useState<User>();
+    const [visibility, setVisibility] = useState(false);
 
     useEffect(() => {(
       async () => {
@@ -16,6 +19,14 @@ export default function Nav() {
     )();
     }, []);
     
+    const popupCloseHandler = () => {
+      setVisibility(false);
+    };
+
+    const updateUser = (updatedUser: User) => {
+      setUser(updatedUser);
+    }
+
     async function signOutUser() {
       await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/logout`, {credentials: 'include'});
       window.location.reload();
@@ -23,7 +34,7 @@ export default function Nav() {
 
     return(
       <header className="header">
-        <h2 className="header--title">TRASCENDANCE</h2>
+        <a href="/"><h2 className="header--title">TRASCENDANCE</h2></a>
         <ul className="header--icon--list">
             <li>
               <NavLink to={'/'}>
@@ -47,11 +58,16 @@ export default function Nav() {
             </li>
         </ul>
         <div className="header--signout">
-          <img src={user?.avatar} className="nav--image"/>
-        </div>
-        <div className="header--signout">
-          <span className="header--text">{user?.username}</span>
-      </div>
+          <div className="header--photo_name" onClick={() => setVisibility(true)}>
+            {/* <a href="/profile">*/}<img  src={user?.avatar} className="nav--image"/>
+            <div className="header--text">{user?.username}</div>
+          </div>
           <i className="bi bi-box-arrow-right header--icon" onClick={signOutUser}></i>
+      </div>
+      <ProfilePopUp onClose={popupCloseHandler}
+        showProp={visibility}
+        user={user}
+        updateUser={updateUser}
+      />
       </header>)
 }

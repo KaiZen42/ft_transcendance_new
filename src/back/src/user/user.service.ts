@@ -39,6 +39,7 @@ export class UserService {
     return this.userDB.save({
       id : userData.id,
       username: userData.login,
+      email: userData.email,
       avatar: userData.image_url
     });
   }
@@ -46,6 +47,12 @@ export class UserService {
   async update(id: number, userData): Promise<any> {
   
 	  return this.userDB.update(id, { avatar: userData });
+  }
+
+  async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+    return this.userDB.update(userId, {
+      twoFactorAuthenticationSecret: secret
+    });
   }
 
   async delete(id: number) {

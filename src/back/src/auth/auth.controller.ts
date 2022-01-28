@@ -20,12 +20,26 @@ import { User } from '../user/models/user.entity';
 import { AuthGuard } from "./auth.guard";
 import { JwtService } from '@nestjs/jwt';
 import fetch from 'node-fetch';
+import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
+// import {JwtAuthGuard} from './auth/jwt-auth.guard';
+// import RequestWithUser from '../requestWithUser.interface';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller()
 export class AuthController {
 	constructor(private readonly user: UserService,
-		private readonly jwt: JwtService,) { }
+		private readonly jwt: JwtService,
+    private readonly twoFactorAuthenticationService: TwoFactorAuthenticationService,) { }
+
+  @Post('generate')
+  @UseInterceptors(ClassSerializerInterceptor)
+  // @UseGuards(JwtAuthGuard)
+  async check(@Body()data: CreateUserDto, @Res() response: Response, @Req() request) {
+    
+    const { otpauthUrl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(data);
+ 
+    return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthUrl);
+  }
 
   @Get('login')
   async login(

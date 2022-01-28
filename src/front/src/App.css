@@ -1,6 +1,6 @@
-body {
+/* body {
   font-size: .875rem;
-}
+} */
 
 .feather {
   width: 16px;
@@ -212,3 +212,14 @@ body {
 }
 
 
+.first{
+  /* position:absolute; */
+  border:1px solid red;
+}
+.second{
+ border:2px solid blue;
+ /* width:40%;
+ height:200px; */
+position: relative;
+ top: 75px;
+}

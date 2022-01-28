@@ -48,7 +48,10 @@ export default function Nav() {
         </ul>
         <div className="header--signout">
           <img src={user?.avatar} className="nav--image"/>
-          <i className="bi bi-box-arrow-right header--icon" onClick={signOutUser}></i>
         </div>
+        <div className="header--signout">
+          <span className="header--text">{user?.username}</span>
+      </div>
+          <i className="bi bi-box-arrow-right header--icon" onClick={signOutUser}></i>
       </header>)
 }

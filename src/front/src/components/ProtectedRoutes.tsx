@@ -12,11 +12,13 @@ export default function ProtectedRoute({ children }: { children: JSX.Element })
     async function getUser() {
       const res = await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {credentials: "include"});
       const data = await res.json();
+           
       console.log("data id:" + data.id);
       if (data.id != null)
         setPage(children);
       else
         setPage(<Navigate to="/signin" state={{ from: location }} replace />);
+        
     }
     getUser();
   });

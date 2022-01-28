@@ -30,17 +30,20 @@ export class AuthController {
   @Get('login')
   async login(
     @Query('code') code: string ,
+    @Query('state') path: string ,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<any> {
-    if (typeof code === 'undefined')
-    {
-      const url: string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.CLIENT_ID +"&redirect_uri="+ process.env.REDIRECT_URI +"&response_type=code";
-      return response.redirect(url);
-    }
+    ): Promise<any> {
+    // if (typeof code === 'undefined')
+    // {
+    //   const url: string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.CLIENT_ID +"&redirect_uri="+ process.env.REDIRECT_URI +"&response_type=code";
+    //   return response.redirect(url);
+    // }
+    console.log(code, path)
     await this.user.login(code, response);
-    return response.redirect(`http://${process.env.BASE_IP}:8080`);
+    return response.redirect(`http://${process.env.BASE_IP}:8080${path}`);
   }
 
+  
   /*@Get('login/return')
   //@UseGuards(AuthGuard)
   async */

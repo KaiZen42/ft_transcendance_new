@@ -10,7 +10,7 @@ import {
   } from '@nestjs/websockets';
  	import { Socket, Server } from 'socket.io';
   
-@WebSocketGateway({ cors : true })
+@WebSocketGateway({ cors : true , namespace : "chat"})
 export class EventsGateway 
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -21,22 +21,26 @@ export class EventsGateway
 	
 	afterInit(server: Server)
 	{
+		console.log("INIZIALIZZATOOOOOOOO");
 		this.logger.log('Init');
 	}
 
 	handleConnection(client: Socket)
 	{
-		this.logger.log(`Chat::Client disconnected: ${client.id}`);
+		console.log(`SI É CONNESSOOOOOOOOOOOO ${client.id}`);
+		this.logger.log(`Chat::Client connected: ${client.id}`);
+		this.server.emit(`DAJE FRA ${client.id}`);
 	}
 
 	handleDisconnect(client: Socket , ...args: any[])
 	{
-		this.logger.log(`Chat::Client connected: ${client.id}`);
+		console.log("ADDIOOOOOOOOOOOOOO");
+		this.logger.log(`Chat::Client disconnected: ${client.id}`);
 	}
 
 	@SubscribeMessage('message')
 	recieveChatMessage(client: Socket, data: string) : WsResponse<string> {
-	
+		this.server.emit(`DAJE FRA ${data}`);
 		return({event: "message", data: data});
 	}
 

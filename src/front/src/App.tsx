@@ -43,7 +43,7 @@ export default function App() {
             path="/chat"
             element={
               <ProtectedRoute>
-                <Chat />
+                <Chat/>
               </ProtectedRoute>
             }
           />

@@ -9,6 +9,8 @@ import {
 	WsResponse,
   } from '@nestjs/websockets';
  	import { Socket, Server } from 'socket.io';
+	import { messageDto } from './dto/message.dto';
+	import { Message } from './models/message.entity';
   
 @WebSocketGateway({ cors : true , namespace : "chat"})
 export class EventsGateway 
@@ -39,53 +41,9 @@ export class EventsGateway
 	}
 
 	@SubscribeMessage('message')
-	recieveChatMessage(client: Socket, data: string) : WsResponse<string> {
-		this.server.emit(`DAJE FRA ${data}`);
-		return({event: "message", data: data});
+	recieveChatMessage(client: Socket, mex: Message) : WsResponse<Message> {
+		this.logger.log(`Data recived is: ${mex.data} From: ${mex.userId}`);
+		return({event: "message", data: mex} );
 	}
 
 }
-
-/* import {
-	SubscribeMessage,
-	WebSocketGateway,
-	OnGatewayInit,
-	WebSocketServer,
-	OnGatewayConnection,
-	OnGatewayDisconnect,
-} from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
-import { ChatService, IncomingChatMessage } from './chat.service';
-import { Logger } from '@nestjs/common';
-import { ChatMessage } from './chat.entity';
-
-@WebSocketGateway({ cors: true })
-export class ChatGateway
-	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-	@WebSocketServer() server: Server;
-	constructor(private readonly chatService: ChatService) {}
-
-	private logger: Logger = new Logger('ChatGateway');
-
-	afterInit(server: Server) {
-		this.logger.log('Init');
-	}
-
-	handleDisconnect(client: Socket) {
-		this.logger.log(`Chat::Client disconnected: ${client.id}`);
-	}
-
-	handleConnection(client: Socket, ...args: any[]) {
-		this.logger.log(`Chat::Client connected: ${client.id}`);
-	}
-
-	@SubscribeMessage('sendChatMessage')
-	async recieveChatMessage(client: Socket, payload: IncomingChatMessage) {
-		let msg: ChatMessage = await this.chatService.addMessage(payload);
-		this.server.emit(
-			'msgToClients',
-			[{sender: msg.sender, message: msg.message}]
-		);
-	}
-} */

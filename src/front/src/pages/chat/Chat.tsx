@@ -1,57 +1,50 @@
 import React, { useState, useEffect, useRef  } from "react";
-import socketIOClient, { Socket } from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 import { Sender } from "./Sender";
 import Wrapper from "../../components/Wrapper";
+import MessageBox from "./MessageBox";
+import { User } from "../../models/User.interface";
 const WS_SERVER = "http://localhost:3000/chat";
 
 
-export function Chat() {
+/* interface Prop
+{
+	user : User,
+} */
 
-  const [chats, setChats] = useState<String[]>([]);
+
+ 
+
+export function Chat(/* {user} : Prop */) {
+
+  
   const [message, setMessage] = useState('');
-  const socketReference = useRef<Socket>();
-  const [response, setResponse] = useState("");
-    useEffect( () => {
-        const  socket: Socket =  socketIOClient(WS_SERVER);
-        console.log("AO ME PROVO A CONNETTE:");
-        console.log(socket);
-        socket.emit("IO SONO CONNESSO ORA NON ROMPERE");
-        socket.on("connect", () => 
-        {
-          console.log('connected')
-        });
-        socket.on("disconnect", () => 
-        {
-          console.log('diconnected')
-        });
-        socket.on("message", data => 
-        {
-          setChats([...chats, message]);
-          setResponse(data);
-          console.log("data:");
-          console.log(data);
-      });
-      socketReference.current = socket;
-       return () => {
-        socket.removeAllListeners()
-      } 
-  }, []); 
+  const [socket, setSocket] = useState<Socket>();
 
-  //setResponse("ciaone");
+
+  useEffect(
+    () =>{
+      const sock = io(WS_SERVER);
+      setSocket(sock);
+      sock.on("connect", () => 
+      {
+        console.log('connected')
+      });
+      return () => {sock.close()};
+    } ,
+    [setSocket]);
+
   return (
-    <Wrapper>
-      <div>
-        <p>
-          It's {response};
-        </p>
-      </div>
-      <div>
-        <Sender socket={socketReference.current}/>
-      </div>
-      
-   </Wrapper>
-  ); 
+    socket === undefined ?  (<Wrapper> <div>Not Connected</div> </Wrapper>)
+      : (
+        <Wrapper>
+ 
+          <MessageBox socket={socket}/>
+          <Sender socket={socket} />
+
+        </Wrapper>    
+  )
+  );
 }
 
 export default Chat;
-

@@ -13,4 +13,5 @@ export interface User {
   id: number;
   avatar: string;
   username: string;
+  two_fa_auth: boolean;
 }

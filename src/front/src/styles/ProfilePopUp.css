@@ -66,6 +66,10 @@
 	cursor: pointer;
   }
 
+  .popup--icon:hover {
+	opacity: 0.6;
+  }
+
   .image-upload > input
 	{
 		display: none;
@@ -74,9 +78,13 @@
 	.image-upload i
 	{
 		width: 80px;
+	}
+
+	.popup--form--icon:hover {
+		opacity: 0.6;
 		cursor: pointer;
 	}
 
-	.image-upload i:hover {
-		opacity: 0.6;
+	.form-check-input {
+		cursor: pointer;
 	}

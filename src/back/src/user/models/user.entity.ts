@@ -12,4 +12,7 @@ export class User {
 
   @Column()
   avatar: string;
+
+  @Column()
+  two_fa_auth: boolean;
 }

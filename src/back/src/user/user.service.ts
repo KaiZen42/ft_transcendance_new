@@ -15,6 +15,7 @@ import { Response } from 'express';
 import { json } from 'stream/consumers';
 import fetch from 'node-fetch';
 import { retry } from 'rxjs';
+import { UpdateUser } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -39,13 +40,19 @@ export class UserService {
     return this.userDB.save({
       id : userData.id,
       username: userData.login,
-      avatar: userData.image_url
+      avatar: userData.image_url,
+      two_fa_auth: false
     });
   }
 
-  async update(id: number, userData): Promise<any> {
-  
-	  return this.userDB.update(id, { avatar: userData });
+  async update(id: number, userData: UpdateUser): Promise<any> {
+	  return this.userDB.update(id, {
+      ...userData
+     });
+  }
+
+  async addImage(id: number, image_url: string) {
+    return this.userDB.update(id, {avatar: image_url})
   }
 
   async delete(id: number) {

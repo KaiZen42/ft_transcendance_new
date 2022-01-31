@@ -23,8 +23,11 @@ export default function Nav() {
       setVisibility(false);
     };
 
-    const updateUser = (updatedUser: User) => {
-      setUser(updatedUser);
+    const updateUser = async (updatedUser: User) => {
+      const res = await axios.put(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/update/${updatedUser.id}`, {
+        ...updatedUser
+      })
+      setUser(res.data);
     }
 
     async function signOutUser() {
@@ -59,15 +62,15 @@ export default function Nav() {
         </ul>
         <div className="header--signout">
           <div className="header--photo_name" onClick={() => setVisibility(true)}>
-            {/* <a href="/profile">*/}<img  src={user?.avatar} className="nav--image"/>
+            <img  src={user?.avatar} className="nav--image"/>
             <div className="header--text">{user?.username}</div>
           </div>
           <i className="bi bi-box-arrow-right header--icon" onClick={signOutUser}></i>
       </div>
       <ProfilePopUp onClose={popupCloseHandler}
-        showProp={visibility}
-        user={user}
-        updateUser={updateUser}
+        show={visibility}
+        user={user!}
+        updateState={updateUser}
       />
       </header>)
 }

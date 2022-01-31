@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UpdateUserImg, UpdateUserName } from './dto/update-user.dto';
+import { UpdateUser, UpdateUserImg, UpdateUserName } from './dto/update-user.dto';
 import { LoginUsreDto } from './dto/login-user.dto';
 import { User } from './models/user.entity';
 //import Multer, { diskStorage, MulterError } from 'multer';
@@ -52,11 +52,7 @@ export class UserController {
 	async uploadImage(@Req() request: Request, @UploadedFile() newImage: Express.Multer.File) {
 		const cookie = request.cookies['token'];
 		const data = await this.jwt.verifyAsync(cookie);
-		// const user: User = await this.getById(data['id'])
-    	// if (!user)`http://${process.env.BASE_IP}:8080`
-      	this.user.update(data['id'], `http://${process.env.BASE_IP}:3000/api/users/${newImage.path}` );
-		// 	return "error";
-    	// else return user.avatar;
+      	this.user.addImage(data['id'], `http://${process.env.BASE_IP}:3000/api/users/${newImage.path}` );
 		return {url: `http://${process.env.BASE_IP}:3000/api/${newImage.path}`}
   }
 
@@ -64,24 +60,29 @@ export class UserController {
 	async getImage(
 		@Param('path') path,
 		@Res() response: Response
-	  ){response.sendFile(path, {root: 'imgs'})}
+		){response.sendFile(path, {root: 'imgs'})}
 
-  @Put('image/:id')
-  async updateImg(@Param('id') id: number, @Body() userData: UpdateUserImg) {
-    await this.user.update(id, userData);
-    return this.user.getById(id);
-  }
+	@Put('update/:id') //TOFIX userdata da any a dto
+	async updateUser(@Param('id') id: number, @Body() userData: any) {
+		console.log(userData)
+		await this.user.update(id, userData);
+		return this.user.getById(id);
+	}
 
-  @Put('username/:id')
-  async updateUsername(@Param('id') id: number, @Body() userData: UpdateUserName) {
-    await this.user.update(id, userData);
-    return this.user.getById(id);
-  }
+//   @Put('image/:id')
+//   async updateImg(@Param('id') id: number, @Body() userData: UpdateUserImg) {
+//     await this.user.update(id, userData);
+//     return this.user.getById(id);
+//   }
+
+//   @Put('username/:id')
+//   async updateUsername(@Param('id') id: number, @Body() userData: UpdateUserName) {
+//     await this.user.update(id, userData);
+//     return this.user.getById(id);
+//   }
 
   @Delete(':id')
   async delete(@Param('id') id: number) {
     return await this.user.delete(id);
   }
-
-
 }

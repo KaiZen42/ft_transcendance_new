@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { authenticator } from 'otplib';
 import { User } from '../user/models/user.entity';
 import { UserService } from '../user/user.service';
-import { toFileStream } from 'qrcode';
+import  { toFileStream } from 'qrcode'
 import { Response } from 'express';
 import { JwtService } from "@nestjs/jwt";
 import { LoginUsreDto } from 'src/user/dto/login-user.dto';
@@ -18,7 +18,7 @@ export class TwoFactorAuthenticationService {
   ) {}
  
   
-  public async generatetwoFaAuthSecret(user) {
+  public async generatetwoFaAuthSecret(user: User) {
     const secret = authenticator.generateSecret();
     const otpauthUrl = authenticator.keyuri(user.email, process.env.TWO_FA_AUTH_APP_NAME, secret);
     console.log(otpauthUrl);

@@ -6,9 +6,12 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+//socket
+import { EventsModule } from './chat/chat.module';
+import { EventsGateway } from './chat/chat.gateway';
 
 @Module({
-  imports: [UserModule, AuthModule,
+  imports: [UserModule, AuthModule, EventsModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'db',
@@ -24,3 +27,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [AppService],
 })
 export class AppModule {}
+
+
+
+
+
+

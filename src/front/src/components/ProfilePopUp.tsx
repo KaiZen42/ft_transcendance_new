@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import { ChangeEvent, createRef, FormEvent, useEffect, useState } from "react";
+import { PassThrough } from 'stream';
 import { User } from "../models/User.interface";
 import "../styles/ProfilePopUp.css"
 
@@ -15,28 +16,34 @@ interface UpdateUser {
   id: number,
   avatar: string,
   username: string,
-  two_fa_auth: boolean
-  file: React.RefObject<HTMLInputElement>
+  two_fa_auth: boolean,
+  file: React.RefObject<HTMLInputElement>,
+  auth_code: number
 }
 
 export default function ProfilePopUp({onClose, show, user, updateState}: Props) {
 
+  const [image, setImage] = useState<JSX.Element>()
+  const [code, setCode] = useState()
   const [editUsername, setEditUsername] = useState(false);
   const [updatedUser, setUpdatedUser] = useState<UpdateUser>({
     id: 0,
     avatar: "",
     username: "",
     two_fa_auth: false,
-    file: createRef()
+    file: createRef(),
+    auth_code: 0
   })
   
   const closeHandler = () => {
     updatedUser.file.current!.value = ""
     setUpdatedUser({
       ...user,
-      file: createRef()
+      file: createRef(),
+      auth_code: 0
     })
     setEditUsername(false)
+    setImage(undefined)
     onClose();
   };
 
@@ -44,14 +51,29 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     if (!e.target.files || e.target.files.length === 0)
         return
     const url = URL.createObjectURL(e.target.files[0])
+    console.log(url)
     setUpdatedUser(prevUser => ({
       ...prevUser,
       avatar: url
     }))
   }
 
-  function updateUser(e: ChangeEvent<HTMLInputElement>) {
+  async function updateUser(e: ChangeEvent<HTMLInputElement>) {
     const {name, value, type, checked} = e.target
+    if (type == "checkbox" && checked && !user.two_fa_auth)
+    {
+      const res = await axios
+        .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/generate`, {
+          id: updatedUser.id,
+          avatar: updatedUser.avatar,
+          username: updatedUser.username,
+          two_fa_auth: updatedUser.two_fa_auth
+        }, {responseType: 'blob'})
+      const url = URL.createObjectURL(res.data);
+      setImage(<img src={url}/>)
+    }
+    if (type == "checkbox" && !checked)
+      setImage(undefined)
     setUpdatedUser(prevUser => ({
       ...prevUser,
       [name]: type === "checkbox" ? checked : value
@@ -61,7 +83,8 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
   useEffect(() => {
     setUpdatedUser(() => ({
       ...user,
-      file: createRef()}))
+      file: createRef(),
+      auth_code: 0}))
   }, [user])
 
   async function applyChanges(e: FormEvent<HTMLFormElement>) {
@@ -73,6 +96,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
       await axios
         .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/image`, formData, { withCredentials: true })
     }
+    if (code)    
     updateState({
       id: updatedUser.id,
       avatar: updatedUser.avatar,
@@ -163,6 +187,13 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
             </div>
           </div>
         </div>
+        {image && <>
+         <div className="row">
+           <div className="col">{image}</div>
+        </div>
+        <div className="row">
+          <div className="col"><input name="auth_code" type="text" onChange={e => updateUser(e)} value={updatedUser?.auth_code}/></div>
+        </div></>}
         <div className="row">
           <div className="col">
             <button className="btn btn-outline-success" disabled={isChanged() || editUsername}>Apply</button>

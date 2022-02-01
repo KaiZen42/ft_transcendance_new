@@ -38,10 +38,10 @@ export class AuthController {
   @Post('generate')
   @UseInterceptors(ClassSerializerInterceptor)
   // @UseGuards(JwtAuthGuard)
-  async check(@Body()data: CreateUserDto, @Res() response: Response, @Req() request) {
+  async check(@Body()data: any, @Res() response: Response, @Req() request) {
     
     const { otpauthUrl } = await this.twoFaAuthService.generatetwoFaAuthSecret(data);
- 
+    
     return this.twoFaAuthService.pipeQrCodeStream(response, otpauthUrl);
   }
 

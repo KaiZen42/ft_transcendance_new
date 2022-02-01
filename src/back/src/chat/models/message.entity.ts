@@ -11,7 +11,6 @@ id: number;
 //@Column()
 userId: number;
 
-
 //@Column()
 data: string; 
 

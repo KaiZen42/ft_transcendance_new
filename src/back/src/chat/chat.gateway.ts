@@ -41,8 +41,10 @@ export class EventsGateway
 	}
 
 	@SubscribeMessage('message')
-	recieveChatMessage(client: Socket, mex: Message) : WsResponse<Message> {
-		this.logger.log(`Data recived is: ${mex.data} From: ${mex.userId}`);
+	recieveChatMessage(client: Socket, mex: messageDto) : WsResponse<messageDto> {
+		console.log(mex);
+		this.server.emit('message', mex);
+		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser}] ${mex.user}`);
 		return({event: "message", data: mex} );
 	}
 

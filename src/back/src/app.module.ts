@@ -7,8 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 //socket
-import { EventsModule } from './events/events.module';
-import { EventsGateway } from './events/events.gateway';
+import { EventsModule } from './chat/chat.module';
+import { EventsGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [UserModule, AuthModule, EventsModule,

@@ -20,5 +20,5 @@ export class User {
   two_fa_auth: boolean;
   
   @Column({ nullable: true })
-  public twoFactorAuthenticationSecret?: string;
+  public twoFaAuthSecret?: string;
 }

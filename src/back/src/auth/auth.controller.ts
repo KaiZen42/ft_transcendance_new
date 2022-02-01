@@ -11,6 +11,8 @@ import {
   Query,
   ValidationPipe,
   Redirect,
+  HttpCode,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
@@ -21,6 +23,7 @@ import { AuthGuard } from "./auth.guard";
 import { JwtService } from '@nestjs/jwt';
 import fetch from 'node-fetch';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
+import { UpdateUser } from 'src/user/dto/update-user.dto';
 // import {JwtAuthGuard} from './auth/jwt-auth.guard';
 // import RequestWithUser from '../requestWithUser.interface';
 
@@ -29,16 +32,57 @@ import { TwoFactorAuthenticationService } from './twoFactorAuthentication.servic
 export class AuthController {
 	constructor(private readonly user: UserService,
 		private readonly jwt: JwtService,
-    private readonly twoFactorAuthenticationService: TwoFactorAuthenticationService,) { }
+    private readonly twoFaAuthService: TwoFactorAuthenticationService,
+    private readonly userService: UserService) { }
 
   @Post('generate')
   @UseInterceptors(ClassSerializerInterceptor)
   // @UseGuards(JwtAuthGuard)
   async check(@Body()data: CreateUserDto, @Res() response: Response, @Req() request) {
     
-    const { otpauthUrl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(data);
+    const { otpauthUrl } = await this.twoFaAuthService.generatetwoFaAuthSecret(data);
  
-    return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthUrl);
+    return this.twoFaAuthService.pipeQrCodeStream(response, otpauthUrl);
+  }
+
+  @Post('turn2fa')
+  @HttpCode(200)
+  // @UseGuards(JwtAuthenticationGuard)
+  async turnOnTwoFactorAuthentication(
+    @Req() request: Request,
+    @Body() data: UpdateUser
+  ) {
+    const cookie = request.cookies['token'];
+    const user = await this.user.userCookie(cookie);
+    const isCodeValid = this.twoFaAuthService.checkTwoFaAuthCode(
+      data.twoFaAuthCode, user
+    );
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong authentication code');
+    }
+    await this.userService.turnOnTwoFaAuth(user.id);
+  }
+
+  @Post('auth2fa')
+  @HttpCode(200)
+  async auth2fa(
+    @Req() request: Request,
+    @Body() data: UpdateUser
+  ) {
+    const cookie = request.cookies['token'];
+    const user = await this.user.userCookie(cookie);
+    const isCodeValid = this.twoFaAuthService.checkTwoFaAuthCode(
+      data.twoFaAuthCode, user
+    );
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong authentication code');
+    }
+ 
+    const accessTokenCookie = this.twoFaAuthService.getCookieWithJwtAccessToken(user.id, true);
+ 
+    request.res.setHeader('2fa', [accessTokenCookie]);
+ 
+    return user;
   }
 
   @Get('login')

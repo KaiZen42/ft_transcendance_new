@@ -56,9 +56,15 @@ export class UserService {
     return this.userDB.update(id, {avatar: image_url})
   }
 
-  async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+  async settwoFaAuthSecret(secret: string, userId: number) {
     return this.userDB.update(userId, {
-      twoFactorAuthenticationSecret: secret
+      twoFaAuthSecret: secret
+    });
+  }
+
+  async turnOnTwoFaAuth(userId: number) {
+    return this.userDB.update(userId, {
+      two_fa_auth: true
     });
   }
 

@@ -54,6 +54,8 @@ services:
       REDIRECT_URI: "${REDIRECT_URI}"
       BASE_IP: ${BASE_IP}
       TWO_FA_AUTH_APP_NAME: ${TWO_FA_AUTH_APP_NAME}
+      JWT_ACCESS_TOKEN_SECRET: ${JWT_ACCESS_TOKEN_SECRET}
+      JWT_ACCESS_TOKEN_EXPIRATION_TIME: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
     volumes:
       - ./src/back:/app
       - /app/node_modules

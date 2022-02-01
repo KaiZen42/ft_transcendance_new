@@ -9,6 +9,7 @@ import SignIn from "./pages/SignIn";
 import Error404 from "./pages/404";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import PongGame from "./pages/PongGame";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -44,6 +45,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Chat/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />

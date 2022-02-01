@@ -11,3 +11,11 @@ export class UpdateUserName {
   @IsNotEmpty()
   readonly login: string;
 }
+
+export class UpdateUser {
+  readonly username: string
+  readonly avatar: string
+  readonly two_fa_auth: boolean
+  @IsNotEmpty()
+  readonly twoFaAuthCode: string
+}

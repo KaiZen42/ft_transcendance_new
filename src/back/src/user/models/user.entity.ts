@@ -10,6 +10,15 @@ export class User {
   @Column({ unique: true })
   username: string;
 
+  @Column({ unique: true })
+  email: string;
+
   @Column()
   avatar: string;
+
+  @Column()
+  two_fa_auth: boolean;
+  
+  @Column({ nullable: true })
+  public twoFaAuthSecret?: string;
 }

@@ -4,7 +4,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Nav from '../components/Nav';
 import Wrapper from '../components/Wrapper';
 
-export default async function SignIn() {
+export default function SignIn() {
   let location = useLocation();
 
   let from : any = location.state;

@@ -6,5 +6,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   login: string;
   @IsNotEmpty()
+  email: string;
+  @IsNotEmpty()
   image_url: string;
 }

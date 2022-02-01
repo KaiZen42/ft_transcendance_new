@@ -2,8 +2,15 @@ import { IsNotEmpty, IsEmail } from 'class-validator';
 
 export class LoginUsreDto {
   @IsNotEmpty()
-  @IsEmail()
-  readonly email: string;
+  id: number;
   @IsNotEmpty()
-  readonly password: string;
+  login: string;
+  @IsNotEmpty()
+  email: string;
+  @IsNotEmpty()
+  image_url: string;
+  @IsNotEmpty()
+  readonly two_fa_auth: boolean
+  @IsNotEmpty()
+  readonly twoFaAuthCode: string
 }

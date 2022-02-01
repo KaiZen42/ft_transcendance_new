@@ -41,6 +41,7 @@ export class UserService {
       id : userData.id,
       username: userData.login,
       avatar: userData.image_url,
+      email: userData.email,
       two_fa_auth: false
     });
   }

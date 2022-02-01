@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, createRef, FormEvent, useEffect, useState } from "react";
 import { User } from "../models/User.interface";
 import "../styles/ProfilePopUp.css"
 
@@ -11,32 +11,44 @@ interface Props {
   updateState: (user: User) => void;
 }
 
+interface UpdateUser {
+  id: number,
+  avatar: string,
+  username: string,
+  two_fa_auth: boolean
+  file: React.RefObject<HTMLInputElement>
+}
+
 export default function ProfilePopUp({onClose, show, user, updateState}: Props) {
 
   const [editUsername, setEditUsername] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState<User>({
+  const [updatedUser, setUpdatedUser] = useState<UpdateUser>({
     id: 0,
     avatar: "",
     username: "",
-    two_fa_auth: false
+    two_fa_auth: false,
+    file: createRef()
   })
   
   const closeHandler = () => {
+    updatedUser.file.current!.value = ""
     setUpdatedUser({
-      ...user
+      ...user,
+      file: createRef()
     })
     setEditUsername(false)
     onClose();
   };
 
-  const upload = async (files: FileList | null) => {
-    if (files === null) return;
-    const formData = new FormData();
-    formData.append("to_upload", files[0]);
-    await axios
-      .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/image`, formData, { withCredentials: true })
-    window.location.reload();
-	}
+  function onSelectFile(e: ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files || e.target.files.length === 0)
+        return
+    const url = URL.createObjectURL(e.target.files[0])
+    setUpdatedUser(prevUser => ({
+      ...prevUser,
+      avatar: url
+    }))
+  }
 
   function updateUser(e: ChangeEvent<HTMLInputElement>) {
     const {name, value, type, checked} = e.target
@@ -47,13 +59,34 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
   }
 
   useEffect(() => {
-    setUpdatedUser(user)
+    setUpdatedUser(() => ({
+      ...user,
+      file: createRef()}))
   }, [user])
 
-  function applyChanges(e: FormEvent<HTMLFormElement>) {
+  async function applyChanges(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    updateState(updatedUser)
+    if (updatedUser.file.current!.files!.length > 0)
+    {
+      const formData = new FormData();
+      formData.append("to_upload", updatedUser.file.current!.files![0]);
+      await axios
+        .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/image`, formData, { withCredentials: true })
+    }
+    updateState({
+      id: updatedUser.id,
+      avatar: updatedUser.avatar,
+      username: updatedUser.username,
+      two_fa_auth: updatedUser.two_fa_auth
+    })
+    updatedUser.file.current!.value = ""
     onClose()
+  }
+
+  const isChanged = () : boolean | undefined => {
+    return !(updatedUser?.avatar != user?.avatar ||
+            updatedUser?.two_fa_auth != user?.two_fa_auth ||
+            updatedUser?.username != user?.username)
   }
 
   return (
@@ -69,12 +102,12 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
           &times;
         </span>
         <div className="content">
-			<img src={user?.avatar} className="popup--image"/>
+			<img src={updatedUser?.avatar} className="popup--image"/>
 			<div className="image-upload">
 				<label htmlFor="file-input">
 					<i className="bi bi-cloud-arrow-up popup--icon"/>
 				</label>
-				<input id="file-input" type="file" onChange={e => upload(e.target.files)}/>
+				<input id="file-input" type="file" ref={updatedUser.file} onChange={onSelectFile}/> 
 			</div>
       <form className="container" onSubmit={applyChanges}>
         <div className="row ">
@@ -87,7 +120,8 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
                 <input id="username" name="username" type="text" className="col-5 form-control" onChange={e => updateUser(e)} value={updatedUser?.username}/>
               </div>
               <div className="col-2">
-                <i className="bi bi-check popup--form--icon" onClick={() => setEditUsername(false)}></i>
+                { updatedUser?.username.length != 0 && 
+                  <i className="bi bi-check popup--form--icon" style={{"fontSize": "2rem"}}onClick={() => setEditUsername(false)}/> }
               </div>
               </>
           }
@@ -97,7 +131,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
                 <span className="form-text">{updatedUser?.username}</span>
               </div>
               <div className="col-2">
-                <i className="bi bi-pencil popup--form--icon" onClick={() => setEditUsername(true)}></i>
+                <i className="bi bi-pencil popup--form--icon" onClick={() => setEditUsername(true)}/>
               </div>
             </>
           }
@@ -124,13 +158,14 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
           </div>
           <div className="col-4">
             <div className="form-check form-switch form-check-inline">
-              <input name="two_fa_auth" className="form-check-input" type="checkbox" onChange={e => updateUser(e)} checked={updatedUser?.two_fa_auth}/>
+              {/* this switch generates a warning, idk why */}
+              <input name="two_fa_auth" className="form-check-input" type="checkbox" onChange={e => updateUser(e)} checked={updatedUser!.two_fa_auth}/>
             </div>
           </div>
         </div>
         <div className="row">
           <div className="col">
-            <button className="btn btn-outline-success">Apply</button>
+            <button className="btn btn-outline-success" disabled={isChanged() || editUsername}>Apply</button>
           </div>
           <div className="col">
             <button type="button" className="btn btn-outline-danger" onClick={closeHandler}>Cancel</button>

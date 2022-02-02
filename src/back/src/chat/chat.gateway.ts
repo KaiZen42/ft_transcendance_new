@@ -13,7 +13,7 @@ import {
 	import { Message } from './models/message.entity';
   
 @WebSocketGateway({ cors : true , namespace : "chat"})
-export class EventsGateway 
+export class ChatGatewa 
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
 	@WebSocketServer()
@@ -23,20 +23,16 @@ export class EventsGateway
 	
 	afterInit(server: Server)
 	{
-		console.log("INIZIALIZZATOOOOOOOO");
-		this.logger.log('Init');
+		this.logger.log("WS SERVER ON");
 	}
 
 	handleConnection(client: Socket)
 	{
-		console.log(`SI É CONNESSOOOOOOOOOOOO ${client.id}`);
 		this.logger.log(`Chat::Client connected: ${client.id}`);
-		this.server.emit(`DAJE FRA ${client.id}`);
 	}
 
 	handleDisconnect(client: Socket , ...args: any[])
 	{
-		console.log("ADDIOOOOOOOOOOOOOO");
 		this.logger.log(`Chat::Client disconnected: ${client.id}`);
 	}
 
@@ -44,7 +40,7 @@ export class EventsGateway
 	recieveChatMessage(client: Socket, mex: messageDto) : WsResponse<messageDto> {
 		console.log(mex);
 		this.server.emit('message', mex);
-		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser}] ${mex.user}`);
+		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser}: ${mex.user}`);
 		return({event: "message", data: mex} );
 	}
 

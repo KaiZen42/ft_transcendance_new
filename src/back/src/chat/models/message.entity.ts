@@ -1,19 +1,24 @@
-//TODO: maek a correct form for DB
-//import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { User } from 'src/user/models/user.entity';
+import { Channels } from './channel.entity';
 
 
 export class Message {
 
-//@PrimaryColumn()
+@PrimaryGeneratedColumn()
 id: number;
 
-//@Column()
+@ManyToOne(() => User , user => user.id)
 userId: number;
 
-//@Column()
+@ManyToOne(() => Channels , channel => channel.id)
+channelId: number;
+
+@Column()
 data: string; 
 
-
+@Column("date")
+sendDate: Date;
 
 }

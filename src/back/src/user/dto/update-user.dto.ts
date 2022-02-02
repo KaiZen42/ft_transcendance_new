@@ -1,8 +1,8 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class UpdateUserImg {
   @IsNotEmpty()
-  id: number
+  id: number;
   @IsNotEmpty()
   readonly image_url: string;
 }
@@ -13,9 +13,9 @@ export class UpdateUserName {
 }
 
 export class UpdateUser {
-  readonly username: string
-  readonly avatar: string
-  readonly two_fa_auth: boolean
+  readonly username: string;
+  readonly avatar: string;
+  readonly two_fa_auth: boolean;
   @IsNotEmpty()
-  readonly twoFaAuthCode: string
+  readonly twoFaAuthCode: string;
 }

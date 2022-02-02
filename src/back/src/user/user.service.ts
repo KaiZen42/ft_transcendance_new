@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  Query
+  Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
@@ -41,33 +41,32 @@ export class UserService {
 
   async create(userData: CreateUserDto): Promise<User> {
     return this.userDB.save({
-      id : userData.id,
+      id: userData.id,
       username: userData.login,
       avatar: userData.image_url,
-      email: userData.email,
-      two_fa_auth: false
+      two_fa_auth: false,
     });
   }
 
   async update(id: number, userData: UpdateUser): Promise<any> {
-	  return this.userDB.update(id, {
-      ...userData
-     });
+    return this.userDB.update(id, {
+      ...userData,
+    });
   }
 
   async addImage(id: number, image_url: string) {
-    return this.userDB.update(id, {avatar: image_url})
+    return this.userDB.update(id, { avatar: image_url });
   }
 
   async settwoFaAuthSecret(secret: string, userId: number) {
     return this.userDB.update(userId, {
-      twoFaAuthSecret: secret
+      twoFaAuthSecret: secret,
     });
   }
 
   async turnOnTwoFaAuth(userId: number) {
     return this.userDB.update(userId, {
-      two_fa_auth: true
+      two_fa_auth: true,
     });
   }
 
@@ -76,39 +75,37 @@ export class UserService {
   }
 
   async login(mycode: string, res: Response): Promise<User> {
-      // TDOO: aggiungere valori a .env
     const body: any = {
-      "grant_type" : "authorization_code",
-		  "client_id" : process.env.CLIENT_ID,
-      "client_secret" : process.env.CLIENT_SECRET,
-      "code": mycode,
-      "redirect_uri" : process.env.REDIRECT_URI
+      grant_type: 'authorization_code',
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      code: mycode,
+      redirect_uri: process.env.REDIRECT_URI,
     };
     let response = await fetch('https://api.intra.42.fr/oauth/token', {
       method: 'post',
       body: JSON.stringify(body),
-      headers: {'Content-Type': 'application/json'}
+      headers: { 'Content-Type': 'application/json' },
     });
-    let data = await response.json() as any;
-    let token: string =  data.access_token;
-    response = await fetch("https://api.intra.42.fr/v2/me", {
-      headers: {'Authorization': 'Bearer '+ token}
+    let data = (await response.json()) as any;
+    let token: string = data.access_token;
+    response = await fetch('https://api.intra.42.fr/v2/me', {
+      headers: { Authorization: 'Bearer ' + token },
     });
     data = await response.json();
     token = await this.jwt.signAsync({ id: data.id });
     res.cookie('token', token, { httpOnly: true });
-    const user : User = await this.getById(data.id)
-    if (!user)
-      return this.create(data);
+    const user: User = await this.getById(data.id);
+    if (!user) return this.create(data);
     else return user;
   }
 
   async userCookie(cookie): Promise<any> {
-    console.log("arrivo"+cookie);
+    console.log('arrivo' + cookie);
     const data = await this.jwt.verifyAsync(cookie);
     console.log(data['id']);
     const user = await this.getById(data['id']);
-    console.log("user="+user.id);
+    console.log('user=' + user.id);
     return user;
   }
 }

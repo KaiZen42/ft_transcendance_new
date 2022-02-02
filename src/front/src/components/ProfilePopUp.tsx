@@ -1,7 +1,6 @@
 
 import axios from "axios";
 import { ChangeEvent, createRef, FormEvent, useEffect, useState } from "react";
-import { PassThrough } from 'stream';
 import { User } from "../models/User.interface";
 import "../styles/ProfilePopUp.css"
 
@@ -18,13 +17,15 @@ interface UpdateUser {
   username: string,
   two_fa_auth: boolean,
   file: React.RefObject<HTMLInputElement>,
-  auth_code: number
+  auth_code: string | undefined
 }
 
 export default function ProfilePopUp({onClose, show, user, updateState}: Props) {
-
-  const [image, setImage] = useState<JSX.Element>()
-  const [code, setCode] = useState()
+  const [valid, setValid] = useState({
+    username: true,
+    auth_code: true
+  })
+  const [qrCode, setQrCode] = useState<string>()
   const [editUsername, setEditUsername] = useState(false);
   const [updatedUser, setUpdatedUser] = useState<UpdateUser>({
     id: 0,
@@ -32,7 +33,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     username: "",
     two_fa_auth: false,
     file: createRef(),
-    auth_code: 0
+    auth_code: undefined
   })
   
   const closeHandler = () => {
@@ -40,10 +41,10 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     setUpdatedUser({
       ...user,
       file: createRef(),
-      auth_code: 0
+      auth_code: undefined
     })
     setEditUsername(false)
-    setImage(undefined)
+    setQrCode("")
     onClose();
   };
 
@@ -58,9 +59,9 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     }))
   }
 
-  async function updateUser(e: ChangeEvent<HTMLInputElement>) {
-    const {name, value, type, checked} = e.target
-    if (type == "checkbox" && checked && !user.two_fa_auth)
+  async function updateSwitch(e: ChangeEvent<HTMLInputElement>) {
+    const {checked} = e.target
+    if (checked && !user.two_fa_auth)
     {
       const res = await axios
         .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/generate`, {
@@ -70,41 +71,116 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
           two_fa_auth: updatedUser.two_fa_auth
         }, {responseType: 'blob'})
       const url = URL.createObjectURL(res.data);
-      setImage(<img src={url}/>)
+      setQrCode(url)
+      setUpdatedUser(prevUser => ({
+        ...prevUser,
+        auth_code: ""
+      }))
     }
-    if (type == "checkbox" && !checked)
-      setImage(undefined)
+    if (!checked)
+      setQrCode("")
     setUpdatedUser(prevUser => ({
       ...prevUser,
-      [name]: type === "checkbox" ? checked : value
+      two_fa_auth: checked
     }))
   }
 
   useEffect(() => {
-    setUpdatedUser(() => ({
-      ...user,
-      file: createRef(),
-      auth_code: 0}))
+    setUpdatedUser(prevUser => ({
+      ...prevUser,
+      ...user}))
   }, [user])
+
+  async function validateInput() : Promise<boolean>
+  {
+    let res
+    if (updatedUser.username != user.username)
+    {
+      res = await axios
+        .get(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/username/${updatedUser.username}`)
+      if (res.data)
+      {
+        setValid(prevValid => ({
+          ...prevValid,
+          username: false
+        }))
+        setEditUsername(true)
+        return false
+      }
+    }
+    if (updatedUser.two_fa_auth && !user.two_fa_auth)
+    {
+      try{
+      res = await axios
+        .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/turn2fa`, {twoFaAuthCode: updatedUser.auth_code}, { withCredentials: true})
+      } catch(error) {
+        setValid(prevValid => ({
+          ...prevValid,
+          auth_code: false
+        }))
+        return false
+      }
+    }
+    return true
+  }
 
   async function applyChanges(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
+
+    if (!await validateInput())
+      return
+    let upload_url
     if (updatedUser.file.current!.files!.length > 0)
     {
       const formData = new FormData();
       formData.append("to_upload", updatedUser.file.current!.files![0]);
-      await axios
+      upload_url = await axios
         .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/image`, formData, { withCredentials: true })
+      console.log(upload_url.data)
     }
-    if (code)    
     updateState({
       id: updatedUser.id,
-      avatar: updatedUser.avatar,
+      avatar: upload_url ? upload_url.data.url : updatedUser.avatar,
       username: updatedUser.username,
       two_fa_auth: updatedUser.two_fa_auth
     })
     updatedUser.file.current!.value = ""
+    setQrCode("")
     onClose()
+  }
+
+  function inputChecker(e: ChangeEvent<HTMLInputElement>)
+  {
+    const {name, value} = e.target
+    
+    if (name == "auth_code")
+    {
+      if (!valid.auth_code)
+        setValid(prevValid => ({
+          ...prevValid,
+          auth_code: true
+        }))
+      const re = /^[0-9\b]+$/
+      if (value=="" || re.test(value))
+        setUpdatedUser(prevUser => ({
+          ...prevUser,
+          auth_code: value
+        }))
+    }
+    if (name == "username")
+    {
+      if (!valid.username)
+        setValid(prevValid => ({
+          ...prevValid,
+          username: true
+        }))
+      const re = /^[a-zA-Z0-9-_]{0,20}$/
+      if (re.test(value))
+        setUpdatedUser(prevUser => ({
+          ...prevUser,
+          username: value
+        }))
+    }
   }
 
   const isChanged = () : boolean | undefined => {
@@ -133,18 +209,21 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
 				</label>
 				<input id="file-input" type="file" ref={updatedUser.file} onChange={onSelectFile}/> 
 			</div>
-      <form className="container" onSubmit={applyChanges}>
+      <form className="container " onSubmit={applyChanges}>
         <div className="row ">
           <div className="col-4">
-            <label htmlFor="username" className="col-5 form-label">username</label>
+            <label htmlFor="username" className=" col-5 form-label">username</label>
           </div>
           { editUsername &&
               <>
-              <div className="col-6">
-                <input id="username" name="username" type="text" className="col-5 form-control" onChange={e => updateUser(e)} value={updatedUser?.username}/>
+               <div className="col-6">
+                <div className="input-group has-validation"> 
+                  <input id="username" name="username" type="text" className={`col-5 form-control ${!valid.username ? "is-invalid" : ""}`} onChange={e => inputChecker(e)} value={updatedUser?.username} required/>
+                  <div style={{"fontSize": "1rem"}} className="invalid-feedback">this username was taken</div>
+                </div>
               </div>
               <div className="col-2">
-                { updatedUser?.username.length != 0 && 
+                 { /^.{3,}$/.test(updatedUser?.username) && valid.username &&
                   <i className="bi bi-check popup--form--icon" style={{"fontSize": "2rem"}}onClick={() => setEditUsername(false)}/> }
               </div>
               </>
@@ -183,20 +262,23 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
           <div className="col-4">
             <div className="form-check form-switch form-check-inline">
               {/* this switch generates a warning, idk why */}
-              <input name="two_fa_auth" className="form-check-input" type="checkbox" onChange={e => updateUser(e)} checked={updatedUser!.two_fa_auth}/>
+              <input name="two_fa_auth" className="form-check-input" type="checkbox" onChange={e => updateSwitch(e)} checked={updatedUser!.two_fa_auth}/>
             </div>
           </div>
         </div>
-        {image && <>
+        {qrCode && <>
          <div className="row">
-           <div className="col">{image}</div>
+           <div className="col"><img src={qrCode}/></div>
         </div>
-        <div className="row">
-          <div className="col"><input name="auth_code" type="text" onChange={e => updateUser(e)} value={updatedUser?.auth_code}/></div>
+        <div className="row" style={{"justifyContent": "center"}}>
+          <div className="col-5">
+            <input name="auth_code" className={`form-control ${!valid.auth_code ? "is-invalid" : ""}`} type="text" onChange={e => inputChecker(e)} value={updatedUser?.auth_code}/>
+            <div style={{"fontSize": "1rem"}} className="invalid-feedback">wrong code</div>
+          </div>
         </div></>}
         <div className="row">
           <div className="col">
-            <button className="btn btn-outline-success" disabled={isChanged() || editUsername}>Apply</button>
+             <button className="btn btn-outline-success" disabled={isChanged() || editUsername || updatedUser?.auth_code === "" || !valid.auth_code}>Apply</button>
           </div>
           <div className="col">
             <button type="button" className="btn btn-outline-danger" onClick={closeHandler}>Cancel</button>

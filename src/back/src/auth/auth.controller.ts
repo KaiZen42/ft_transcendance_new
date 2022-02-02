@@ -50,12 +50,12 @@ export class AuthController {
   // @UseGuards(JwtAuthenticationGuard)
   async turnOnTwoFactorAuthentication(
     @Req() request: Request,
-    @Body() data: UpdateUser
+    @Body('twoFaAuthCode') code: string
   ) {
     const cookie = request.cookies['token'];
     const user = await this.user.userCookie(cookie);
     const isCodeValid = this.twoFaAuthService.checkTwoFaAuthCode(
-      data.twoFaAuthCode, user
+      code, user
     );
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong authentication code');

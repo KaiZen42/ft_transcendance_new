@@ -25,6 +25,11 @@ export class UserController {
     return await this.user.getById(id);
   }
 
+  @Get('username/:username')
+  async getByUsername(@Param('username') username: string): Promise<User> {
+	return await this.user.getByUsername(username);
+  }
+
   @Get('email/:email')
   async getByEmail(@Param('email') email: string): Promise<User> {
     return await this.user.getByEmail(email);
@@ -45,7 +50,6 @@ export class UserController {
 			destination: './imgs',
 			filename: (req, file, cb) => {
 				return cb(null, Date.now() + '-' + file.originalname)
-		  
 			}
 		})
 	}))
@@ -53,7 +57,7 @@ export class UserController {
 		const cookie = request.cookies['token'];
 		const data = await this.jwt.verifyAsync(cookie);
       	this.user.addImage(data['id'], `http://${process.env.BASE_IP}:3000/api/users/${newImage.path}` );
-		return {url: `http://${process.env.BASE_IP}:3000/api/${newImage.path}`}
+		return {url: `http://${process.env.BASE_IP}:3000/api/users/${newImage.path}`}
   }
 
 	@Get('imgs/:path')

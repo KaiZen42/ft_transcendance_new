@@ -31,6 +31,9 @@ export class UserService {
   async getById(id: number): Promise<User> {
     return this.userDB.findOne({ where: { id: id } });
   }
+  async getByUsername(username: string): Promise<User> {
+    return this.userDB.findOne({ where: { username: username } });
+  }
 
   async getByEmail(email: string): Promise<User> {
     return this.userDB.findOne({ where: { email } });

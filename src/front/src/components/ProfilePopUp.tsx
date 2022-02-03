@@ -209,14 +209,14 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
 				</label>
 				<input id="file-input" type="file" ref={updatedUser.file} onChange={onSelectFile}/> 
 			</div>
-      <form className="container " onSubmit={applyChanges}>
-        <div className="row ">
+      <form className="container" onSubmit={applyChanges}>
+        <div className="row justify-content-center">
           <div className="col-4">
-            <label htmlFor="username" className=" col-5 form-label">username</label>
+            <label htmlFor="username" className="text-right form-label">username</label>
           </div>
           { editUsername &&
               <>
-               <div className="col-6">
+               <div className="col-4">
                 <div className="input-group has-validation"> 
                   <input id="username" name="username" type="text" className={`col-5 form-control ${!valid.username ? "is-invalid" : ""}`} onChange={e => inputChecker(e)} value={updatedUser?.username} required/>
                   <div style={{"fontSize": "1rem"}} className="invalid-feedback">this username was taken</div>
@@ -230,7 +230,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
           }
           { !editUsername &&
               <>
-              <div className="col-6">
+              <div className="col-auto">
                 <span className="form-text">{updatedUser?.username}</span>
               </div>
               <div className="col-2">
@@ -239,27 +239,27 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
             </>
           }
         </div>
-        <div className="row">
-          <div className="col-5">
-            <span className="form-label">Wins</span>
+        <div className="row justify-content-center">
+          <div className="col-2" style={{"textAlign" : "right"}}>
+            <span className="form-label">wins</span>
           </div>
-          <div className="col-7">
+          <div className="col-2">
             <span className="form-text">0</span>
           </div>
         </div>
-        <div className="row">
-          <div className="col-5">
-            <span className="form-label">Losses</span>
+        <div className="row justify-content-center">
+          <div className="col-2" style={{"textAlign" : "right"}}>
+            <span className="form-label">losses</span>
           </div>
-          <div className="col-7">
+          <div className="col-2">
             <span className="form-text">0</span>
           </div>
         </div>
-        <div className="row">
-          <div className="col-7">
-            <span className="form-label">2FA Authentication</span>
+        <div className="row justify-content-center">
+          <div className="col-5">
+            <span className="form-label">2FA authentication</span>
           </div>
-          <div className="col-4">
+          <div className="col-2">
             <div className="form-check form-switch form-check-inline">
               {/* this switch generates a warning, idk why */}
               <input name="two_fa_auth" className="form-check-input" type="checkbox" onChange={e => updateSwitch(e)} checked={updatedUser!.two_fa_auth}/>

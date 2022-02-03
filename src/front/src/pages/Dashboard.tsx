@@ -16,15 +16,6 @@ export default function Dashboard() {
 
   return (
     <Wrapper>
-      <div>
-        {/* <img src={user?.avatar} width="250px"/>
-		<form>
-			<label className="btn btn-primary">
-			Upload image
-			<input type="file" hidden onChange={e => upload(e.target.files)} />
-			</label>
-        </form> */}
-      </div>
     </Wrapper>
   );
 }

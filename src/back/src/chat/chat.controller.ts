@@ -20,11 +20,11 @@ import {
   import { JwtService } from '@nestjs/jwt';
   import fetch from 'node-fetch';
 
-@Controller()
-export class AppController {
+@Controller("chat")
+export class chatController {
 
-@Get("/package")
-getHello() : string {
-		return ( 'ciao' );
-	}
+	@Get("")
+	getHello() : string {
+			return ( 'ciao' );
+		}
 }

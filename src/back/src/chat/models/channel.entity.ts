@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Message } from './message.entity';
 
 @Entity('channels')
 export class Channels {
@@ -18,4 +19,5 @@ export class Channels {
 
   @Column()
   isPrivate: boolean;
+
 }

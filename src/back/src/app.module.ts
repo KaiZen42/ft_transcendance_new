@@ -7,12 +7,13 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 //socket
-import { EventsModule } from './chat/chat.module';
-import { EventsGateway } from './chat/chat.gateway';
+import { ChatModule } from './chat/chat.module';
+import { User } from './user/models/user.entity';
+import { Message } from './chat/models/message.entity';
 
 
 @Module({
-  imports: [UserModule, AuthModule, EventsModule, 
+  imports: [UserModule, AuthModule, ChatModule, 
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'db',
@@ -20,7 +21,7 @@ import { EventsGateway } from './chat/chat.gateway';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      // entities: [],
+      entities: [User, Message],
       autoLoadEntities: true,
       synchronize: true,
     })],

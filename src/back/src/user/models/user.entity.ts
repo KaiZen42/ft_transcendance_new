@@ -21,4 +21,5 @@ export class User {
   
   @Column({ nullable: true })
   public twoFaAuthSecret?: string;
+
 }

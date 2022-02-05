@@ -17,7 +17,6 @@ export function Chat(/* {user} : Prop */) {
 	const [pkg, setPkg] = useState<Message>();
 	const [socket, setSocket] = useState<Socket>();
 
-
 	 function getUser()
 	{
 		  fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {credentials: 'include'})

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState} from "react";
+import { NavLink } from "react-router-dom";
 import Wrapper from "../components/Wrapper";
 import { User } from "../models/User.interface";
 
@@ -16,6 +17,9 @@ export default function Dashboard() {
 
   return (
     <Wrapper>
+		<NavLink to={'/game'}>
+            <button>PLAY PONG</button>
+        </NavLink>
     </Wrapper>
   );
 }

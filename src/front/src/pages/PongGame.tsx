@@ -40,6 +40,8 @@ export default function PongGame() {
       addResponse(data.gameOwner+ ' destroyed game: ' + data.gameId);
     });
     setSocket(sock);
+    
+    return () => {sock.close()};
   }, []);
   
   function addResponse(res: string) {

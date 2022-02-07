@@ -68,7 +68,6 @@ export class UserController {
 
 	@Put('update/:id') //TOFIX userdata da any a dto
 	async updateUser(@Param('id') id: number, @Body() userData: any) {
-		console.log(userData)
 		await this.user.update(id, userData);
 		return this.user.getById(id);
 	}

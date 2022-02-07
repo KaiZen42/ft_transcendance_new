@@ -1,67 +1,30 @@
 
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import TwoFaAuth from "./TwoFaAuth";
+import TwoFaAuth from "../pages/TwoFaAuth";
 
 
 export default function ProtectedRoute({ children }: { children: JSX.Element })
 {
   const [page, setPage] = useState<JSX.Element>(<></>);
-  const [auth, setAuth] = useState(false)
-  
+ 
   let location = useLocation();
-
-  function updateAuth(auth: boolean)
-  {
-    console.log("UPDATE AUTH")
-    setAuth(auth)
-  }
 
   useEffect(() => {
     async function getUser() {
-      console.log("testttt")
       const res = await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {credentials: "include"});
       const data = await res.json();
-      console.log(data)
-      console.log("data 2fa:" + data.two_fa);
       if (data.id != null){
-        if (data.two_fa && !auth)
-        {
-          console.log(" FRONTTTTTTT")
-          setPage(<TwoFaAuth onSubmit={updateAuth}/>)
-        }
+        if (data.two_fa)
+          setPage(<Navigate to="/two_fa_auth" state={{ from: location }} replace />);
         else
-        {
-          console.log("ELSE")
           setPage(children);
-        }
       }
       else
         setPage(<Navigate to="/signin" state={{ from: location }} replace />);
     }
     getUser();
-  }, [auth]);
+  });
 
   return page;
- /* return children;*/
 }
-/*export default class ProtectedRoute extends React.Component*/ /*{
-  state = {
-    page: <></>
-  }
-  async componentDidMount() {
-    //let location = useLocation();
-    const res = await fetch("http://localhost:3000/api/user", {credentials: 'include'});
-    const data = await res.json();
-    console.log("data id:" + data.id);
-    if (data.id != null)
-      this.setState({page: <Outlet/>});
-    else
-      this.setState({page: <Navigate to="/signin"/>});
-  }
-
-  render() {
-    return (this.state.page);
-  }
-  return children;
-}*/

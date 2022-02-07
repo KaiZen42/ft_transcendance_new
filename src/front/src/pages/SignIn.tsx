@@ -12,7 +12,6 @@ export default function SignIn() {
   
   return (
   
-
     <div>
       <p></p>{window.location.replace(url)}
       {/* <p>You must log in to view the page at {from.from.pathname}</p> */}

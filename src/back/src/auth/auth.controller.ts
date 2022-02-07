@@ -65,9 +65,6 @@ export class AuthController {
       throw new UnauthorizedException('Wrong authentication code');
     }
     await this.userService.turnOnTwoFaAuth(user.id);
-    request.res.clearCookie('token')
-    const token = await this.jwt.signAsync({ id: user.id, two_fa: true });
-    request.res.cookie('token', token, { httpOnly: true });
   }
 
   @Post('auth2fa')
@@ -76,25 +73,16 @@ export class AuthController {
 
     const cookie = request.cookies['token'];
 
-    console.log("CODE: "+data.twoFaAuthCode)
-  
     const user = await this.user.userCookie(cookie);
     const isCodeValid = this.twoFaAuthService.checkTwoFaAuthCode(
       data.twoFaAuthCode,
       user,
     );
     if (!isCodeValid) {
-      console.log("FALSE")
       return false
     }
     
-    // const accessTokenCookie = this.twoFaAuthService.getCookieWithJwtAccessToken(
-    //   user.id,
-    //   true,
-    //   );
-      
-    // request.res.setHeader('2fa', [accessTokenCookie]);
-    console.log("TRUE")
+    request.res.clearCookie('token')
     const token = await this.jwt.signAsync({ id: user.id, two_fa: false });
     request.res.cookie('token', token, { httpOnly: true });
     return true
@@ -106,19 +94,9 @@ export class AuthController {
     @Query('state') path: string,
     @Res({ passthrough: true }) response: Response,
   ): Promise<any> {
-    // if (typeof code === 'undefined')
-    // {
-    //   const url: string = "https://api.intra.42.fr/oauth/authorize?client_id=" + process.env.CLIENT_ID +"&redirect_uri="+ process.env.REDIRECT_URI +"&response_type=code";
-    //   return response.redirect(url);
-    // }
-    console.log(code, path);
     await this.user.login(code, response);
     return response.redirect(`http://${process.env.BASE_IP}:8080${path}`);
   }
-
-  /*@Get('login/return')
-  //@UseGuards(AuthGuard)
-  async */
 
   //@UseGuards(AuthGuard)
   @Get('user')
@@ -126,7 +104,7 @@ export class AuthController {
     const cookie = request.cookies['token'];
     if (typeof cookie === 'undefined') return { id: null };
     const data = await this.jwt.verifyAsync(cookie);
-    console.log('cookie is: ' + data['two_fa']);
+
     //return "ritorno cookie errore";
     const user = await this.user.userCookie(cookie);
     return {...user, two_fa: data['two_fa']};

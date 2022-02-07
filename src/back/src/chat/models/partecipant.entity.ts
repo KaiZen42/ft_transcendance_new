@@ -4,7 +4,7 @@ import { User } from 'src/user/models/user.entity';
 import { Channels } from './channel.entity';
 
 
-export class Message {
+export class Partecipant {
 
 @PrimaryGeneratedColumn()
 id: number;
@@ -12,13 +12,12 @@ id: number;
 @ManyToOne(() => User , user => user.id)
 userId: number;
 
-@ManyToOne(() => Channels , channel => channel.id)
-channelId: number;
+/* @ManyToOne(() => Channels , channel => channel.id)
+channelId: number; */
 
 @Column()
-data: string; 
+muted: number; 
 
-@Column("date")
-sendDate: Date;
-
+@Column()
+mod: string;
 }

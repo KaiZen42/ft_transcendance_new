@@ -12,8 +12,8 @@ id: number;
 @ManyToOne(() => User , user => user.id)
 userId: number;
 
-//@ManyToOne(() => Channels , channel => channel.id)
-//channelId: number;
+/* @ManyToOne(() => Channels , channel => channel.id)
+channelId: number; */
 
 @Column()
 data: string; 

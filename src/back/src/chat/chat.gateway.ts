@@ -47,7 +47,10 @@ export class ChatGateway
 	@SubscribeMessage('message')
 	recieveChatMessage(client: Socket, mex: messageDto) : WsResponse<messageDto> {
 		console.log(mex);
-		this.server.emit('message', mex);
+		//this.server.emit('message', mex);
+
+		client.join('aRoom');
+		client.to('aRoom').emit('roomCreated', {room: 'aRoom'});
 
 		const msg : Message = new Message();
 		msg.userId = mex.idUser;
@@ -60,4 +63,11 @@ export class ChatGateway
 		return({event: "message", data: mex} );
 	}
 
+	@SubscribeMessage('message')
+	createRoom(socket: Socket, data: string) {
+		socket.join('aRoom');
+		socket.to('aRoom').emit('roomCreated', {room: 'aRoom'});
+		//return { event: 'roomCreated', room: 'aRoom' };
+	  }
+	
 }

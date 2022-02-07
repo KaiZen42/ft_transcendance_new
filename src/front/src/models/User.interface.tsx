@@ -14,5 +14,4 @@ export interface User {
   avatar: string;
   username: string;
   two_fa_auth: boolean;
-  correct_code: boolean;
 }

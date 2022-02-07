@@ -10,15 +10,16 @@ export default function ProtectedRoute({ children }: { children: JSX.Element })
   const [auth, setAuth] = useState(false)
   
   let location = useLocation();
-  let check_code: boolean = false
 
   function updateAuth(auth: boolean)
   {
+    console.log("UPDATE AUTH")
     setAuth(auth)
   }
 
   useEffect(() => {
     async function getUser() {
+      console.log("testttt")
       const res = await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {credentials: "include"});
       const data = await res.json();
       console.log(data)
@@ -30,13 +31,16 @@ export default function ProtectedRoute({ children }: { children: JSX.Element })
           setPage(<TwoFaAuth onSubmit={updateAuth}/>)
         }
         else
+        {
+          console.log("ELSE")
           setPage(children);
+        }
       }
       else
         setPage(<Navigate to="/signin" state={{ from: location }} replace />);
     }
     getUser();
-  }, []);
+  }, [auth]);
 
   return page;
  /* return children;*/

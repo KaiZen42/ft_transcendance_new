@@ -55,7 +55,6 @@ export class AuthController {
   @Post('turn2fa')
   @HttpCode(200)
   async turnOnTwoFactorAuthentication(
-    @Res() res: Response,
     @Req() request: Request,
     @Body('twoFaAuthCode') code: string,
   ) {
@@ -66,14 +65,14 @@ export class AuthController {
       throw new UnauthorizedException('Wrong authentication code');
     }
     await this.userService.turnOnTwoFaAuth(user.id);
-    res.clearCookie('token')
+    request.res.clearCookie('token')
     const token = await this.jwt.signAsync({ id: user.id, two_fa: true });
-    res.cookie('token', token, { httpOnly: true });
+    request.res.cookie('token', token, { httpOnly: true });
   }
 
   @Post('auth2fa')
   @HttpCode(200)
-  async auth2fa(@Res() res: Response, @Req() request: Request, @Body() data: UpdateUser) {
+  async auth2fa(@Req() request: Request, @Body() data: UpdateUser) {
 
     const cookie = request.cookies['token'];
 
@@ -86,7 +85,7 @@ export class AuthController {
     );
     if (!isCodeValid) {
       console.log("FALSE")
-      return {response:false}
+      return false
     }
     
     // const accessTokenCookie = this.twoFaAuthService.getCookieWithJwtAccessToken(
@@ -97,8 +96,8 @@ export class AuthController {
     // request.res.setHeader('2fa', [accessTokenCookie]);
     console.log("TRUE")
     const token = await this.jwt.signAsync({ id: user.id, two_fa: false });
-    res.cookie('token', token, { httpOnly: true });
-    return {response:true}
+    request.res.cookie('token', token, { httpOnly: true });
+    return true
   }
 
   @Get('login')

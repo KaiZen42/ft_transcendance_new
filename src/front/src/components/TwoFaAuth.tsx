@@ -15,9 +15,8 @@ export default function TwoFaAuth({onSubmit}: Props) {
         e.preventDefault()
         const res = await axios.post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/auth2fa`,  {        
             twoFaAuthCode: code
-        }, { withCredentials: true})  // onSubmit(res.data)
-        console.log("WEFEQW")
-        console.log(" response: "+res.data.response)
+        }, { withCredentials: true})
+        onSubmit(res.data)
     }
 
     return(

@@ -114,6 +114,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
       res = await axios
         .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/turn2fa`, {twoFaAuthCode: updatedUser.auth_code}, { withCredentials: true})
       } catch(error) {
+        console.log("front: false")
         setValid(prevValid => ({
           ...prevValid,
           auth_code: false
@@ -121,6 +122,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
         return false
       }
     }
+    console.log("front: true")
     return true
   }
 
@@ -142,8 +144,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
       id: updatedUser.id,
       avatar: upload_url ? upload_url.data.url : updatedUser.avatar,
       username: updatedUser.username,
-      two_fa_auth: updatedUser.two_fa_auth,
-      correct_code: false
+      two_fa_auth: updatedUser.two_fa_auth
     })
     updatedUser.file.current!.value = ""
     setQrCode("")

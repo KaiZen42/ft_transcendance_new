@@ -94,9 +94,10 @@ export class UserService {
       headers: { Authorization: 'Bearer ' + token },
     });
     data = await response.json();
-    token = await this.jwt.signAsync({ id: data.id });
-    res.cookie('token', token, { httpOnly: true });
+    
     const user: User = await this.getById(data.id);
+    token = await this.jwt.signAsync({ id: data.id, two_fa: user ? user.two_fa_auth : false });
+    res.cookie('token', token, { httpOnly: true });
     if (!user) return this.create(data);
     else return user;
   }

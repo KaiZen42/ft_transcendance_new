@@ -142,7 +142,8 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
       id: updatedUser.id,
       avatar: upload_url ? upload_url.data.url : updatedUser.avatar,
       username: updatedUser.username,
-      two_fa_auth: updatedUser.two_fa_auth
+      two_fa_auth: updatedUser.two_fa_auth,
+      correct_code: false
     })
     updatedUser.file.current!.value = ""
     setQrCode("")

@@ -18,7 +18,7 @@ import {
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
 import { LoginUsreDto } from 'src/user/dto/login-user.dto';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import { User } from '../user/models/user.entity';
 import { AuthGuard } from './auth.guard';
 import { JwtService } from '@nestjs/jwt';
@@ -55,6 +55,7 @@ export class AuthController {
   @Post('turn2fa')
   @HttpCode(200)
   async turnOnTwoFactorAuthentication(
+    @Res() res: Response,
     @Req() request: Request,
     @Body('twoFaAuthCode') code: string,
   ) {
@@ -65,29 +66,39 @@ export class AuthController {
       throw new UnauthorizedException('Wrong authentication code');
     }
     await this.userService.turnOnTwoFaAuth(user.id);
+    res.clearCookie('token')
+    const token = await this.jwt.signAsync({ id: user.id, two_fa: true });
+    res.cookie('token', token, { httpOnly: true });
   }
 
   @Post('auth2fa')
   @HttpCode(200)
-  async auth2fa(@Req() request: Request, @Body() data: UpdateUser) {
+  async auth2fa(@Res() res: Response, @Req() request: Request, @Body() data: UpdateUser) {
+
     const cookie = request.cookies['token'];
+
+    console.log("CODE: "+data.twoFaAuthCode)
+  
     const user = await this.user.userCookie(cookie);
     const isCodeValid = this.twoFaAuthService.checkTwoFaAuthCode(
       data.twoFaAuthCode,
       user,
     );
     if (!isCodeValid) {
-      throw new UnauthorizedException('Wrong authentication code');
+      console.log("FALSE")
+      return {response:false}
     }
-
-    const accessTokenCookie = this.twoFaAuthService.getCookieWithJwtAccessToken(
-      user.id,
-      true,
-    );
-
-    request.res.setHeader('2fa', [accessTokenCookie]);
-
-    return user;
+    
+    // const accessTokenCookie = this.twoFaAuthService.getCookieWithJwtAccessToken(
+    //   user.id,
+    //   true,
+    //   );
+      
+    // request.res.setHeader('2fa', [accessTokenCookie]);
+    console.log("TRUE")
+    const token = await this.jwt.signAsync({ id: user.id, two_fa: false });
+    res.cookie('token', token, { httpOnly: true });
+    return {response:true}
   }
 
   @Get('login')
@@ -114,12 +125,12 @@ export class AuthController {
   @Get('user')
   async userCookie(@Req() request: Request) {
     const cookie = request.cookies['token'];
-    console.log('cookie is: ' + cookie);
     if (typeof cookie === 'undefined') return { id: null };
+    const data = await this.jwt.verifyAsync(cookie);
+    console.log('cookie is: ' + data['two_fa']);
     //return "ritorno cookie errore";
     const user = await this.user.userCookie(cookie);
-    console.log('user=' + user.username);
-    return user;
+    return {...user, two_fa: data['two_fa']};
   }
 
   @UseGuards(AuthGuard)

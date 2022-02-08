@@ -26,7 +26,7 @@ services:
     restart: always
     image: react
     ports:
-      - "8080:3000"
+      - "3000:3000"
     environment:
       REACT_APP_CLIENT_ID: "${CLIENT_ID}"
       REACT_APP_REDIRECT_URI: "${REDIRECT_URI}"
@@ -44,7 +44,7 @@ services:
     container_name: back_nest
     restart: always
     ports:
-      - "3000:3001"
+      - "3001:3001"
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"

@@ -23,7 +23,7 @@ export default function Leaderboard() {
   useEffect(() => {
     /*console.log("TEST ");
     async function test(){
-      const response = await axios.get<User[]>(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users`);
+      const response = await axios.get<User[]>(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users`);
       setUsers( response.data );
     }
     test();*/
@@ -42,7 +42,7 @@ export default function Leaderboard() {
             <div className="leaderboard-col board-col-4">WINS-LOSSES</div>
           </li>
           {
-            users.map((user:TmpUser, pos:number) => <LeaderboardRow user={user} pos={pos}/>)
+            users.map((user:TmpUser, pos:number) => <LeaderboardRow key={user.id} user={user} pos={pos}/>)
           }
         </ul> 
       </div>

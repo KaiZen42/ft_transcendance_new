@@ -95,7 +95,7 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<any> {
     await this.user.login(code, response);
-    return response.redirect(`http://${process.env.BASE_IP}:8080${path}`);
+    return response.redirect(`http://${process.env.BASE_IP}:3000${path}`);
   }
 
   //@UseGuards(AuthGuard)

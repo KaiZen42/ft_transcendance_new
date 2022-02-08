@@ -64,7 +64,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     if (checked && !user.two_fa_auth)
     {
       const res = await axios
-        .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/generate`, {
+        .post(`http://${process.env.REACT_APP_BASE_IP}:3001/api/generate`, {
           id: updatedUser.id,
           avatar: updatedUser.avatar,
           username: updatedUser.username,
@@ -97,7 +97,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     if (updatedUser.username != user.username)
     {
       res = await axios
-        .get(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/username/${updatedUser.username}`)
+        .get(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${updatedUser.username}`)
       if (res.data)
       {
         setValid(prevValid => ({
@@ -112,7 +112,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     {
       try{
       res = await axios
-        .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/turn2fa`, {twoFaAuthCode: updatedUser.auth_code}, { withCredentials: true})
+        .post(`http://${process.env.REACT_APP_BASE_IP}:3001/api/turn2fa`, {twoFaAuthCode: updatedUser.auth_code}, { withCredentials: true})
       } catch(error) {
         console.log("front: false")
         setValid(prevValid => ({
@@ -137,7 +137,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
       const formData = new FormData();
       formData.append("to_upload", updatedUser.file.current!.files![0]);
       upload_url = await axios
-        .post(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/image`, formData, { withCredentials: true })
+        .post(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users/image`, formData, { withCredentials: true })
       console.log(upload_url.data)
     }
     updateState({

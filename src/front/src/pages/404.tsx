@@ -26,7 +26,7 @@ class Error404 extends React.Component {
                 </div>
                 <div className="message">
                     <p>
-                        There is no life, back to <a href={`http://${process.env.REACT_APP_BASE_IP}:8080`}>home page</a>
+                        There is no life, back to <a href={`http://${process.env.REACT_APP_BASE_IP}:3000`}>home page</a>
                     </p>
                 </div>
             </div>

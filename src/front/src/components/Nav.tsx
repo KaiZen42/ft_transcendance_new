@@ -13,7 +13,7 @@ export default function Nav() {
 
     useEffect(() => {(
       async () => {
-        const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {withCredentials: true});
+        const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {withCredentials: true});
         setUser(data);
       }
     )();
@@ -24,14 +24,14 @@ export default function Nav() {
     };
 
     const updateUser = async (updatedUser: User) => {
-      const res = await axios.put(`http://${process.env.REACT_APP_BASE_IP}:3000/api/users/update/${updatedUser.id}`, {
+      const res = await axios.put(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${updatedUser.id}`, {
         ...updatedUser
       })
       setUser(res.data);
     }
 
     async function signOutUser() {
-      await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/logout`, {credentials: 'include'});
+      await fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/logout`, {credentials: 'include'});
       window.location.reload();
     }
 

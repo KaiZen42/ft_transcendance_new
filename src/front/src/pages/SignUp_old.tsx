@@ -15,7 +15,7 @@ class SignUp extends React.Component {
   submit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const response = await axios.post("http://localhost:3000/api/register", {
+    const response = await axios.post("http://localhost:3001/api/register", {
       name: this.username,
       email: this.email,
       password: this.password,

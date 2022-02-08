@@ -19,7 +19,7 @@ export function Chat(/* {user} : Prop */) {
 
 	 function getUser()
 	{
-		  fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {credentials: 'include'})
+		  fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {credentials: 'include'})
 			.then(response => response.json())
 			.then(result => { 
 					setPkg({

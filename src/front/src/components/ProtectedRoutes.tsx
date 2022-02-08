@@ -12,7 +12,7 @@ export default function ProtectedRoute({ children }: { children: JSX.Element })
 
   useEffect(() => {
     async function getUser() {
-      const res = await fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {credentials: "include"});
+      const res = await fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {credentials: "include"});
       const data = await res.json();
       if (data.id != null){
         if (data.two_fa)

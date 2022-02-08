@@ -9,7 +9,7 @@ export default function Profile() {
 
     useEffect(() => {(
       async () => {
-        const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3000/api/user`, {withCredentials: true});
+        const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {withCredentials: true});
         setUser(data);
       }
     )();

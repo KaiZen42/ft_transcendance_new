@@ -22,7 +22,7 @@ export function Sender({socket, packet} : Prop) {
 		}
 		else
 		{
-			packet === undefined ? console.log("NOT DEFINED PACKEGE") : null;
+			//packet === undefined ? console.log("NOT DEFINED PACKEGE") : null;
 		}
 	}
 	

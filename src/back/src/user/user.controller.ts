@@ -56,8 +56,8 @@ export class UserController {
 	async uploadImage(@Req() request: Request, @UploadedFile() newImage: Express.Multer.File) {
 		const cookie = request.cookies['token'];
 		const data = await this.jwt.verifyAsync(cookie);
-      	this.user.addImage(data['id'], `http://${process.env.BASE_IP}:3000/api/users/${newImage.path}` );
-		return {url: `http://${process.env.BASE_IP}:3000/api/users/${newImage.path}`}
+      	this.user.addImage(data['id'], `http://${process.env.BASE_IP}:3001/api/users/${newImage.path}` );
+		return {url: `http://${process.env.BASE_IP}:3001/api/users/${newImage.path}`}
   }
 
 	@Get('imgs/:path')

@@ -17,7 +17,7 @@ interface UpdateUser {
   username: string,
   two_fa_auth: boolean,
   file: React.RefObject<HTMLInputElement>,
-  auth_code: string | undefined
+  auth_code: string
 }
 
 export default function ProfilePopUp({onClose, show, user, updateState}: Props) {
@@ -33,7 +33,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     username: "",
     two_fa_auth: false,
     file: createRef(),
-    auth_code: undefined
+    auth_code: ""
   })
   
   const closeHandler = () => {
@@ -41,7 +41,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     setUpdatedUser({
       ...user,
       file: createRef(),
-      auth_code: undefined
+      auth_code: ""
     })
     setEditUsername(false)
     setQrCode("")
@@ -263,7 +263,6 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
           </div>
           <div className="col-2">
             <div className="form-check form-switch form-check-inline">
-              {/* this switch generates a warning, idk why */}
               <input name="two_fa_auth" className="form-check-input" type="checkbox" onChange={e => updateSwitch(e)} checked={updatedUser!.two_fa_auth}/>
             </div>
           </div>
@@ -274,7 +273,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
         </div>
         <div className="row" style={{"justifyContent": "center"}}>
           <div className="col-5">
-            <input name="auth_code" className={`form-control ${!valid.auth_code ? "is-invalid" : ""}`} type="text" onChange={e => inputChecker(e)} value={updatedUser?.auth_code}/>
+            <input name="auth_code" placeholder="000000" style={{"textAlign":"center"}} className={`form-control ${!valid.auth_code ? "is-invalid" : ""}`} type="text" onChange={e => inputChecker(e)} value={updatedUser?.auth_code}/>
             <div style={{"fontSize": "1rem"}} className="invalid-feedback">wrong code</div>
           </div>
         </div></>}

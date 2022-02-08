@@ -24,10 +24,11 @@ export function Sender({socket, packet} : Prop) {
 		{
 			packet === undefined ? console.log("NOT DEFINED PACKEGE") : null;
 		}
+		setMessage("");
 	}
 	
 	return(<div>
-		<form onSubmit={handleSubmit} >
+	<form onSubmit={handleSubmit} >
 		<label>
 			<input type="text" value={msg} onChange={e => setMessage(e.target.value)}/>
 		</label>

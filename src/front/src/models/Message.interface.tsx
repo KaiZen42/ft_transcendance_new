@@ -1,6 +1,6 @@
 export interface Message {
-	id: number;
 	idUser: number;
+	room: string;
 	user: string;
 	data: string;
   }

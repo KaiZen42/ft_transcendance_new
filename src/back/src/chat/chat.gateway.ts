@@ -52,10 +52,10 @@ export class ChatGateway
 		this.logger.log(`Chat::Client disconnected: ${client.id}`);
 	}
 
-	@SubscribeMessage('message')
-	recieveChatMessage(client: Socket, mex: messageDto) : WsResponse<messageDto>{
+	@SubscribeMessage('channelMessage')
+	recieveChannelMessage(client: Socket, mex: messageDto) : WsResponse<messageDto>{
 		console.log(mex);
-		//this.server.emit('message', mex);
+		this.server.to(mex.room).emit("message", mex.room)
 
 		const msg : Message = new Message()
 		//this.logger.log(`MSG ID ${msg.id}`);
@@ -68,19 +68,37 @@ export class ChatGateway
 		return({event: "message", data: mex})
 	}
 
-	@SubscribeMessage('create')
+	@SubscribeMessage('privateMessage')
+	recieveChatMessage(client: Socket, mex: messageDto) : WsResponse<messageDto>{
+		console.log(mex);
+		this.server.to(mex.room).emit("message", mex.room)
+
+		const msg : Message = new Message()
+		//this.logger.log(`MSG ID ${msg.id}`);
+		msg.userId = mex.idUser
+		//msg.channelId = 69;
+		msg.data = mex.data
+		msg.sendDate = this.date
+ 
+		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser}: ${mex.user}`)
+		return({event: "message", data: mex})
+	}
+
+	@SubscribeMessage('createRoom')
 	createRoom(socket: Socket, data: creationDto) : WsResponse<String>
 	{
 		const chan: Channel = new Channel();
-		chan.isPrivate = data.otherUser === undefined;
+		chan.isPrivate = (data.otherUser !== undefined);
 		chan.name = chan.isPrivate ? data.idUser.toString() + data.otherUser.toString() : data?.name;
 		chan.pass = data?.pass;
 		chan.mode = chan.isPrivate ? "PRI" : "PUB";
 		this.channelService.create(chan);
 
 		socket.join(chan.name);
-		socket.to('aRoom').emit('roomCreated', {room: 'aRoom'});
-		return { event: 'roomCreated', data : chan.name};
+		socket.to(chan.name).emit('createRoom', {room: chan.name});
+
+		this.logger.log(`Channel created (${chan.isPrivate}): name ${chan.name} whith ${data.idUser} | ${data.otherUser}`);
+		return { event: 'createRoom', data : chan.name};
 	  }
 	
 }

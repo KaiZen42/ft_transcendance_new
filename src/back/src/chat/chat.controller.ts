@@ -12,15 +12,8 @@ import {
 	ValidationPipe,
 	Redirect,
   } from '@nestjs/common';
-  import { CreateUserDto } from 'src/user/dto/create-user.dto';
-  import { LoginUsreDto } from 'src/user/dto/login-user.dto';
-  import { Request, Response } from 'express';
-  import { User } from '../user/models/user.entity';
-  import { JwtService } from '@nestjs/jwt';
-  import fetch from 'node-fetch';
 import { Message } from './models/message.entity';
-import { MessageService } from './message.service';
-import { authenticator } from '@otplib/preset-default';
+import { MessageService } from './service/message.service';
 
 @Controller("chat")
 export class chatController {

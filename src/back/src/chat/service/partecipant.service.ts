@@ -6,10 +6,7 @@ import {
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
   import { Repository } from 'typeorm';
-import { Channels } from './models/channel.entity';
-import { Message } from './models/message.entity';
-import { messageDto } from './dto/message.dto';
-import { Partecipant } from './models/partecipant.entity';
+import { Partecipant } from '../models/partecipant.entity';
   
   @Injectable()
   export class PartecipantService {
@@ -32,7 +29,7 @@ import { Partecipant } from './models/partecipant.entity';
 	async create(partecipant: Partecipant): Promise<Partecipant> {
 	  return this.partecipantDB.save({
 		userId: partecipant.userId,
-		//channelId: message.channelId,
+		channelId: partecipant.channelId,
 		muted : partecipant.muted,
 		mod : partecipant.mod,
 	  });

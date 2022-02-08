@@ -3,8 +3,8 @@ import { Exclude } from 'class-transformer';
 import { Message } from './message.entity';
 import { messageDto } from '../dto/message.dto';
 
-@Entity('channels')
-export class Channels {
+@Entity('channel')
+export class Channel {
 
   @PrimaryGeneratedColumn()
   id: number;

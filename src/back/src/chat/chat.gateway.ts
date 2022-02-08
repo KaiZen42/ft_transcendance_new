@@ -9,9 +9,14 @@ import {
 	WsResponse,
   } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { creationDto } from './dto/creation.dto';
 import { messageDto } from './dto/message.dto';
-import { MessageService } from './message.service';
+import { Channel } from './models/channel.entity';
+
 import { Message } from './models/message.entity';
+import { ChannelService } from './service/channel.service';
+import { MessageService } from './service/message.service';
+import { PartecipantService } from './service/partecipant.service';
 
   
 @WebSocketGateway({ cors : true , namespace : "chat"})
@@ -19,7 +24,10 @@ export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
 
-	constructor(private readonly messageService: MessageService)
+	constructor(
+		private readonly messageService: MessageService,
+		private readonly channelService: ChannelService,
+		private readonly partService: PartecipantService)
 	{}
 
 	@WebSocketServer()
@@ -45,29 +53,34 @@ export class ChatGateway
 	}
 
 	@SubscribeMessage('message')
-	recieveChatMessage(client: Socket, mex: messageDto) : WsResponse<messageDto> {
+	recieveChatMessage(client: Socket, mex: messageDto) : WsResponse<messageDto>{
 		console.log(mex);
 		//this.server.emit('message', mex);
 
-		client.join('aRoom');
-		client.to('aRoom').emit('roomCreated', {room: 'aRoom'});
-
-		const msg : Message = new Message();
-		msg.userId = mex.idUser;
+		const msg : Message = new Message()
+		//this.logger.log(`MSG ID ${msg.id}`);
+		msg.userId = mex.idUser
 		//msg.channelId = 69;
-		msg.data = mex.data;
-		msg.sendDate = this.date;
-		this.messageService.create(msg);
-
-		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser}: ${mex.user}`);
-		return({event: "message", data: mex} );
+		msg.data = mex.data
+		msg.sendDate = this.date
+ 
+		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser}: ${mex.user}`)
+		return({event: "message", data: mex})
 	}
 
-	@SubscribeMessage('message')
-	createRoom(socket: Socket, data: string) {
-		socket.join('aRoom');
+	@SubscribeMessage('create')
+	createRoom(socket: Socket, data: creationDto) : WsResponse<String>
+	{
+		const chan: Channel = new Channel();
+		chan.isPrivate = data.otherUser === undefined;
+		chan.name = chan.isPrivate ? data.idUser.toString() + data.otherUser.toString() : data?.name;
+		chan.pass = data?.pass;
+		chan.mode = chan.isPrivate ? "PRI" : "PUB";
+		this.channelService.create(chan);
+
+		socket.join(chan.name);
 		socket.to('aRoom').emit('roomCreated', {room: 'aRoom'});
-		//return { event: 'roomCreated', room: 'aRoom' };
+		return { event: 'roomCreated', data : chan.name};
 	  }
 	
 }

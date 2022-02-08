@@ -6,9 +6,7 @@ import {
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
   import { Repository } from 'typeorm';
-import { Channels } from './models/channel.entity';
-import { Message } from './models/message.entity';
-import { messageDto } from './dto/message.dto';
+import { Message } from '../models/message.entity';
   
   @Injectable()
   export class MessageService {
@@ -31,7 +29,7 @@ import { messageDto } from './dto/message.dto';
 	async create(message: Message): Promise<Message> {
 	  return this.messageDB.save({
 		userId: message.userId,
-		//channelId: message.channelId,
+		channelId: message.channelId,
 		data: message.data,
 		sendDate: message.sendDate,
 	  });

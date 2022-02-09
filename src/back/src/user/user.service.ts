@@ -1,20 +1,13 @@
 import {
-  BadRequestException,
   Injectable,
-  NotFoundException,
-  Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcryptjs';
-import { LoginUsreDto } from './dto/login-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { json } from 'stream/consumers';
 import fetch from 'node-fetch';
-import { retry } from 'rxjs';
 import { UpdateUser } from './dto/update-user.dto';
 
 @Injectable()
@@ -40,11 +33,29 @@ export class UserService {
     return this.userDB.findOne({ where: { email } });
   }
 
+  async find_image_url(username: string)
+  {
+    let avatar = `https://cdn.intra.42.fr/users/${username}.`;
+    let res = await fetch(avatar+"jpeg")
+    if (res.status === 200)
+      return (avatar += "jpeg")
+    res = await fetch(avatar+"jpg")
+    if (res.status === 200)
+      return (avatar += "jpg")
+    res = await fetch(avatar+"png")
+    if (res.status === 200)
+      return (avatar += "png")
+    return ("")
+  }
+
   async create(userData: CreateUserDto): Promise<User> {
+
+    const avatar = await this.find_image_url(userData.login)
+
     return this.userDB.save({
       id: userData.id,
       username: userData.login,
-      avatar: userData.image_url,
+      avatar,
       two_fa_auth: false,
     });
   }
@@ -94,7 +105,12 @@ export class UserService {
       headers: { Authorization: 'Bearer ' + token },
     });
     data = await response.json();
-    
+    console.log(data)
+
+    console.log(`https://cdn.intra.42.fr/users/${data.login}.jpeg`)
+    response = await fetch(`https://cdn.intra.42.fr/users/${data.login}.jpeg`)
+    console.log(response.status)
+
     const user: User = await this.getById(data.id);
     token = await this.jwt.signAsync({ id: data.id, two_fa: user ? user.two_fa_auth : false });
     res.cookie('token', token, { httpOnly: true });

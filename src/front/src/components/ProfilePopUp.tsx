@@ -25,7 +25,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     username: true,
     auth_code: true
   })
-  const [qrCode, setQrCode] = useState<string>()
+  const [qrCode, setQrCode] = useState<string>("")
   const [editUsername, setEditUsername] = useState(false);
   const [updatedUser, setUpdatedUser] = useState<UpdateUser>({
     id: 0,
@@ -52,7 +52,6 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
     if (!e.target.files || e.target.files.length === 0)
         return
     const url = URL.createObjectURL(e.target.files[0])
-    console.log(url)
     setUpdatedUser(prevUser => ({
       ...prevUser,
       avatar: url
@@ -114,7 +113,6 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
       res = await axios
         .post(`http://${process.env.REACT_APP_BASE_IP}:3001/api/turn2fa`, {twoFaAuthCode: updatedUser.auth_code}, { withCredentials: true})
       } catch(error) {
-        console.log("front: false")
         setValid(prevValid => ({
           ...prevValid,
           auth_code: false
@@ -122,7 +120,6 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
         return false
       }
     }
-    console.log("front: true")
     return true
   }
 
@@ -138,7 +135,6 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
       formData.append("to_upload", updatedUser.file.current!.files![0]);
       upload_url = await axios
         .post(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users/image`, formData, { withCredentials: true })
-      console.log(upload_url.data)
     }
     updateState({
       id: updatedUser.id,
@@ -279,7 +275,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
         </div></>}
         <div className="row">
           <div className="col">
-             <button className="btn btn-outline-success" disabled={isChanged() || editUsername || updatedUser?.auth_code === "" || !valid.auth_code}>Apply</button>
+             <button className="btn btn-outline-success" disabled={isChanged() || editUsername || (updatedUser?.auth_code === "" && qrCode !== "") || !valid.auth_code}>Apply</button>
           </div>
           <div className="col">
             <button type="button" className="btn btn-outline-danger" onClick={closeHandler}>Cancel</button>

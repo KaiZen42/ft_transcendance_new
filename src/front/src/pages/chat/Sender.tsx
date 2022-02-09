@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef  } from "react";
-import socketIOClient, { Socket } from "socket.io-client";
+import socketIOClient, { io, Socket } from "socket.io-client";
 import { Message } from "../../models/Message.interface";
 
 interface Prop
 {
 	socket : Socket | undefined,
-	packet : Message
+	packet : Message,
+	room: string,
 }
 
-export function Sender({socket, packet} : Prop) {
+export function Sender({socket, packet, room} : Prop) {
 	const [msg, setMessage] = useState('');
 	
 	const handleSubmit = (event: any) => {
@@ -16,9 +17,10 @@ export function Sender({socket, packet} : Prop) {
 		if(packet !== undefined && msg !== "")
 		{
 			packet.data = msg;
-
-			socket?.emit('message', packet);
-			console.log("SEND TO SERVER:" , );
+			packet.room = room;
+			socket?.emit('channelMessage', packet);
+			console.log("SEND TO SERVER:" , room);
+			console.log(msg);
 		}
 		else
 		{

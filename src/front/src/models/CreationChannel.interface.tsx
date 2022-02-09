@@ -1,6 +1,6 @@
 export interface CreationChannel {
-	idUser: number | undefined;
-	otherUser: number | undefined;
+	idUser: number ;
+	otherUser: number;
 	pass: string;
 	name: string;
   }

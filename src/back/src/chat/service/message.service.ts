@@ -38,7 +38,5 @@ import { Message } from '../models/message.entity';
 	async delete(id: number) {
 	  return this.messageDB.delete({ id });
 	}
-  
-
   }
   

@@ -5,21 +5,27 @@ import Wrapper from "../../components/Wrapper";
 import MessageBox from "./MessageBox";
 import { User } from "../../models/User.interface";
 import axios from "axios";
-import { Message } from "../../models/Message.interface";
+import { Message, PrivateInvite } from "../../models/Message.interface";
 import { response } from "express";
 import { CreationChannel } from "../../models/CreationChannel.interface";
+import { Test } from "./test";
 const WS_SERVER =`http://${process.env.REACT_APP_BASE_IP}:3000/chat`;
 
 
-let idx : number = 0;
+/* export class inviteDto {
+
+	@IsNotEmpty()
+	idUser: number;
+	@IsNotEmpty()
+	room : string;
+} */
 
 export function Chat(/* {user} : Prop */) {
 
 	const [pkg, setPkg] = useState<Message>();
-
 	const [socket, setSocket] = useState<Socket>();
-	const [otherUser, setOtherUser] = useState(0);
-	const [ch, setCreationChannel] = useState<CreationChannel>();
+	const [roomState, setRoom] = useState("");
+	
 
 	function getUser()
 	{
@@ -32,6 +38,8 @@ export function Chat(/* {user} : Prop */) {
 						user : result.username,
 						data : "",
 					});});
+			console.log("ESPLOSOOOO");
+			console.log(pkg);
 	};
 
 	useEffect(
@@ -44,37 +52,38 @@ export function Chat(/* {user} : Prop */) {
 			{
 				console.log('connected')
 			});
+			/* sock.on("createRoom", (room: PrivateInvite) => 
+			{
+				console.log('channel created:');
+				console.log(room);
+				setRoom(room.room);
+			}); */
+			sock.on("createdRoom", (prvRoom: PrivateInvite) => 
+			{
+				console.log('Recived invite:');
+				console.log(prvRoom);
+				console.log(pkg);
+				setRoom(prvRoom.room);
+				if (pkg !== undefined && pkg?.idUser === prvRoom.idUser)
+				{
+					console.log('joing');
+					sock.emit("joinRoom", prvRoom);
+				}
+			});
 			return () => {sock.close()};
-		} ,[]);
+		} ,[pkg]);
 
-
-	const handleSubmit = (event: any) => {
-			event.preventDefault();
-			setCreationChannel(
-				{idUser : pkg?.idUser,
-				otherUser: 55,
-				pass : "",
-				name : ""}
-			);
-			socket?.emit("createRoom", ch);
-	};
+	
 
 	return (
 		socket === undefined ?  (<Wrapper> <div>Not Connected</div> </Wrapper>)
 		: (
 			<Wrapper>
-			<div>
-				<form onSubmit={handleSubmit} >
-					<label>
-						<input type="text" value={otherUser} onChange={e => setOtherUser(+e.target.value)}/>
-					</label>
-					<input type="submit" value="Bind" />
-				</form>
-			</div>
-			<MessageBox socket={socket}/>
-			{pkg === undefined ? (null) : (<Sender socket={socket} packet={pkg}/>)}
-			</Wrapper>    
-	)
+			{pkg === undefined ? (null) : <Test socket={socket} userId={pkg.idUser}/>}
+			{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState}/>}
+			{pkg === undefined ? (null) : <Sender socket={socket} packet={pkg} room={roomState}/>}
+			</Wrapper>
+		)
 	);
 }
 

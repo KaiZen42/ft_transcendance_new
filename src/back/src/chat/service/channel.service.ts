@@ -36,13 +36,35 @@ export class ChannelService {
 		return this.msgService.getByChannel(id);
 	}
 
-	async create(channel: Channel): Promise<Channel> {
-		return this.channelDB.save({
+	async create(channel: Channel, userId: number[]): Promise<Channel> {
+		const ch: Channel = await this.channelDB.save({
+			id:	channel.id,
 			name : channel.name,
 			mode : channel.mode,
 			pass : channel.pass,
 			isPrivate : channel.isPrivate,
 		});
+
+		this.partService.create(
+			{
+				id : 0,
+				userId: userId[0],
+				channelId: ch.id,
+				muted: 0,
+				mod: "m",
+			});
+
+		if (ch.isPrivate)
+			this.partService.create(
+				{
+					id : 0,
+					userId: userId[1],
+					channelId: ch.id,
+					muted: 0,
+					mod: "m",
+				});
+		console.log(ch);
+		return ch;
 		}
 	
 }

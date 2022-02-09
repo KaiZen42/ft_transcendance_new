@@ -10,7 +10,22 @@ down:
 ps:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) ps
 
-re: all
+re: clear all
+
+clear: 
+		./cleanup.sh
+
+
+fast_git:	
+			@clear
+			@git status
+			@echo "What should I push?";\
+			read PUSH;\
+			git add $$PUSH && clear;\
+			git status
+		    @ echo "Write the commit:";\
+			read COMMIT;\
+			git commit -m  "$$COMMIT" && git push
 
 install: 
 		npm install ./src/front;

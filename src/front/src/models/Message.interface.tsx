@@ -4,3 +4,9 @@ export interface Message {
 	user: string;
 	data: string;
   }
+
+export interface PrivateInvite
+{
+	idUser: number;
+	room : string;
+}

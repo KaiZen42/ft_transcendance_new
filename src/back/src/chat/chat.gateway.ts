@@ -8,8 +8,10 @@ import {
 	OnGatewayDisconnect,
 	WsResponse,
   } from '@nestjs/websockets';
+import { time } from 'console';
 import { Socket, Server } from 'socket.io';
 import { creationDto } from './dto/creation.dto';
+import { inviteDto } from './dto/invite.dto';
 import { messageDto } from './dto/message.dto';
 import { Channel } from './models/channel.entity';
 
@@ -55,50 +57,51 @@ export class ChatGateway
 	@SubscribeMessage('channelMessage')
 	recieveChannelMessage(client: Socket, mex: messageDto) : WsResponse<messageDto>{
 		console.log(mex);
-		this.server.to(mex.room).emit("message", mex.room)
-
 		const msg : Message = new Message()
 		//this.logger.log(`MSG ID ${msg.id}`);
 		msg.userId = mex.idUser
-		//msg.channelId = 69;
 		msg.data = mex.data
 		msg.sendDate = this.date
- 
-		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser}: ${mex.user}`)
-		return({event: "message", data: mex})
+		this.messageService.create(msg);
+		this.server.to(mex.room).emit("message", msg);
+		
+		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser} to ${mex.room === undefined ? "UNA": mex.room}: ${mex.user}`)
+		return({event: "channelMessage", data: mex})
 	}
 
-	@SubscribeMessage('privateMessage')
-	recieveChatMessage(client: Socket, mex: messageDto) : WsResponse<messageDto>{
-		console.log(mex);
-		this.server.to(mex.room).emit("message", mex.room)
 
-		const msg : Message = new Message()
-		//this.logger.log(`MSG ID ${msg.id}`);
-		msg.userId = mex.idUser
-		//msg.channelId = 69;
-		msg.data = mex.data
-		msg.sendDate = this.date
- 
-		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser}: ${mex.user}`)
-		return({event: "message", data: mex})
-	}
 
 	@SubscribeMessage('createRoom')
-	createRoom(socket: Socket, data: creationDto) : WsResponse<String>
+	async createRoom(socket: Socket, data: creationDto) : Promise< WsResponse<inviteDto> >
 	{
 		const chan: Channel = new Channel();
 		chan.isPrivate = (data.otherUser !== undefined);
-		chan.name = chan.isPrivate ? data.idUser.toString() + data.otherUser.toString() : data?.name;
+		chan.name = chan.isPrivate ? `${data.idUser}`+ `${data.otherUser}` : data?.name;
 		chan.pass = data?.pass;
 		chan.mode = chan.isPrivate ? "PRI" : "PUB";
-		this.channelService.create(chan);
+		chan.id = (await this.channelService.create(chan, [data.idUser, data.otherUser])).id;
 
-		socket.join(chan.name);
-		socket.to(chan.name).emit('createRoom', {room: chan.name});
+		socket.join("" + chan.id);
+		this.server.emit('createdRoom', {idUser : data.otherUser, room: "" + chan.id});
+		this.logger.log(`Channel created (${chan.isPrivate}): ID: ${chan.id} name ${chan.name} whith ${data.idUser} | ${data.otherUser}`);
+		return { event: 'createRoom', data : {idUser : data.otherUser, room: "" + chan.id}};
+	}
 
-		this.logger.log(`Channel created (${chan.isPrivate}): name ${chan.name} whith ${data.idUser} | ${data.otherUser}`);
-		return { event: 'createRoom', data : chan.name};
-	  }
-	
+	@SubscribeMessage('joinRoom')
+	joinRoom(client: Socket, data: inviteDto) : WsResponse<boolean>
+	{
+		
+		client.join(data.room);
+
+		const msg : Message = new Message()
+		//this.logger.log(`MSG ID ${msg.id}`);
+		msg.userId = data.idUser
+		msg.data = "JOINED ROOM"
+		msg.sendDate = this.date
+		this.messageService.create(msg);
+		this.logger.log(`JOIN ${data.idUser} in ${data.room}`);
+		return { event: 'joinRoom', data : true};
+	}
+	  
+
 }

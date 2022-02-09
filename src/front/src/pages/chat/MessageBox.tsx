@@ -7,17 +7,19 @@ import { Message } from "../../models/Message.interface";
 interface Prop
 {
 	socket : Socket | undefined,
+	room: string
 }
 
-export default function MessageBox({socket}: Prop)
+export default function MessageBox({socket, room}: Prop)
 {
 	const [chats, setChats] = useState<Message[]>([]);
-	console.log("É arrivato:");
+	console.log("Render mex box");
 
 	useEffect(() =>{
-		const messageListener = (message: Message) => {
+		const messageListener = (message: any) => {
 			//let newChat = chats;
 			//newChat.push(message);
+			console.log(message);
 			setChats(prevChat =>{ return [...prevChat,  message]});
 			console.log("message recived: ");
 		  	console.log(message);

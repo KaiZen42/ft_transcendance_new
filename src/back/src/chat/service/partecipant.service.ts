@@ -38,7 +38,5 @@ import { Partecipant } from '../models/partecipant.entity';
 	async delete(id: number) {
 	  return this.partecipantDB.delete({ id });
 	}
-  
-
   }
   

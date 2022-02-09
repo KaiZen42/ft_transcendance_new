@@ -15,8 +15,7 @@ import {
   interface GameInfo {
 	gameId: string,
 	playerOne: string,
-	playerTwo: string,
-	open: boolean
+	playerTwo: string
   }
 
   @WebSocketGateway({ cors : true , namespace : "game"})
@@ -29,7 +28,7 @@ import {
 	@WebSocketServer()
 	private readonly server: Server;
 	
-	handleDisconnect(client: any) {
+	handleDisconnect(client: Socket) {
 		/* TODO richiamare la leave game qua, devo solo capire come passare i miei dati alla handleDisconnect,
 			penso nel return della useEffect */
 		console.log('a player disconnected.');
@@ -45,7 +44,7 @@ import {
 	{
 		const gameId = (Math.random()+1).toString(36).slice(2, 18);
 		console.log("Game Created by "+ body.username + " w/ " + gameId);
-		this.gameList.push({gameId, playerOne: body.username, playerTwo: "", open : true})
+		this.gameList.push({gameId, playerOne: body.username, playerTwo: ""})
 		this.gameCount++;
 
 		this.server.emit('gameCreated', {

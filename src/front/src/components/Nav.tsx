@@ -61,7 +61,7 @@ export default function Nav() {
             </li>
         </ul>
         <div className="header--signout">
-          <div className="header--photo_name" onClick={() => setVisibility(true)}>
+          <div className="header--photo_name" onClick={() => setVisibility(true)}>   
             <img  src={user?.avatar} className="nav--image"/>
             <div className="header--text">{user?.username}</div>
           </div>

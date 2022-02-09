@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoutes";
 import PongGame from "./pages/PongGame";
 import Profile from "./pages/Profile";
 import TwoFaAuth from "./pages/TwoFaAuth";
+import PongTest from "./pages/PongTest";
 
 export default function App() {
   return (
@@ -37,7 +38,7 @@ export default function App() {
             path="/game"
             element={
               <ProtectedRoute>
-                <PongGame />
+                <PongTest />
               </ProtectedRoute>
             }
           />

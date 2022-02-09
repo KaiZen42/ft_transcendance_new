@@ -6,7 +6,7 @@ import socketIOClient, { Socket } from "socket.io-client";
 import { User } from '../models/User.interface';
 import axios from 'axios';
 
-const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3000/game`;
+const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/game`;
 
 export default function PongGame() {
   const [socket, setSocket] = useState<Socket>();

@@ -1,64 +1,98 @@
 
-import { useRef, useEffect, useState, useLayoutEffect } from 'react'
+import { useRef, useState, useLayoutEffect, useEffect } from 'react'
+import socketIOClient, { Socket } from 'socket.io-client';
 
-interface GameInfo {
-  player1 : number,
-  player2 : number,
-  ball : {
+interface Player {
+  pos: {
     x: number,
     y: number
-  }
+  },
+  vel: {
+    x: number,
+    y: number
+  },
+  snake: [
+    {x: number, y:number}
+  ]
 }
 
-const FIELD_H = 600
-const FIELD_W = 1200
+interface GameInfo {
+  player: Player,
+  food: {
+    x: number,
+    y: number
+  },
+  gridSize: number
+}
+
 
 export default function Canvas() {
+
+  const BG_COLOR = "#231f20"
+  const SNAKE_COLOR = "#c2c2c2"
+  const FOOD_COLOR = "#e66916"
+  const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/snake`;
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [canvas, setCanvas] = useState<HTMLCanvasElement>()
-  const [ctx, setCtx] = useState<CanvasRenderingContext2D>()
+  let socket : Socket
+  let canvas: HTMLCanvasElement
+  let ctx: CanvasRenderingContext2D
 
-  const [gameState, setGameState] = useState<GameInfo>({
-    player1: FIELD_H / 2,
-    player2: FIELD_H / 2,
-    ball: {
-      x: FIELD_W / 2,
-      y: FIELD_H / 2
-    }
-  })
-
-  function keydown(e: KeyboardEvent){
-    console.log("a key was pressed: " + e.key)
+  const keydown = (e: KeyboardEvent) => {
+    socket.emit("keyDown", e.key)
   }
 
-  function paintGame() {
-    if (!ctx)
+  const paintGame = (state: GameInfo) => {
+    if (!state)
       return
-    ctx!.fillStyle = ('#000')
-    ctx!.fillRect(0, 0, canvas!.width, canvas!.height)
-    const size_w = canvas!.width / FIELD_W
-    const size_h = canvas!.height / FIELD_H
+    ctx.fillStyle = BG_COLOR
+    ctx.fillRect(0,0, canvas.width, canvas.height)
 
-    ctx!.fillStyle = ('#fff')
-    ctx!.fillRect(5 * size_w, gameState.player1 * size_h - 22.2 * size_h, 5 * size_w, 45 * size_h)
-    ctx!.fillRect(canvas!.width - 10 * size_w, gameState.player1 * size_h - 22.2 * size_h, 5 * size_w, 45 * size_h)
+    const food = state.food
+    const gridSize = state.gridSize
+    const size = canvas.width / gridSize
+
+    ctx.fillStyle = FOOD_COLOR
+    ctx.fillRect(food.x * size, food.y * size, size, size)
+
+    paintPlayer(state.player, state.gridSize)
   }
 
-  useEffect(()=> {
-    const tmp_canvas = canvasRef.current!
-    setCanvas(tmp_canvas)
-    const context = tmp_canvas.getContext('2d')!
-    setCtx(context)
-    tmp_canvas.width = window.innerWidth
-    tmp_canvas.height = window.innerHeight
+  const paintPlayer = (player: Player, gridSize: number) => {
+    if (!player)
+      return
+    const snake = player.snake
+    const size = canvas.width / gridSize
 
-    context.fillStyle = ('#000')
-    context.fillRect(0, 0, tmp_canvas.width, tmp_canvas.height)
+    ctx.fillStyle = SNAKE_COLOR
+    for (let cell of snake)
+      ctx.fillRect(cell.x * size, cell.y * size, size, size)
+  }
+
+  const handleGameState = (state: any) => {
+    state = JSON.parse(state)
+    requestAnimationFrame(()=> paintGame(state))
+  }
+
+  const handleGameOver = () => {
+    alert("You lose!")
+  }
+
+  useLayoutEffect(() => {
+    canvas = canvasRef.current!
+    ctx = canvas.getContext('2d')!
+
+    canvas.width = canvas.height = 600
 
     document.addEventListener('keydown', keydown)
-    paintGame()
-  })
+
+    socket = socketIOClient(ENDPOINT)
+
+    socket.on("gameState", handleGameState)
+    socket.on("gameOver", handleGameOver)
+    
+    return () => {socket.close()};
+  }, [])
 
   return <canvas ref={canvasRef}/>
 }
-

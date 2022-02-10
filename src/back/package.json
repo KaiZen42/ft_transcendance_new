@@ -51,7 +51,8 @@
     "rxjs": "^7.2.0",
     "socket.io": "^4.4.1",
     "typeorm": "^0.2.41",
-    "ws": "^8.4.2"
+    "ws": "^8.4.2",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.0",

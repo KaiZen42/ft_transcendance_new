@@ -1,4 +1,18 @@
- 
+html, body {
+  /* get rid of default spacing on the edges */
+  margin: 0;
+  padding: 0;
+
+  /* get rid of that 2px window border in Internet Explorer 6 */
+  border: 0;
+
+  /* fill the height of the browser */
+  height: 100%;
+
+  /* no more scroll bar */
+  overflow: hidden;
+}
+
 body {
   background-color: #EEEEEE;
 }

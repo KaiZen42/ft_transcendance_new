@@ -79,7 +79,10 @@ export function Chat(/* {user} : Prop */) {
 		socket === undefined ?  (<Wrapper> <div>Not Connected</div> </Wrapper>)
 		: (
 			<Wrapper>
-			{pkg === undefined ? (null) : <Test socket={socket} userId={pkg.idUser}/>}
+			<div>
+				{pkg === undefined ? (null) : <Test socket={socket} userId={pkg.idUser}/>}
+			</div>
+			
 			{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState}/>}
 			{pkg === undefined ? (null) : <Sender socket={socket} packet={pkg} room={roomState}/>}
 			</Wrapper>

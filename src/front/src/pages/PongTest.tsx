@@ -1,4 +1,4 @@
-import Canvas from "../components/Canvas";
+import Canvas from "../components/Game";
 import "../styles/PongGame.css"
 
 export default function PongTest() {

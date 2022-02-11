@@ -1,25 +1,29 @@
-import axios from "axios";
+
 import React, { useEffect, useState} from "react";
-import { NavLink } from "react-router-dom";
+import Game from "../components/Game";
 import Wrapper from "../components/Wrapper";
-import { User } from "../models/User.interface";
 
 export default function Dashboard() {
-  	const [user, setUser] = useState<User>();
-	
-	useEffect(() => {(
-	async () => {
-		const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {withCredentials: true});
-		setUser(data);
-	}
-	)();
-	}, []);
+
+  const [game, setGame] = useState(false)
 
   return (
-    <Wrapper>
-		<NavLink to={'/game'}>
-            <button>PLAY PONG</button>
-        </NavLink>
-    </Wrapper>
+  <Wrapper>
+	  <section className="vh-100">
+      <div className="container h-100" style={{display : game ? "none" : "block"}}>
+        <div className="h-100">
+          <div className="d-flex flex-column align-items-center justify-content-center h-100">
+              <h1>Multiplayer Snake</h1>
+              <button className="btn btn-success" onClick={() => setGame(true)}>Join Game</button>
+          </div>
+        </div>
+        <div className="h-100" style={{display : game ? "block" : "none"}}>
+          <div className="d-flex flex-column align-items-center justify-content-center h-100">
+            <Game start={game}/>
+          </div>
+        </div>
+      </div>
+    </section>
+	</Wrapper>
   );
 }

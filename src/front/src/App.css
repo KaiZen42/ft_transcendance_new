@@ -10,7 +10,7 @@ html, body {
   height: 100%;
 
   /* no more scroll bar */
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 body {

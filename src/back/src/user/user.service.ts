@@ -105,12 +105,7 @@ export class UserService {
       headers: { Authorization: 'Bearer ' + token },
     });
     data = await response.json();
-    console.log(data)
-
-    console.log(`https://cdn.intra.42.fr/users/${data.login}.jpeg`)
-    response = await fetch(`https://cdn.intra.42.fr/users/${data.login}.jpeg`)
-    console.log(response.status)
-
+    
     const user: User = await this.getById(data.id);
     token = await this.jwt.signAsync({ id: data.id, two_fa: user ? user.two_fa_auth : false });
     res.cookie('token', token, { httpOnly: true });

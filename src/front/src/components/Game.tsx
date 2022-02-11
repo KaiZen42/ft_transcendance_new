@@ -17,7 +17,7 @@ interface Player {
 }
 
 interface GameInfo {
-  player: Player,
+  players:[ Player, Player]
   food: {
     x: number,
     y: number
@@ -25,8 +25,7 @@ interface GameInfo {
   gridSize: number
 }
 
-
-export default function Canvas() {
+export default function Game(props: any) {
 
   const BG_COLOR = "#231f20"
   const SNAKE_COLOR = "#c2c2c2"
@@ -37,6 +36,7 @@ export default function Canvas() {
   let socket : Socket
   let canvas: HTMLCanvasElement
   let ctx: CanvasRenderingContext2D
+  let playerNumber: number
 
   const keydown = (e: KeyboardEvent) => {
     socket.emit("keyDown", e.key)
@@ -55,7 +55,8 @@ export default function Canvas() {
     ctx.fillStyle = FOOD_COLOR
     ctx.fillRect(food.x * size, food.y * size, size, size)
 
-    paintPlayer(state.player, state.gridSize)
+    paintPlayer(state.players[0], state.gridSize)
+    paintPlayer(state.players[1], state.gridSize)
   }
 
   const paintPlayer = (player: Player, gridSize: number) => {
@@ -78,21 +79,38 @@ export default function Canvas() {
     alert("You lose!")
   }
 
-  useLayoutEffect(() => {
+  const handleInit = (number: number) => {
+    playerNumber = number
+  }
+
+  const joinGame = () => {
+    socket.emit("joinGame")
+    init()
+  }
+
+  const init = ()=>{
     canvas = canvasRef.current!
     ctx = canvas.getContext('2d')!
-
     canvas.width = canvas.height = 600
 
     document.addEventListener('keydown', keydown)
+  }
 
-    socket = socketIOClient(ENDPOINT)
+  useEffect(() => {
 
-    socket.on("gameState", handleGameState)
-    socket.on("gameOver", handleGameOver)
+    if (!socket)
+    {
+      socket = socketIOClient(ENDPOINT)
+      socket.on("gameState", handleGameState)
+      socket.on("gameOver", handleGameOver)
+      socket.on("init", handleInit)
+    }
+
+    if (props.start)
+      joinGame()
     
     return () => {socket.close()};
-  }, [])
+  }, [props.start])
 
   return <canvas ref={canvasRef}/>
 }

@@ -59,11 +59,12 @@ export class ChatGateway
 		console.log(mex);
 		const msg : Message = new Message()
 		//this.logger.log(`MSG ID ${msg.id}`);
-		msg.userId = mex.idUser
-		msg.data = mex.data
-		msg.sendDate = this.date
+		msg.userId = mex.idUser;
+		msg.data = mex.data;
+		msg.sendDate = this.date;
+		msg.channelId = +mex.room;
 		this.messageService.create(msg);
-		this.server.to(mex.room).emit("message", msg);
+		this.server.to(mex.room).emit("message", mex);
 		
 		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser} to ${mex.room === undefined ? "UNA": mex.room}: ${mex.user}`)
 		return({event: "channelMessage", data: mex})

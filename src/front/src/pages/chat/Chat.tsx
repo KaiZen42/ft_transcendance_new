@@ -9,6 +9,8 @@ import { Message, PrivateInvite } from "../../models/Message.interface";
 import { response } from "express";
 import { CreationChannel } from "../../models/CreationChannel.interface";
 import { UserList } from "./UserList";
+import { Box, grid } from "@mui/system";
+import { Grid } from "@mui/material";
 const WS_SERVER =`http://${process.env.REACT_APP_BASE_IP}:3000/chat`;
 
 
@@ -79,12 +81,15 @@ export function Chat(/* {user} : Prop */) {
 		socket === undefined ?  (<Wrapper> <div>Not Connected</div> </Wrapper>)
 		: (
 			<Wrapper>
-			<div>
-				{pkg === undefined ? (null) : <UserList socket={socket} userId={pkg.idUser}/>}
-			</div>
-			
-			{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState}/>}
-			{pkg === undefined ? (null) : <Sender socket={socket} packet={pkg} room={roomState}/>}
+				<Box display="flex" flexDirection="row">
+					<Box width="100%">
+						{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState}/>}
+						{pkg === undefined ? (null) : <Sender socket={socket} packet={pkg} room={roomState}/>}
+					</Box>
+					<Box sx={{ minWidth : "fit-content" }}>
+						{pkg === undefined ? (null) : <UserList socket={socket} userId={pkg.idUser}/>}
+					</Box>
+				</Box>
 			</Wrapper>
 		)
 	);

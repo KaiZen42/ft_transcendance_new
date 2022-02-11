@@ -1,5 +1,6 @@
-import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
+import { Avatar, Button, FormGroup, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
 import { blue } from "@mui/material/colors";
+import { Box } from "@mui/system";
 import React, { useState, useEffect, useRef  } from "react";
 import socketIOClient, { Socket } from "socket.io-client";
 import { CreationChannel } from "../../models/CreationChannel.interface";
@@ -59,33 +60,35 @@ export function UserList({socket, userId} : Prop) {
 			},[ch]);
 
 	return(
-		<div>
-		
-			<form onSubmit={nameSubmit} >
-				<label>
-					<input type="text" value={name} onChange={e => setName(e.target.value)}/>
-				</label>
-				<input type="submit" value="search" />
-			</form>
-			<List dense sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-				{
-					users.map(user =>
-					{
-						return (
-						<ListItem key={user.id}
-						onClick={e => selectUser(e, user.id)}>
-							<ListItemButton>
-								<ListItemAvatar>
-									<Avatar src={user.avatar}/>
-								</ListItemAvatar>
-								<ListItemText id={"" + user.id} primary={user.username}/>
-							</ListItemButton>
-						</ListItem>
-					);
-					})
-				}
-			</List>
-		</div>
+
+			<div>
+				<form className="form-inline"  onSubmit={nameSubmit}>
+						<div className="form-group mb-2">
+							<label>
+								<input type="text" value={name} onChange={e => setName(e.target.value)}/>
+							</label>
+							<input  type="submit" value="search" />
+						</div>
+				</form>
+					<List dense sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+						{
+							users.map(user =>
+							{
+								return (
+								<ListItem key={user.id}
+								onClick={e => selectUser(e, user.id)}>
+									<ListItemButton>
+										<ListItemAvatar>
+											<Avatar src={user.avatar}/>
+										</ListItemAvatar>
+										<ListItemText id={"" + user.id} primary={user.username}/>
+									</ListItemButton>
+								</ListItem>
+							);
+							})
+						}
+					</List>
+				</div>
 	);
 }
 

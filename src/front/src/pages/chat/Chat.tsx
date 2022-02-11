@@ -8,7 +8,7 @@ import axios from "axios";
 import { Message, PrivateInvite } from "../../models/Message.interface";
 import { response } from "express";
 import { CreationChannel } from "../../models/CreationChannel.interface";
-import { Test } from "./test";
+import { UserList } from "./UserList";
 const WS_SERVER =`http://${process.env.REACT_APP_BASE_IP}:3000/chat`;
 
 
@@ -80,7 +80,7 @@ export function Chat(/* {user} : Prop */) {
 		: (
 			<Wrapper>
 			<div>
-				{pkg === undefined ? (null) : <Test socket={socket} userId={pkg.idUser}/>}
+				{pkg === undefined ? (null) : <UserList socket={socket} userId={pkg.idUser}/>}
 			</div>
 			
 			{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState}/>}

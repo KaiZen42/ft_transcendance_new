@@ -9,7 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { LoginUsreDto } from './dto/login-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { json } from 'stream/consumers';
@@ -34,6 +34,10 @@ export class UserService {
 
   async getByEmail(email: string): Promise<User> {
     return this.userDB.findOne({ where: { email } });
+  }
+ // find(title: Like("%out #%"),
+  async getByUsername(username: string): Promise<User[]> {
+    return (await this.userDB.find({ where: { username : Like(`%${username}%`)}}));
   }
 
   async create(userData: CreateUserDto): Promise<User> {

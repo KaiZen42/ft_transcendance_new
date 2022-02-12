@@ -73,17 +73,17 @@ export class GameService {
 			return
 		
 		const playerOne = state.players[0]
-    const playerTwo = state.players[1]
+    	const playerTwo = state.players[1]
 
 		playerOne.pos.x += playerOne.vel.x
 		playerOne.pos.y += playerOne.vel.y
 
-    playerTwo.pos.x += playerTwo.vel.x
+    	playerTwo.pos.x += playerTwo.vel.x
 		playerTwo.pos.y += playerTwo.vel.y
 
 		if (playerOne.pos.x < 0 || playerOne.pos.x >= GRID_SIZE || playerOne.pos.y < 0 || playerOne.pos.y >= GRID_SIZE)
 			return 2
-    if (playerTwo.pos.x < 0 || playerTwo.pos.x >= GRID_SIZE || playerTwo.pos.y < 0 || playerTwo.pos.y >= GRID_SIZE)
+    	if (playerTwo.pos.x < 0 || playerTwo.pos.x >= GRID_SIZE || playerTwo.pos.y < 0 || playerTwo.pos.y >= GRID_SIZE)
 			return 1
 		
 		if (state.food.x === playerOne.pos.x && state.food.y === playerOne.pos.y)
@@ -93,7 +93,7 @@ export class GameService {
 			playerOne.pos.y += playerOne.vel.y
 			this.randomFood(state)
 		}
-    if (state.food.x === playerTwo.pos.x && state.food.y === playerTwo.pos.y)
+    	if (state.food.x === playerTwo.pos.x && state.food.y === playerTwo.pos.y)
 		{
 			playerTwo.snake.push({ ...playerTwo.pos })
 			playerTwo.pos.x += playerTwo.vel.x
@@ -112,7 +112,7 @@ export class GameService {
 			playerOne.snake.push({ ...playerOne.pos })
 			playerOne.snake.shift()
 		}
-    if (playerTwo.vel.x || playerTwo.vel.y)
+    	if (playerTwo.vel.x || playerTwo.vel.y)
 		{
 			for (let cell of playerTwo.snake)
 			{

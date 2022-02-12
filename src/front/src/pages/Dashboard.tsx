@@ -8,6 +8,7 @@ export default function Dashboard() {
   const [game, setGame] = useState(false)
 
   return (
+    
   <Wrapper>
 	  <section className="vh-100">
       <div className="container h-100" style={{display : game ? "none" : "block"}}>

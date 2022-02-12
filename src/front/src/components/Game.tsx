@@ -11,13 +11,12 @@ interface Player {
     x: number,
     y: number
   },
-  snake: [
-    {x: number, y:number}
-  ]
+  snake:
+    {x: number, y:number}[]
 }
 
 interface GameInfo {
-  players:[ Player, Player]
+  players: Player[],
   food: {
     x: number,
     y: number
@@ -37,6 +36,7 @@ export default function Game(props: any) {
   let canvas: HTMLCanvasElement
   let ctx: CanvasRenderingContext2D
   let playerNumber: number
+  let gameActive: boolean = false
 
   const keydown = (e: KeyboardEvent) => {
     socket.emit("keyDown", e.key)
@@ -55,32 +55,45 @@ export default function Game(props: any) {
     ctx.fillStyle = FOOD_COLOR
     ctx.fillRect(food.x * size, food.y * size, size, size)
 
-    paintPlayer(state.players[0], state.gridSize)
-    paintPlayer(state.players[1], state.gridSize)
+    paintPlayer(state.players[0], state.gridSize, SNAKE_COLOR)
+    paintPlayer(state.players[1], state.gridSize, 'red')
   }
 
-  const paintPlayer = (player: Player, gridSize: number) => {
+  const paintPlayer = (player: Player, gridSize: number, color: string) => {
     if (!player)
       return
     const snake = player.snake
     const size = canvas.width / gridSize
 
-    ctx.fillStyle = SNAKE_COLOR
+    ctx.fillStyle = color
     for (let cell of snake)
       ctx.fillRect(cell.x * size, cell.y * size, size, size)
   }
 
   const handleGameState = (state: any) => {
+    console.log("gameState: " +state)
+    if (!gameActive)
+      return
     state = JSON.parse(state)
     requestAnimationFrame(()=> paintGame(state))
   }
 
-  const handleGameOver = () => {
-    alert("You lose!")
+  const handleGameOver = (winner: number) => {
+    if (!gameActive)
+      return
+    console.log("gameOver: "+winner)
+    console.log("state winner: "+winner+" playerNumber: "+playerNumber)
+    if (winner == playerNumber)
+      alert("You win!")
+    else
+      alert("You lose.")
+    gameActive = false
   }
 
   const handleInit = (number: number) => {
+    console.log("Game init: "+number)
     playerNumber = number
+    console.log("player number: "+playerNumber)
   }
 
   const joinGame = () => {
@@ -94,6 +107,7 @@ export default function Game(props: any) {
     canvas.width = canvas.height = 600
 
     document.addEventListener('keydown', keydown)
+    gameActive = true
   }
 
   useEffect(() => {

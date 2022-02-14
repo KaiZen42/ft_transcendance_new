@@ -1,23 +1,21 @@
-
-import axios from "axios";
-import { useEffect, useState } from "react";
-import Wrapper from "../components/Wrapper";
-import { User } from "../models/User.interface";
-import usersData from "./usersExample.js"
-import "../styles/Leaderboard.css"
-import LeaderboardRow from "../components/LeaderboardRow";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import Wrapper from '../components/Wrapper';
+import { User } from '../models/User.interface';
+import usersData from './usersExample.js';
+import '../styles/Leaderboard.css';
+import LeaderboardRow from '../components/LeaderboardRow';
 
 interface TmpUser {
-	id: string,
-	avatar: string,
-	username: string,
-	wins: number,
-	losses: number,
-	points: number
+  id: string;
+  avatar: string;
+  username: string;
+  wins: number;
+  losses: number;
+  points: number;
 }
 
 export default function Leaderboard() {
-
   const [users, setUsers] = useState<TmpUser[]>([]);
 
   useEffect(() => {
@@ -27,12 +25,16 @@ export default function Leaderboard() {
       setUsers( response.data );
     }
     test();*/
-    setUsers(usersData.users)
+    setUsers(usersData.users);
   }, []);
 
   return (
     <Wrapper>
       <div className="leaderboard">
+        <video autoPlay muted loop className="video">
+          <source src="movie2.webm" type="video/webm" />
+        </video>
+        <img src="OL.png" alt="image_diocaro" className="overlay_back" />
         <h2>LEADERBOARD</h2>
         <ul className="my-responsive-table">
           <li className="table-header">
@@ -41,10 +43,10 @@ export default function Leaderboard() {
             <div className="leaderboard-col board-col-3">POINTS</div>
             <div className="leaderboard-col board-col-4">WINS-LOSSES</div>
           </li>
-          {
-            users.map((user:TmpUser, pos:number) => <LeaderboardRow key={user.id} user={user} pos={pos}/>)
-          }
-        </ul> 
+          {users.map((user: TmpUser, pos: number) => (
+            <LeaderboardRow key={user.id} user={user} pos={pos} />
+          ))}
+        </ul>
       </div>
     </Wrapper>
   );

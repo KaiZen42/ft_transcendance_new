@@ -1,0 +1,23 @@
+/* Style the video: 100% width and height to cover the entire window */
+.video {
+    object-fit: cover;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* margin-top: 5rem; */
+    z-index: -2;
+}
+
+.overlay_back {
+    object-fit: cover;
+    opacity: 30%;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* margin-top: 5rem; */
+    z-index: -1;
+}

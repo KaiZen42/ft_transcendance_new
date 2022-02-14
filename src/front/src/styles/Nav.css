@@ -14,10 +14,14 @@
   }
   
   .header {
-	background-image: linear-gradient(147deg, #000000 0%, #166d3b 80%);
+	/* background-image: linear-gradient(147deg, #000000 0%, #166d3b 80%); */
+	/* margin-bottom: 0.5rem; */
+	/* background-color: rgb(34, 43, 62); */
 	display: flex;
 	padding: 25px;
 	align-items: center;
+	/* opacity: 70%; */
+	z-index: 0;
   }
   
   .header--title {
@@ -30,6 +34,7 @@
 	z-index:1;
 	margin-right: 75px;
 	margin-left: 20px;
+
   }
 
   a:link {

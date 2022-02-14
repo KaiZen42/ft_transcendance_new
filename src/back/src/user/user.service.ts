@@ -33,29 +33,29 @@ export class UserService {
     return this.userDB.findOne({ where: { email } });
   }
 
-  async find_image_url(username: string)
-  {
-    let avatar = `https://cdn.intra.42.fr/users/${username}.`;
-    let res = await fetch(avatar+"jpeg")
-    if (res.status === 200)
-      return (avatar += "jpeg")
-    res = await fetch(avatar+"jpg")
-    if (res.status === 200)
-      return (avatar += "jpg")
-    res = await fetch(avatar+"png")
-    if (res.status === 200)
-      return (avatar += "png")
-    return ("")
-  }
+  // async find_image_url(username: string)
+  // {
+  //   let avatar = `https://cdn.intra.42.fr/users/${username}.`;
+  //   let res = await fetch(avatar+"jpeg")
+  //   if (res.status === 200)
+  //     return (avatar += "jpeg")
+  //   res = await fetch(avatar+"jpg")
+  //   if (res.status === 200)
+  //     return (avatar += "jpg")
+  //   res = await fetch(avatar+"png")
+  //   if (res.status === 200)
+  //     return (avatar += "png")
+  //   return ("")
+  // }
 
   async create(userData: CreateUserDto): Promise<User> {
 
-    const avatar = await this.find_image_url(userData.login)
+    //const avatar = await this.find_image_url(userData.login)
 
     return this.userDB.save({
       id: userData.id,
       username: userData.login,
-      avatar,
+      avatar : userData.image_url,
       two_fa_auth: false,
     });
   }
@@ -105,7 +105,7 @@ export class UserService {
       headers: { Authorization: 'Bearer ' + token },
     });
     data = await response.json();
-    
+
     const user: User = await this.getById(data.id);
     token = await this.jwt.signAsync({ id: data.id, two_fa: user ? user.two_fa_auth : false });
     res.cookie('token', token, { httpOnly: true });

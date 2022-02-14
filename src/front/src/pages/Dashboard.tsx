@@ -1,38 +1,38 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+
+import React, { useEffect, useState} from "react";
+import Game from "../components/Game";
 import Wrapper from "../components/Wrapper";
-import { User } from "../models/User.interface";
 import "../styles/video.css";
 import "../styles/neon_button.css"
 
 export default function Dashboard() {
-  const [user, setUser] = useState<User>();
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await axios.get(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/user`,
-        { withCredentials: true }
-      );
-      setUser(data);
-    })();
-  }, []);
+  const [game, setGame] = useState(false)
 
   return (
-    <Wrapper>
-      <NavLink to={"/game"}>
-        <div className="center">
-          <a href="#" className="neon-button">Play Pong</a>
+    
+  <Wrapper>
+	  <section className="vh-100">
+      <div className="container h-100">
+        <div className="h-100" style={{display : game ? "none" : "block"}}>
+          <div className="d-flex flex-column align-items-center justify-content-center h-100">
+              <h1>Multiplayer Snake</h1>
+              <button className="neon-button" onClick={() => setGame(true)}>Join Game</button>
           </div>
-        <div>
-          {/* <button>PLAY PONG</button> */}
+        </div>
+        <div className="h-100" style={{display : game ? "block" : "none"}}>
+          <div className="d-flex flex-column align-items-center justify-content-center h-100">
+            <Game start={game}/>
+          </div>
+        </div>
+      </div>
+      <div>
           <video autoPlay muted loop className="video">
             <source src="movie2.webm" type="video/webm"/>
           </video>
           <img src="OL.png" alt="image_diocaro" className="overlay_back" />
         </div>
-      </NavLink>
-    </Wrapper>
+    </section>
+	</Wrapper>
   );
 }

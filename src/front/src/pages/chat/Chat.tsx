@@ -11,6 +11,7 @@ import { CreationChannel } from "../../models/CreationChannel.interface";
 import { UserList } from "./UserList";
 import { Box, grid } from "@mui/system";
 import { Grid } from "@mui/material";
+import { ChannelList } from "./ChannelList";
 const WS_SERVER =`http://${process.env.REACT_APP_BASE_IP}:3000/chat`;
 
 
@@ -89,10 +90,16 @@ export function Chat(/* {user} : Prop */) {
 					<Box sx={{ minWidth : "fit-content" }}>
 						{pkg === undefined ? (null) : <UserList socket={socket} userId={pkg.idUser}/>}
 					</Box>
+					<Box sx={{ minWidth : "fit-content" }}>
+						{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.idUser}/>}
+					</Box>
 				</Box>
 			</Wrapper>
 		)
 	);
 }
+
+
+
 
 export default Chat;

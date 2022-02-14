@@ -5,7 +5,8 @@ import {
 	Query
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
-  import { Repository } from 'typeorm';
+  import { EntityRepository, getConnection, Repository } from 'typeorm';
+import { Channel } from '../models/channel.entity';
 import { Partecipant } from '../models/partecipant.entity';
   
   @Injectable()
@@ -22,6 +23,26 @@ import { Partecipant } from '../models/partecipant.entity';
 	  return this.partecipantDB.find({ where: { userId } });
 	}
   
+	/* async getChannelFromUser(userId: number) : Promise<any[]>
+	{
+		const res =  await this.partecipantDB
+			.createQueryBuilder("partecipant")
+			//non cé bisogno di questa => .leftJoinAndSelect("partecipant.userId", "user", "partecipant.userId = :userId", {userId : userId})
+			//.leftJoinAndSelect("partecipant.channel", "channel.id")
+			.leftJoinAndSelect(Channel, "channel", "partecipant.channel = channel.id")
+			.where("partecipant.userId = :userId", {userId : userId})
+			.select("partecipant.channel")
+			.addSelect(['channel.id', "channel.name", "channel.isPrivate"])
+			//.select("partecipant")
+			//.orderBy("partecipant.id", "ASC")
+			//.getMany()
+			.getRawMany()
+			//channel_name: '8033680336',
+			//channel_isPrivate: true,
+			//channelId: 1
+		return res;
+	} */
+	
 	async getByChannel(channelId: number): Promise<Partecipant[]> {
 	  return this.partecipantDB.find({ where: { channelId } });
 	}
@@ -29,7 +50,7 @@ import { Partecipant } from '../models/partecipant.entity';
 	async create(partecipant: Partecipant): Promise<Partecipant> {
 	  return this.partecipantDB.save({
 		userId: partecipant.userId,
-		channelId: partecipant.channelId,
+		channel: partecipant.channelId,
 		muted : partecipant.muted,
 		mod : partecipant.mod,
 	  });

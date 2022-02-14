@@ -10,3 +10,10 @@ export interface PrivateInvite
 	idUser: number;
 	room : string;
 }
+
+export interface ChannelInfo
+{
+	id: number;
+	name: string;
+	isPrivate: boolean;
+}

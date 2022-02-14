@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import Wrapper from "../components/Wrapper";
 import { User } from "../models/User.interface";
 import "../styles/video.css";
+import "../styles/neon_button.css"
 
 export default function Dashboard() {
   const [user, setUser] = useState<User>();
@@ -21,8 +22,11 @@ export default function Dashboard() {
   return (
     <Wrapper>
       <NavLink to={"/game"}>
+        <div className="center">
+          <a href="#" className="neon-button">Play Pong</a>
+          </div>
         <div>
-          <button>PLAY PONG</button>
+          {/* <button>PLAY PONG</button> */}
           <video autoPlay muted loop className="video">
             <source src="movie2.webm" type="video/webm"/>
           </video>

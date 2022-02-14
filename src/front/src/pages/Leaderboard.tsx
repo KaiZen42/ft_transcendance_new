@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Wrapper from '../components/Wrapper';
-import { User } from '../models/User.interface';
 import usersData from './usersExample.js';
 import '../styles/Leaderboard.css';
 import LeaderboardRow from '../components/LeaderboardRow';
+import "../styles/video.css"
 
 interface TmpUser {
   id: string;
@@ -31,10 +31,6 @@ export default function Leaderboard() {
   return (
     <Wrapper>
       <div className="leaderboard">
-        <video autoPlay muted loop className="video">
-          <source src="movie2.webm" type="video/webm" />
-        </video>
-        <img src="OL.png" alt="image_diocaro" className="overlay_back" />
         <h2>LEADERBOARD</h2>
         <ul className="my-responsive-table">
           <li className="table-header">
@@ -43,11 +39,13 @@ export default function Leaderboard() {
             <div className="leaderboard-col board-col-3">POINTS</div>
             <div className="leaderboard-col board-col-4">WINS-LOSSES</div>
           </li>
-          {users.map((user: TmpUser, pos: number) => (
-            <LeaderboardRow key={user.id} user={user} pos={pos} />
-          ))}
         </ul>
-      </div>
+        <ul className="my-responsive-table scrollable">
+            {users.map((user: TmpUser, pos: number) => (
+              <LeaderboardRow key={user.id} user={user} pos={pos} />
+            ))}
+        </ul>
+        </div>
     </Wrapper>
   );
 }

@@ -12,10 +12,9 @@
   .center{
     min-height: 80vh;
     display: grid;
-    place-items: center;
+    /*place-items: center;*/
     font-family: Bebas Neue, sans-serif;
     color: var(--clr-neon);
-    padding-right: 10rem;
   }
 
   .neon-button {

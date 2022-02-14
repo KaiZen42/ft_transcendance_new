@@ -1,4 +1,4 @@
-import * as React from "react"
+
 // import logo from './logo.svg';
 import "./App.css";
 import { BrowserRouter, Route, Routes , Navigate} from "react-router-dom";
@@ -8,10 +8,8 @@ import Leaderboard from "./pages/Leaderboard";
 import SignIn from "./pages/SignIn";
 import Error404 from "./pages/404";
 import ProtectedRoute from "./components/ProtectedRoutes";
-import PongGame from "./pages/PongGame";
 import Profile from "./pages/Profile";
 import TwoFaAuth from "./pages/TwoFaAuth";
-import PongTest from "./pages/PongTest";
 
 export default function App() {
   return (

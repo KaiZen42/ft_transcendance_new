@@ -1,6 +1,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import socketIOClient, { Socket } from 'socket.io-client';
+import "../styles/PongGame.css"
 
 interface Player {
   pos: {
@@ -130,6 +131,6 @@ export default function Game(props: any) {
     return () => {socket.close()};
   }, [props.start])
 
-  return (<><h3 style={{display : searching ? "block" : "none"}}>Searching for an opponent...</h3>
+  return (<><h3 className="white-text" style={{display : searching ? "block" : "none"}}>Searching for an opponent...</h3>
         <canvas ref={canvasRef}/></>)
 }

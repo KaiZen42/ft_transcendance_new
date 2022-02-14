@@ -54,11 +54,6 @@ export default function Nav() {
                 <i className="bi bi-chat header--icon"></i>
               </NavLink>
             </li>
-            <li >
-              <NavLink to={'/game'}>
-                <i className="bi bi-joystick header--icon"></i>
-              </NavLink>
-            </li>
         </ul>
         <div className="header--signout">
           <div className="header--photo_name" onClick={() => setVisibility(true)}>   

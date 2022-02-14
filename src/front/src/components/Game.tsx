@@ -1,5 +1,5 @@
 
-import { useRef, useState, useLayoutEffect, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import socketIOClient, { Socket } from 'socket.io-client';
 
 interface Player {
@@ -38,6 +38,8 @@ export default function Game(props: any) {
   let playerNumber: number
   let gameActive: boolean = false
 
+  const [searching, setSearching] = useState<boolean>(true)
+
   const keydown = (e: KeyboardEvent) => {
     socket.emit("keyDown", e.key)
   }
@@ -71,7 +73,11 @@ export default function Game(props: any) {
   }
 
   const handleGameState = (state: any) => {
-    console.log("gameState: " +state)
+    if (searching)
+    {
+      canvas.width = canvas.height = 600
+      setSearching(false)
+    }
     if (!gameActive)
       return
     state = JSON.parse(state)
@@ -81,8 +87,7 @@ export default function Game(props: any) {
   const handleGameOver = (winner: number) => {
     if (!gameActive)
       return
-    console.log("gameOver: "+winner)
-    console.log("state winner: "+winner+" playerNumber: "+playerNumber)
+    console.log("gameOver")
     if (winner == playerNumber)
       alert("You win!")
     else
@@ -104,14 +109,13 @@ export default function Game(props: any) {
   const init = ()=>{
     canvas = canvasRef.current!
     ctx = canvas.getContext('2d')!
-    canvas.width = canvas.height = 600
+    canvas.width = canvas.height = 0
 
     document.addEventListener('keydown', keydown)
     gameActive = true
   }
 
   useEffect(() => {
-
     if (!socket)
     {
       socket = socketIOClient(ENDPOINT)
@@ -126,5 +130,6 @@ export default function Game(props: any) {
     return () => {socket.close()};
   }, [props.start])
 
-  return <canvas ref={canvasRef}/>
+  return (<><h3 style={{display : searching ? "block" : "none"}}>Searching for an opponent...</h3>
+        <canvas ref={canvasRef}/></>)
 }

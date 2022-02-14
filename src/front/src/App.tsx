@@ -35,14 +35,6 @@ export default function App() {
             }
           />
           <Route
-            path="/game"
-            element={
-              <ProtectedRoute>
-                <PongTest />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/chat"
             element={
               <ProtectedRoute>

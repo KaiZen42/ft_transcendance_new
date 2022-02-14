@@ -16,6 +16,10 @@ interface ClientRoom {
 	[clientId: string] : string
 }
 
+interface RoomInterval {
+	[roomId: string] : any
+}
+
 @WebSocketGateway({ cors : true , namespace : "snake"})
 export default class SnakeGateway implements
 	OnGatewayDisconnect, OnGatewayConnection {
@@ -24,12 +28,16 @@ export default class SnakeGateway implements
 	private loopLimit = 0
 	private clientRooms: ClientRoom = {} // works like a map, key=clientId, value=roomId
 	private rooms: RoomState = {} // works like a map, key=roomId, value=room state & playerCount
+	private roomIntervals : RoomInterval = {} //  works like a map, key=roomId, value=roomId
 	
 	@WebSocketServer()
 	private server: Server;
 
-	handleDisconnect(client: any) {
-		console.log("disconnect");
+	handleDisconnect(client: Socket) {
+		const roomId = this.clientRooms[client.id]
+		const winner = client.data.number === 1 ? 2 : 1
+
+		this.endGame(roomId, winner)
 	}
 
 	handleConnection(client: Socket, ...args: any[]) {
@@ -59,17 +67,21 @@ export default class SnakeGateway implements
 	}
 	
 	startGameInterval(roomId: string) {
-		const intervalId = setInterval(() => {
+		this.roomIntervals[roomId] = setInterval(() => {
 			const winner = this.game.gameLoop(this.rooms[roomId].state)
 			if (!winner)
 				this.emitGameState(roomId, this.rooms[roomId].state)
 			else
-			{
-				this.emitGameOver(roomId, winner)
-				this.rooms[roomId] = null
-				clearInterval(intervalId)
-			}
-		}, 1000 / FRAME_RATE)		
+				this.endGame(roomId, winner)
+		}, 1000 / FRAME_RATE)
+	}
+
+	endGame(roomId: string, winner: number)
+	{
+		this.emitGameOver(roomId, winner)
+		delete this.rooms[roomId]
+		clearInterval(this.roomIntervals[roomId])
+		delete this.roomIntervals[roomId]
 	}
 
 	emitGameState(roomId: string, state: any)
@@ -102,13 +114,13 @@ export default class SnakeGateway implements
 		const available_rooms : string[] = Object.keys(this.rooms)
 		if (available_rooms.length === 0 || this.loopLimit >= 20)
 			return this.createGame(client)
-		const randPick = Math.floor(Math.random() * available_rooms.length);
+		const randPick = Math.floor(Math.random() * available_rooms.length)
 		const roomId = available_rooms[randPick]
 		const room = this.rooms[roomId]
 		if (room.playerCount === 1)
 		{
 			this.clientRooms[client.id] = roomId
-			this.rooms[roomId].playerCount = 2 // maybe i can use room to do it
+			this.rooms[roomId].playerCount = 2
 			client.join(roomId)
 			client.data.number = 2
 			client.emit('init', 2)

@@ -24,7 +24,7 @@ export default function Dashboard() {
         <div>
           <button>PLAY PONG</button>
           <video autoPlay muted loop className="video">
-            <source src="movie2.mp4" type="video/mp4" />
+            <source src="movie2.webm" type="video/webm"/>
           </video>
           <img src="OL.png" alt="image_diocaro" className="overlay_back" />
         </div>

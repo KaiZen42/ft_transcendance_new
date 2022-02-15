@@ -9,11 +9,12 @@
 	padding-right: 10px;
   }
   
-  h2 {
+  .leaderboard> h2 {
 	font-size: 35px;
 	margin: 20px 0;
 	text-align: center;
 	color: white;
+	opacity: 0.7;
   }
   
   .my-responsive-table > li{
@@ -30,13 +31,15 @@
 	  font-size: 20px;
 	  text-transform: uppercase;
 	  letter-spacing: 0.03em;
+	  opacity: 0.7;
 	}
 	.table-row {
 	  font-size: 18px;
 	  background-color: #fff;
 	  box-shadow: 0px 9px 14px 0px rgba(0,0,0,0.1);
 	  align-items: center;
-	  transition: transform .2s;	  
+	  transition: transform .2s;
+	  opacity: 0.7;
 	}
 
 	.table-row:hover{

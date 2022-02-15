@@ -32,6 +32,7 @@
   
     box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon);
     position: relative;
+    z-index: 0;
   }
   
   .neon-button::before {

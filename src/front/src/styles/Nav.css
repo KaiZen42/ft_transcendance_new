@@ -21,7 +21,7 @@
 	padding: 25px;
 	align-items: center;
 	/* opacity: 70%; */
-	z-index: 0;
+	z-index: 1;
   }
   
   .header--title {
@@ -34,7 +34,6 @@
 	z-index:1;
 	margin-right: 75px;
 	margin-left: 20px;
-
   }
 
   a:link {

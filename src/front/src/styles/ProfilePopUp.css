@@ -8,6 +8,7 @@
 	right: 0;
 	background: rgba(0, 0, 0, 0.7);
 	transition: opacity 500ms;
+	z-index: 1;
   }
   .popup {
 	margin: 70px auto;
@@ -17,6 +18,7 @@
 	width: 30%;
 	position: relative;
 	transition: all 5s ease-in-out;
+	z-index: 2;
   }
   
   .popup h2 {

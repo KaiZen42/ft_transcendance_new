@@ -19,11 +19,11 @@ export class User {
   public twoFaAuthSecret?: string;
 
   @Column()
-  public points?: number
+  public points: number
 
   @Column()
-  public wins?: number
+  public wins: number
 
   @Column()
-  public losses?: number
+  public losses: number
 }

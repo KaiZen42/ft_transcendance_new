@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Wrapper from '../components/Wrapper';
 import '../styles/Leaderboard.css';
 import LeaderboardRow from '../components/LeaderboardRow';
-import "../styles/video.css"
+import '../styles/video.css';
 
 interface DisplayUser {
   id: string;
@@ -17,13 +17,11 @@ export default function Leaderboard() {
   const [users, setUsers] = useState<DisplayUser[]>([]);
 
   useEffect(() => {
-
     async function getter() {
       let res = await fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/`
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/leader`
       );
       let users = await res.json();
-      console.log(users);
       setUsers(users);
     }
 
@@ -43,11 +41,11 @@ export default function Leaderboard() {
           </li>
         </ul>
         <ul className="my-responsive-table scrollable">
-            {users.map((user: DisplayUser, pos: number) => (
-              <LeaderboardRow key={user.id} user={user} pos={pos} />
-            ))}
+          {users.map((user: DisplayUser, pos: number) => (
+            <LeaderboardRow key={user.id} user={user} pos={pos} />
+          ))}
         </ul>
-        </div>
+      </div>
     </Wrapper>
   );
 }

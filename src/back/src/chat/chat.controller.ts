@@ -12,7 +12,7 @@ import {
 	ValidationPipe,
 	Redirect,
   } from '@nestjs/common';
-import { ChannelInfo } from './dto/channelInfo.dto';
+import { ChannelInfo } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
 import { Message } from './models/message.entity';
 import { ChannelService } from './service/channel.service';

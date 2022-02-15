@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef  } from "react";
 import io, { Socket } from "socket.io-client";
 import { Sender } from "./Sender";
 import Wrapper from "../../components/Wrapper";
-import { Message } from "../../models/Message.interface";
+import { Message } from "../../models/Chat.interface";
 
 interface Prop
 {

@@ -5,9 +5,8 @@ import Wrapper from "../../components/Wrapper";
 import MessageBox from "./MessageBox";
 import { User } from "../../models/User.interface";
 import axios from "axios";
-import { Message, PrivateInvite } from "../../models/Message.interface";
+import { Message, PrivateInvite } from "../../models/Chat.interface";
 import { response } from "express";
-import { CreationChannel } from "../../models/CreationChannel.interface";
 import { UserList } from "./UserList";
 import { Box, grid } from "@mui/system";
 import { Grid } from "@mui/material";
@@ -69,8 +68,8 @@ export function Chat(/* {user} : Prop */) {
 				setRoom(prvRoom.room);
 				if (pkg !== undefined && pkg?.idUser === prvRoom.idUser)
 				{
-					console.log('joing');
-					sock.emit("joinRoom", prvRoom);
+					console.log('join in created room');
+					sock.emit("openRoom", prvRoom);
 				}
 			});
 			return () => {sock.close()};

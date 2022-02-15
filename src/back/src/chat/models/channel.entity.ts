@@ -1,7 +1,6 @@
 import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Message } from './message.entity';
-import { messageDto } from '../dto/message.dto';
 
 @Entity('channel')
 export class Channel {

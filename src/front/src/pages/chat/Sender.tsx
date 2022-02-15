@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef  } from "react";
 import socketIOClient, { io, Socket } from "socket.io-client";
-import { Message } from "../../models/Message.interface";
+import { Message } from "../../models/Chat.interface";
 
 interface Prop
 {

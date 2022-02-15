@@ -3,8 +3,7 @@ import { blue } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import React, { useState, useEffect, useRef  } from "react";
 import socketIOClient, { Socket } from "socket.io-client";
-import { CreationChannel } from "../../models/CreationChannel.interface";
-import { Message } from "../../models/Message.interface";
+import { CreationChannelPkg, Message } from "../../models/Chat.interface";
 import { User } from "../../models/User.interface";
 
 interface Prop
@@ -17,7 +16,7 @@ export function UserList({socket, userId} : Prop) {
 	const [otherUser, setOtherUser] = useState(0);
 	const [name, setName] = useState("");
 	const [users, setUsers] = useState<User[]>([]);
-	const [ch, setCreationChannel] = useState<CreationChannel>();
+	const [ch, setCreationChannel] = useState<CreationChannelPkg>();
 
 
 	const nameSubmit = (event: any) => {

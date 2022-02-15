@@ -10,9 +10,7 @@ import {
   } from '@nestjs/websockets';
 import { time } from 'console';
 import { Socket, Server } from 'socket.io';
-import { creationDto } from './dto/creation.dto';
-import { inviteDto } from './dto/invite.dto';
-import { messageDto } from './dto/message.dto';
+import { creationDto, inviteDto, messageDto, openRoomDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
 
 import { Message } from './models/message.entity';
@@ -93,16 +91,24 @@ export class ChatGateway
 	{
 		
 		client.join(data.room);
-
-		const msg : Message = new Message()
-		//this.logger.log(`MSG ID ${msg.id}`);
-		msg.userId = data.idUser
-		msg.data = "JOINED ROOM"
-		msg.sendDate = this.date
-		this.messageService.create(msg);
 		this.logger.log(`JOIN ${data.idUser} in ${data.room}`);
 		return { event: 'joinRoom', data : true};
 	}
 	  
+	@SubscribeMessage('openRoom')
+	openRoom(client: Socket, data: openRoomDto) : WsResponse<boolean>
+	{
+		client.join(data.room);
+		const msg : messageDto = {
+			idUser : data.idUser,
+			data : data.username + "JOINED ROOM",
+			room : data.room,
+			user : data.username,
+		};
+		//this.logger.log(`MSG ID ${msg.id}`);
+		this.recieveChannelMessage(client, msg);
+		this.logger.log(`OPEN ${data.idUser}|${data.username} in ${data.room}`);
+		return { event: 'openRoom', data : true};
+	}
 
 }

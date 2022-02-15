@@ -6,7 +6,8 @@ import {
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
   import { getConnection, Repository } from 'typeorm';
-import { ChannelInfo } from '../dto/channelInfo.dto';
+import { ChannelInfo } from '../dto/chat.dto';
+
 import { Channel } from '../models/channel.entity';
 import { Message } from '../models/message.entity';
 import { Partecipant } from '../models/partecipant.entity';

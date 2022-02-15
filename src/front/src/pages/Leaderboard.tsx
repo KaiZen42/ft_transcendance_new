@@ -1,12 +1,10 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Wrapper from '../components/Wrapper';
-import usersData from './usersExample.js';
 import '../styles/Leaderboard.css';
 import LeaderboardRow from '../components/LeaderboardRow';
 import "../styles/video.css"
 
-interface TmpUser {
+interface DisplayUser {
   id: string;
   avatar: string;
   username: string;
@@ -16,16 +14,20 @@ interface TmpUser {
 }
 
 export default function Leaderboard() {
-  const [users, setUsers] = useState<TmpUser[]>([]);
+  const [users, setUsers] = useState<DisplayUser[]>([]);
 
   useEffect(() => {
-    /*console.log("TEST ");
-    async function test(){
-      const response = await axios.get<User[]>(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users`);
-      setUsers( response.data );
+
+    async function getter() {
+      let res = await fetch(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/`
+      );
+      let users = await res.json();
+      console.log(users);
+      setUsers(users);
     }
-    test();*/
-    setUsers(usersData.users);
+
+    getter();
   }, []);
 
   return (
@@ -41,7 +43,7 @@ export default function Leaderboard() {
           </li>
         </ul>
         <ul className="my-responsive-table scrollable">
-            {users.map((user: TmpUser, pos: number) => (
+            {users.map((user: DisplayUser, pos: number) => (
               <LeaderboardRow key={user.id} user={user} pos={pos} />
             ))}
         </ul>

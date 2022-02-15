@@ -17,4 +17,13 @@ export class User {
 
   @Column({ nullable: true })
   public twoFaAuthSecret?: string;
+
+  @Column()
+  public points?: number
+
+  @Column()
+  public wins?: number
+
+  @Column()
+  public losses?: number
 }

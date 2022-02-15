@@ -57,6 +57,9 @@ export class UserService {
       username: userData.login,
       avatar : userData.image_url,
       two_fa_auth: false,
+      points: 0,
+      wins: 0,
+      losses: 0
     });
   }
 

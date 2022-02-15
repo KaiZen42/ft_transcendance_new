@@ -4,7 +4,7 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
-import { Repository } from 'typeorm';
+import { Connection, getConnection, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import fetch from 'node-fetch';
@@ -20,6 +20,11 @@ export class UserService {
 
   async getAll(): Promise<User[]> {
     return this.userDB.find();
+  }
+
+  async getLeader(): Promise<User[]> {
+    return await this.
+    userDB.find({order: {points: "DESC"}})
   }
 
   async getById(id: number): Promise<User> {

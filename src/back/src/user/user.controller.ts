@@ -20,10 +20,11 @@ export class UserController {
     return await this.user.getAll();
   }
 
-  @Get(':id')
-  async getById(@Param('id') id: number): Promise<User> {
-    return await this.user.getById(id);
-  }
+//   @Get('id/:id')
+//   async getById(@Param('id') id: number): Promise<User> {
+//     return await this.user.getById(id);
+//   } 
+//
 
   @Get('username/:username')
   async getByUsername(@Param('username') username: string): Promise<User> {
@@ -87,5 +88,10 @@ export class UserController {
   @Delete(':id')
   async delete(@Param('id') id: number) {
     return await this.user.delete(id);
+  }
+
+  @Get('leader')
+  async getByLeader(): Promise<User[]> {
+	  return await this.user.getLeader();
   }
 }

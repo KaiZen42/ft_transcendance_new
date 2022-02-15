@@ -2,7 +2,6 @@
 import React, { useEffect, useState} from "react";
 import Game from "../components/Game";
 import Wrapper from "../components/Wrapper";
-import "../styles/video.css";
 import "../styles/neon_button.css"
 import "../styles/PongGame.css"
 

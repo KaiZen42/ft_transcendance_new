@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Wrapper from '../components/Wrapper';
 import '../styles/Leaderboard.css';
 import LeaderboardRow from '../components/LeaderboardRow';
-import "../styles/video.css"
 
 interface DisplayUser {
   id: string;

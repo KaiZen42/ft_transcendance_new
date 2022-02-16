@@ -5,7 +5,7 @@ import Wrapper from "../../components/Wrapper";
 import MessageBox from "./MessageBox";
 import { User } from "../../models/User.interface";
 import axios from "axios";
-import { Message, PrivateInvite } from "../../models/Chat.interface";
+import { Message, MessageInfoPkg } from "../../models/Chat.interface";
 import { response } from "express";
 import { UserList } from "./UserList";
 import { Box, grid } from "@mui/system";
@@ -60,9 +60,13 @@ export function Chat(/* {user} : Prop */) {
 				console.log(room);
 				setRoom(room.room);
 			}); */
-			sock.on("createdRoom", (prvRoom: PrivateInvite) => 
+			sock.on("viewedRoom", (roomView: string) => 
 			{
-				console.log('Recived invite:');
+				setRoom(roomView);
+			});
+			sock.on("createdPrivateRoom", (prvRoom: open) => 
+			{
+				console.log('Recived Private invite:');
 				console.log(prvRoom);
 				console.log(pkg);
 				setRoom(prvRoom.room);

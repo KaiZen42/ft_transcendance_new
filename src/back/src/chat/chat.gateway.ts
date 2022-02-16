@@ -10,7 +10,7 @@ import {
   } from '@nestjs/websockets';
 import { time } from 'console';
 import { Socket, Server } from 'socket.io';
-import { creationDto, inviteDto, messageDto, openRoomDto } from './dto/chat.dto';
+import { creationDto, JoinRoomDto, messageDto, openRoomDto, viewRoomDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
 
 import { Message } from './models/message.entity';
@@ -54,7 +54,6 @@ export class ChatGateway
 
 	@SubscribeMessage('channelMessage')
 	recieveChannelMessage(client: Socket, mex: messageDto) : WsResponse<messageDto>{
-		console.log(mex);
 		const msg : Message = new Message()
 		//this.logger.log(`MSG ID ${msg.id}`);
 		msg.userId = mex.idUser;
@@ -63,7 +62,7 @@ export class ChatGateway
 		msg.channelId = +mex.room;
 		this.messageService.create(msg);
 		this.server.to(mex.room).emit("message", mex);
-		
+		this.server.to(mex.room).emit("notification", mex);
 		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser} to ${mex.room === undefined ? "UNA": mex.room}: ${mex.user}`)
 		return({event: "channelMessage", data: mex})
 	}
@@ -71,7 +70,7 @@ export class ChatGateway
 
 
 	@SubscribeMessage('createRoom')
-	async createRoom(socket: Socket, data: creationDto) : Promise< WsResponse<inviteDto> >
+	async createRoom(socket: Socket, data: creationDto) : Promise< WsResponse<JoinRoomDto> >
 	{
 		const chan: Channel = new Channel();
 		chan.isPrivate = (data.otherUser !== undefined);
@@ -81,13 +80,14 @@ export class ChatGateway
 		chan.id = (await this.channelService.create(chan, [data.idUser, data.otherUser])).id;
 
 		socket.join("" + chan.id);
-		this.server.emit('createdRoom', {idUser : data.otherUser, room: "" + chan.id});
+		if (chan.isPrivate)
+			this.server.emit('createdPrivateRoom', {idUser : data.otherUser, room: "" + chan.id});
 		this.logger.log(`Channel created (${chan.isPrivate}): ID: ${chan.id} name ${chan.name} whith ${data.idUser} | ${data.otherUser}`);
 		return { event: 'createRoom', data : {idUser : data.otherUser, room: "" + chan.id}};
 	}
 
 	@SubscribeMessage('joinRoom')
-	joinRoom(client: Socket, data: inviteDto) : WsResponse<boolean>
+	joinRoom(client: Socket, data: JoinRoomDto) : WsResponse<boolean>
 	{
 		
 		client.join(data.room);
@@ -99,16 +99,25 @@ export class ChatGateway
 	openRoom(client: Socket, data: openRoomDto) : WsResponse<boolean>
 	{
 		client.join(data.room);
-		const msg : messageDto = {
+		/* const msg : messageDto = {
 			idUser : data.idUser,
 			data : data.username + "JOINED ROOM",
 			room : data.room,
 			user : data.username,
-		};
+		}; */
 		//this.logger.log(`MSG ID ${msg.id}`);
-		this.recieveChannelMessage(client, msg);
+		//this.recieveChannelMessage(client, msg);
+		//TODO: Check if client can open room
+		this.logger.log(`OPEN ${data.idUser} in ${data.room}`);
+		return { event: 'openedRoom', data : true};
+	}
+
+	@SubscribeMessage('viewRoom')
+	viewRoom(client: Socket, data: viewRoomDto) : WsResponse<string>
+	{
+		client.join(data.room);
 		this.logger.log(`OPEN ${data.idUser}|${data.username} in ${data.room}`);
-		return { event: 'openRoom', data : true};
+		return { event: 'viewedRoom', data : data.room};
 	}
 
 }

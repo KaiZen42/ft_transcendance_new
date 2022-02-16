@@ -1,7 +1,7 @@
 import { Box, List, ListItem, ListItemButton, ListItemText, TextField } from "@mui/material";
 import React, { useState, useEffect, useRef  } from "react";
 import io, { Socket } from "socket.io-client";
-import { ChannelInfo } from "../../models/Chat.interface";
+import { ChannelInfo , OpenRoomPkg} from "../../models/Chat.interface";
 
 interface Prop
 {
@@ -12,11 +12,12 @@ interface Prop
 export function ChannelList({socket, userId} : Prop) {
 
 	const [channels, setChannel] = useState<ChannelInfo[]>([])
-	const [joinPkg, setJoinPkg] = useState(-1);
+	const [openRoomPkg, setOpenPkg] = useState(-1);
 
 	const selectChannel = (event: any, id: number) => {
 		//setChannel
 		console.log("Clicked ", id)
+
 
 	}
 
@@ -25,13 +26,22 @@ export function ChannelList({socket, userId} : Prop) {
 			.then(response => response.json())
 			.then(result => setChannel(result));
 		console.log("CHANNELS: ", channels);
-	},[socket]);
+		socket?.on("notification", (msgInfo: MessageInfoPkg) => {
+			if (msgInfo.room == channels.find())
+			{
 
+			}
+		});
+	},[socket]);
 	return(
 		<div>
 			<Box sx={{ p: 1, border: 1 }} >
 			<List dense sx={{ width: '100%',minWidth: 100, maxWidth: 200, bgcolor: 'background.paper' }}>
-				{channels.map( (chan: ChannelInfo) => {return (
+				{channels.map( (chan: ChannelInfo) => {
+					//joinPkg : SimpleJoinPkg =  { idUser: userId; room: toString(chan.id)}
+					const opnePkj : OpenRoomPkg = { idUser: userId, room: chan.id.toString()};
+					socket?.emit("openRoom", opnePkj);
+					return (
 					<ListItem key={chan.id} onClick={e => selectChannel(e, chan.id)}>
 					<ListItemButton>
 							<ListItemText id="outlined-basic" primary={`${chan.isPrivate? "P" : ""} ${chan.name}`} />

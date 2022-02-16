@@ -1,11 +1,16 @@
-export interface Message {
+export interface MessagePkg {
 	idUser: number;
 	room: string;
 	user: string;
 	data: string;
   }
 
-export interface PrivateInvite
+  export interface MessageInfoPkg {
+	room: string;
+	user: string;
+  }
+
+export interface OpenRoomPkg
 {
 	idUser: number;
 	room : string;
@@ -16,6 +21,7 @@ export interface ChannelInfo
 	id: number;
 	name: string;
 	isPrivate: boolean;
+	notification: number;
 }
 
 export interface CreationChannelPkg {
@@ -31,10 +37,9 @@ export interface JoinChannelPkg {
 	key: string;
 }
 
-export interface OpenRoomPkg
-{
+export interface ViewRoomPkg {
+
 	idUser: number;
 	username: string;
 	room : string;
-	key: number;
-}
+  }

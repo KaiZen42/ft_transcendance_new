@@ -1,12 +1,15 @@
 import {  IsNotEmpty } from "class-validator";
 
-export class JoinChannelDto {
+export class JoinRoomDto {
 	
 	@IsNotEmpty()
 	idUser: number ;
 
 	@IsNotEmpty()
 	username: string;
+
+	@IsNotEmpty()
+	room: string;
 
 	@IsNotEmpty()
 	key: string;
@@ -24,7 +27,7 @@ export class JoinChannelDto {
 	name : string;
   }
   
-  export class inviteDto {
+  export class openRoomDto {
 
 	@IsNotEmpty()
 	idUser: number;
@@ -57,7 +60,7 @@ export class messageDto {
 	isPrivate: boolean;
 }
 
-export class openRoomDto {
+export class viewRoomDto {
 
 	@IsNotEmpty()
 	idUser: number;
@@ -67,7 +70,5 @@ export class openRoomDto {
 	
 	@IsNotEmpty()
 	room : string;
-	
-	key: number;
   }
   

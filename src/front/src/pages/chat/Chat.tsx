@@ -16,6 +16,7 @@ let idx: number = 0;
 export function Chat(/* {user} : Prop */) {
   const [pkg, setPkg] = useState<Message>();
   const [socket, setSocket] = useState<Socket>();
+  const [searchRes, setSearchRes] = useState("")
 
   function getUser() {
     fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
@@ -44,6 +45,8 @@ export function Chat(/* {user} : Prop */) {
     };
   }, []);
 
+  console.log("CACCA  " +searchRes); //cacca di debug
+
   return socket === undefined ? (
     <Wrapper>
       {' '}
@@ -63,7 +66,7 @@ export function Chat(/* {user} : Prop */) {
         <h1>CHAT</h1>
         <div className="chat">
           <div className="chat__user-list">
-			<SearchBox/>
+			<SearchBox setSearch={setSearchRes}/>
             {/* <h1>Friends Online</h1> */}
             <div className="chat__user--active">
               <p>Ale</p>

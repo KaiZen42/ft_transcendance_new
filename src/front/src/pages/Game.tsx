@@ -1,5 +1,6 @@
 
 import { useRef, useEffect, useState } from 'react'
+import Prompt, { NavLink } from 'react-router-dom';
 import socketIOClient, { Socket } from 'socket.io-client';
 import "../styles/PongGame.css"
 
@@ -50,7 +51,6 @@ export default function Pong(props: any) {
   let canvas: HTMLCanvasElement
   let ctx: CanvasRenderingContext2D
   let playerNumber: number
-  let gameActive: boolean = false
   let searching: boolean = true
   let net: Net = {
     x: 0,
@@ -129,20 +129,15 @@ export default function Pong(props: any) {
       searching = false
       net.x = canvas.width/2-net.width/2
     }
-    if (!gameActive)
-      return
     requestAnimationFrame(()=> render(state))
   }
 
   const handleGameOver = (winner: number) => {
-    if (!gameActive)
-      return
     console.log("gameOver")
     if (winner == playerNumber)
       setTimeout(() => {alert("You win!")}, 200);
     else
       setTimeout(() => {alert("You lose.")}, 200);
-    gameActive = false
   }
 
   const handleInit = (number: number) => {
@@ -153,13 +148,9 @@ export default function Pong(props: any) {
 
   const joinGame = () => {
     socket.emit("joinGame")
-    init()
-  }
 
-  const init = ()=>{
     document.addEventListener('keydown', keydown)
     document.addEventListener('keyup', keyup)
-    gameActive = true
   }
 
   useEffect(() => {
@@ -176,12 +167,25 @@ export default function Pong(props: any) {
       socket.on("init", handleInit)
     }
 
-    if (props.start)
-      joinGame()
+    joinGame()
     
     return () => {socket.close()};
   }, [props.start])
 
-  return (<>
-        <canvas ref={canvasRef}/></>)
+
+  return (
+    <>
+    <div className="center">
+      <div className="d-flex flex-column align-items-center justify-content-center h-100">
+      <canvas ref={canvasRef}/>
+      <NavLink to={'/'} >
+        <div>Back to home</div>
+      </NavLink>
+      </div>
+    </div>
+    <video autoPlay muted loop className="video">
+      <source src="./movie2.webm" type="video/webm" />
+    </video>
+  </>
+  )
 }

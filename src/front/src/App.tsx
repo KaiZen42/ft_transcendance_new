@@ -10,6 +10,7 @@ import Error404 from "./pages/404";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Profile from "./pages/Profile";
 import TwoFaAuth from "./pages/TwoFaAuth";
+import Game from "./pages/Game";
 
 export default function App() {
   return (
@@ -48,7 +49,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          
+          <Route
+            path="/game"
+            element={
+              <ProtectedRoute>
+                <Game />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/two_fa_auth" element={<TwoFaAuth />} />
           <Route path="*" element={<Error404 />} /> 

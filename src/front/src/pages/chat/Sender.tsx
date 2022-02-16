@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef  } from "react";
 import socketIOClient, { io, Socket } from "socket.io-client";
-import { Message } from "../../models/Chat.interface";
+import { MessagePkg } from "../../models/Chat.interface";
 
 interface Prop
 {
 	socket : Socket | undefined,
-	packet : Message,
+	packet : MessagePkg,
 	room: string,
 }
 
@@ -21,10 +21,6 @@ export function Sender({socket, packet, room} : Prop) {
 			socket?.emit('channelMessage', packet);
 			console.log("SEND TO SERVER:" , room);
 			console.log(msg);
-		}
-		else
-		{
-			packet === undefined ? console.log("NOT DEFINED PACKEGE") : null;
 		}
 		setMessage("");
 	}

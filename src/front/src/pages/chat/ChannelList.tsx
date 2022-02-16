@@ -1,24 +1,27 @@
 import { Box, List, ListItem, ListItemButton, ListItemText, TextField } from "@mui/material";
 import React, { useState, useEffect, useRef  } from "react";
 import io, { Socket } from "socket.io-client";
-import { ChannelInfo , OpenRoomPkg} from "../../models/Chat.interface";
+import { ChannelInfo , MessageInfoPkg, OpenRoomPkg} from "../../models/Chat.interface";
 
 interface Prop
 {
 	socket : Socket | undefined,
-	userId : number
+	userId : number,
+	room : string
 }
 
-export function ChannelList({socket, userId} : Prop) {
+export function ChannelList({socket, userId, room} : Prop) {
 
 	const [channels, setChannel] = useState<ChannelInfo[]>([])
-	const [openRoomPkg, setOpenPkg] = useState(-1);
+	//const [openRoomPkg, setOpenPkg] = useState();
 
 	const selectChannel = (event: any, id: number) => {
-		//setChannel
-		console.log("Clicked ", id)
-
-
+		const viewRoom : OpenRoomPkg= {
+			idUser: userId,
+			room : "" + id
+		}
+		socket?.emit("viewRoom", viewRoom)
+		console.log("Clicked ", viewRoom)
 	}
 
 	useEffect(() =>{
@@ -26,10 +29,13 @@ export function ChannelList({socket, userId} : Prop) {
 			.then(response => response.json())
 			.then(result => setChannel(result));
 		console.log("CHANNELS: ", channels);
-		socket?.on("notification", (msgInfo: MessageInfoPkg) => {
-			if (msgInfo.room == channels.find())
-			{
 
+		socket?.on("notification", (msgInfo: MessageInfoPkg) => {
+			if (room !== msgInfo.room)
+			{
+				let ch = channels.find( (chan) => {return (chan.name == msgInfo.room)} )
+				if (ch !== undefined)
+					ch.notification++;
 			}
 		});
 	},[socket]);
@@ -40,6 +46,8 @@ export function ChannelList({socket, userId} : Prop) {
 				{channels.map( (chan: ChannelInfo) => {
 					//joinPkg : SimpleJoinPkg =  { idUser: userId; room: toString(chan.id)}
 					const opnePkj : OpenRoomPkg = { idUser: userId, room: chan.id.toString()};
+					if (chan.notification === undefined)
+						chan.notification = 0;
 					socket?.emit("openRoom", opnePkj);
 					return (
 					<ListItem key={chan.id} onClick={e => selectChannel(e, chan.id)}>

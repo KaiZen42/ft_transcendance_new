@@ -38,14 +38,14 @@ export class JoinRoomDto {
 export class messageDto {
 
 	@IsNotEmpty()
-	idUser: number;
+	userId: {
+		id : number;
+		username : string;
+	};
 	
 	@IsNotEmpty()
 	room : string;
-  
-	@IsNotEmpty()
-	user: string;
-	
+
 	@IsNotEmpty()
 	data: string;
   }
@@ -58,6 +58,7 @@ export class messageDto {
 	name: string;
 	@IsNotEmpty()
 	isPrivate: boolean;
+
 }
 
 export class viewRoomDto {
@@ -65,8 +66,8 @@ export class viewRoomDto {
 	@IsNotEmpty()
 	idUser: number;
   
-	@IsNotEmpty()
-	username: string;
+/* 	@IsNotEmpty()
+	username: string; */
 	
 	@IsNotEmpty()
 	room : string;

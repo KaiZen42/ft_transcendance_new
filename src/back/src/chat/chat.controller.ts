@@ -12,7 +12,7 @@ import {
 	ValidationPipe,
 	Redirect,
   } from '@nestjs/common';
-import { ChannelInfo } from './dto/chat.dto';
+import { ChannelInfo, messageDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
 import { Message } from './models/message.entity';
 import { ChannelService } from './service/channel.service';
@@ -35,9 +35,9 @@ export class chatController {
 	}
 
 	@Get("CHmessage/:channelId")
-	async getMsgByChannel(@Param("channelId") channelId: number) : Promise<Message[]>
+	async getMsgByChannel(@Param("channelId") channelId: number) : Promise<any[]>
 	{
-		let ms : Message[] =  await this.msgService.getByChannel(channelId);
+		let ms : any[] =  await this.msgService.getByChannel(channelId);
 		console.log(`MESSAGE (${channelId}): `,ms);
 		return ms;
 	}

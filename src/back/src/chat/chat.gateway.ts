@@ -56,21 +56,21 @@ export class ChatGateway
 	recieveChannelMessage(client: Socket, mex: messageDto) : WsResponse<messageDto>{
 		const msg : Message = new Message()
 		//this.logger.log(`MSG ID ${msg.id}`);
-		msg.userId = mex.idUser;
+		msg.userId = mex.userId.id;
 		msg.data = mex.data;
 		msg.sendDate = this.date;
 		msg.channelId = +mex.room;
 		this.messageService.create(msg);
 		this.server.to(mex.room).emit("message", mex);
 		this.server.to(mex.room).emit("notification", mex);
-		this.logger.log(`Data recived is: ${mex.data} From: ${mex.idUser} to ${mex.room === undefined ? "UNA": mex.room}: ${mex.user}`)
+		this.logger.log(`Data recived is: ${mex.data} From: ${mex.userId.id} to ${mex.room === undefined ? "UNA": mex.room}: ${mex.userId.username}`)
 		return({event: "channelMessage", data: mex})
 	}
 
 
 
 	@SubscribeMessage('createRoom')
-	async createRoom(socket: Socket, data: creationDto) : Promise< WsResponse<JoinRoomDto> >
+	async createRoom(socket: Socket, data: creationDto) 
 	{
 		const chan: Channel = new Channel();
 		chan.isPrivate = (data.otherUser !== undefined);
@@ -83,7 +83,6 @@ export class ChatGateway
 		if (chan.isPrivate)
 			this.server.emit('createdPrivateRoom', {idUser : data.otherUser, room: "" + chan.id});
 		this.logger.log(`Channel created (${chan.isPrivate}): ID: ${chan.id} name ${chan.name} whith ${data.idUser} | ${data.otherUser}`);
-		return { event: 'createRoom', data : {idUser : data.otherUser, room: "" + chan.id}};
 	}
 
 	@SubscribeMessage('joinRoom')
@@ -115,9 +114,9 @@ export class ChatGateway
 	@SubscribeMessage('viewRoom')
 	viewRoom(client: Socket, data: viewRoomDto) : WsResponse<string>
 	{
-		client.join(data.room);
-		this.logger.log(`OPEN ${data.idUser}|${data.username} in ${data.room}`);
-		return { event: 'viewedRoom', data : data.room};
+		//client.join(data.room);
+		this.logger.log(`VIEWED REQEST ${data.idUser} in ${data.room}`);
+		return { event: 'viewedRoom', data : ""+data.room};
 	}
 
 }

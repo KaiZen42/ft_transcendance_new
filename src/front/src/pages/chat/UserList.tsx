@@ -3,7 +3,7 @@ import { blue } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import React, { useState, useEffect, useRef  } from "react";
 import socketIOClient, { Socket } from "socket.io-client";
-import { CreationChannelPkg, Message } from "../../models/Chat.interface";
+import { CreationChannelPkg } from "../../models/Chat.interface";
 import { User } from "../../models/User.interface";
 
 interface Prop
@@ -50,6 +50,7 @@ export function UserList({socket, userId} : Prop) {
 			pass : "",
 			name : ""}
 		);
+		
 	}
 
 		useEffect(

@@ -27,9 +27,9 @@ export default function MessageBox({socket, room}: Prop)
 	}
 
 	useEffect(() =>{
-		if (chats.length === 0)
+		console.log("ACTUAL ROOM ", room);
+		if (chats.length === 0 ||  chats[0].room !== room)
 		{
-			console.log("PREV CHATS: ", chats);
 			fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/chat/CHmessage/${+room}`, {credentials: 'include'})
 			.then(response => response.json())
 			.then(result => setChats(result));
@@ -40,7 +40,8 @@ export default function MessageBox({socket, room}: Prop)
 	return(
 		<div>
 			<p>MESSAGES:</p>
-			{ chats.map(msg => (<p key={key++}> {msg.user}: {msg.data} </p>)) }
+			{console.log("CHATS: ", chats)}
+			{ chats.map(msg => (<p key={key++}> {msg.userId.username}: {msg.data} </p>))}
 		</div>
 	);
 }

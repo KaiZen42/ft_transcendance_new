@@ -5,7 +5,7 @@ import Wrapper from "../../components/Wrapper";
 import MessageBox from "./MessageBox";
 import { User } from "../../models/User.interface";
 import axios from "axios";
-import { Message, MessageInfoPkg } from "../../models/Chat.interface";
+import { MessageInfoPkg, MessagePkg, OpenRoomPkg } from "../../models/Chat.interface";
 import { response } from "express";
 import { UserList } from "./UserList";
 import { Box, grid } from "@mui/system";
@@ -17,14 +17,14 @@ const WS_SERVER =`http://${process.env.REACT_APP_BASE_IP}:3000/chat`;
 /* export class inviteDto {
 
 	@IsNotEmpty()
-	idUser: number;
+	userId: number;
 	@IsNotEmpty()
 	room : string;
 } */
 
 export function Chat(/* {user} : Prop */) {
 
-	const [pkg, setPkg] = useState<Message>();
+	const [pkg, setPkg] = useState<MessagePkg>();
 	const [socket, setSocket] = useState<Socket>();
 	const [roomState, setRoom] = useState("");
 	
@@ -35,10 +35,13 @@ export function Chat(/* {user} : Prop */) {
 			.then(response => response.json())
 			.then(result => { 
 					setPkg({
-						idUser : result.id,
-						room : "",
-						user : result.username,
-						data : "",
+						data: "",
+						userId: {
+							id : result.id,
+							username : result.username,
+							},
+						room: "",
+						sendData: 0,
 					});});
 			console.log("ESPLOSOOOO");
 			console.log(pkg);
@@ -63,14 +66,15 @@ export function Chat(/* {user} : Prop */) {
 			sock.on("viewedRoom", (roomView: string) => 
 			{
 				setRoom(roomView);
+				console.log("CURRENT ROOM: ", roomView);
 			});
-			sock.on("createdPrivateRoom", (prvRoom: open) => 
+			sock.on("createdPrivateRoom", (prvRoom: OpenRoomPkg) => 
 			{
 				console.log('Recived Private invite:');
 				console.log(prvRoom);
 				console.log(pkg);
 				setRoom(prvRoom.room);
-				if (pkg !== undefined && pkg?.idUser === prvRoom.idUser)
+				if (pkg !== undefined && pkg?.userId.id === prvRoom.idUser)
 				{
 					console.log('join in created room');
 					sock.emit("openRoom", prvRoom);
@@ -91,10 +95,10 @@ export function Chat(/* {user} : Prop */) {
 						{pkg === undefined ? (null) : <Sender socket={socket} packet={pkg} room={roomState}/>}
 					</Box>
 					<Box sx={{ minWidth : "fit-content" }}>
-						{pkg === undefined ? (null) : <UserList socket={socket} userId={pkg.idUser}/>}
+						{pkg === undefined ? (null) : <UserList socket={socket} userId={pkg.userId.id}/>}
 					</Box>
 					<Box sx={{ minWidth : "fit-content" }}>
-						{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.idUser}/>}
+						{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState}/>}
 					</Box>
 				</Box>
 			</Wrapper>

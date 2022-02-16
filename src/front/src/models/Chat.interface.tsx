@@ -1,13 +1,25 @@
-export interface MessagePkg {
+/* export interface MessagePkg {
 	idUser: number;
 	room: string;
 	user: string;
 	data: string;
-  }
+  } */
+
+  export interface MessagePkg {
+	data: string;
+	userId: {
+		id : number;
+		username : string;
+		};
+	room: string;
+	sendData: number;
+	
+  };
 
   export interface MessageInfoPkg {
 	room: string;
 	user: string;
+	
   }
 
 export interface OpenRoomPkg
@@ -21,7 +33,7 @@ export interface ChannelInfo
 	id: number;
 	name: string;
 	isPrivate: boolean;
-	notification: number;
+	notification: number ;
 }
 
 export interface CreationChannelPkg {

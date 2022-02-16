@@ -39,12 +39,12 @@ export default function Leaderboard() {
             <div className="leaderboard-col board-col-4">WINS-LOSSES</div>
           </li>
         </ul>
-        <ul className="my-responsive-table scrollable thumb">
+        <ul className="my-responsive-table scrollable moz-scroller">
           {users.map((user: DisplayUser, pos: number) => (
             <LeaderboardRow key={user.id} user={user} pos={pos} />
           ))}
         </ul>
-		</div>
+      </div>
     </Wrapper>
   );
 }

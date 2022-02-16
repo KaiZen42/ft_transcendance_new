@@ -63,7 +63,7 @@ export function Chat(/* {user} : Prop */) {
         <h1>CHAT</h1>
         <div className="chat">
           <div className="chat__user-list">
-			{/* <SearchBox/> */}
+			<SearchBox/>
             {/* <h1>Friends Online</h1> */}
             <div className="chat__user--active">
               <p>Ale</p>

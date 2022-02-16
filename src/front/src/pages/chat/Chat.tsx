@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Message } from '../../models/Message.interface';
 import '../../styles/Chat.css';
 import { response } from 'express';
+import SearchBox from './Search';
 const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3000/chat`;
 
 let idx: number = 0;
@@ -58,11 +59,12 @@ export function Chat(/* {user} : Prop */) {
         <video autoPlay muted loop className="video">
           <source src="movie2.webm" type="video/webm" />
         </video>
-        <img src="OL.png" alt="image_diocaro" className="overlay_back" />
+       
         <h1>CHAT</h1>
         <div className="chat">
           <div className="chat__user-list">
-            <h1>Friends Online</h1>
+			{/* <SearchBox/> */}
+            {/* <h1>Friends Online</h1> */}
             <div className="chat__user--active">
               <p>Ale</p>
             </div>
@@ -72,7 +74,10 @@ export function Chat(/* {user} : Prop */) {
             <div className="chat__user--away">
               <p>Ale</p>
             </div>
+			
           </div>
+		  
+		  
 
           <div className="chat__messages">
             <div className="chat__messages__user-message">
@@ -88,6 +93,7 @@ export function Chat(/* {user} : Prop */) {
           </form>
         </div>
       </div>
+
     </Wrapper>
   );
 }

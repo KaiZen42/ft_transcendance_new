@@ -15,3 +15,12 @@ export interface User {
   username: string;
   two_fa_auth: boolean;
 }
+
+export interface DisplayUser {
+  id: string;
+  avatar: string;
+  username: string;
+  wins: number;
+  losses: number;
+  points: number;
+}

@@ -9,10 +9,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 //socket
 import { EventsModule } from './chat/chat.module';
 import { EventsGateway } from './chat/chat.gateway';
-import { SnakeModule } from './game/snake.module';
+import { PongModule } from './game/pong.module';
 
 @Module({
-  imports: [UserModule, AuthModule, EventsModule, SnakeModule,
+  imports: [UserModule, AuthModule, EventsModule, PongModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'db',

@@ -1,14 +1,21 @@
 
-const FRAME_RATE = 10
+const FRAME_RATE = 50
 
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket} from "socket.io";
-import { GameService } from "./snake.service";
+import { PongService } from "./pong.service";
 
 interface RoomState {
 	[roomId: string] : {
 		state: any,
-		playerCount: number
+		playerCount: number,
+		moves: [{
+			up: boolean,
+			down: boolean
+		},{
+			up: boolean,
+			down: boolean
+		}]
 	}
 }
 
@@ -20,10 +27,10 @@ interface RoomInterval {
 	[roomId: string] : any
 }
 
-@WebSocketGateway({ cors : true , namespace : "snake"})
-export default class SnakeGateway implements
+@WebSocketGateway({ cors : true , namespace : "pong"})
+export default class PongGateway implements
 	OnGatewayDisconnect, OnGatewayConnection {
-		constructor(private readonly game: GameService){}
+		constructor(private readonly game: PongService){}
 	
 	private loopLimit = 0
 	private clientRooms: ClientRoom = {} // works like a map, key=clientId, value=roomId
@@ -60,19 +67,36 @@ export default class SnakeGateway implements
 		const roomId = this.clientRooms[client.id]
 		if (!roomId)
 			return
-		const vel = this.game.getUpdatedVelocity(key);
+		if (key === "ArrowUp")
+			this.rooms[roomId].moves[client.data.number - 1].up = true
+		else
+			this.rooms[roomId].moves[client.data.number - 1].down = true
+	}
 
-		if (vel)
-			this.rooms[roomId].state.players[client.data.number - 1].vel = vel;
+	@SubscribeMessage('keyUp')
+	handleKeyUp(
+		@MessageBody() key: string,
+		@ConnectedSocket() client: Socket
+	){
+		const roomId = this.clientRooms[client.id]
+		if (!roomId)
+			return
+		if (key === "ArrowUp")
+			this.rooms[roomId].moves[client.data.number - 1].up = false
+		else
+			this.rooms[roomId].moves[client.data.number - 1].down = false
 	}
 	
 	startGameInterval(roomId: string) {
 		this.roomIntervals[roomId] = setInterval(() => {
-			const winner = this.game.gameLoop(this.rooms[roomId].state)
+			const winner = this.game.gameLoop(this.rooms[roomId].state, this.rooms[roomId].moves)
 			if (!winner)
 				this.emitGameState(roomId, this.rooms[roomId].state)
 			else
+			{
+				this.emitGameState(roomId, this.rooms[roomId].state)
 				this.endGame(roomId, winner)
+			}
 		}, 1000 / FRAME_RATE)
 	}
 
@@ -86,7 +110,7 @@ export default class SnakeGateway implements
 
 	emitGameState(roomId: string, state: any)
 	{
-		this.server.to(roomId).emit("gameState", JSON.stringify(state))
+		this.server.to(roomId).emit("gameState", state)
 	}
 
 	emitGameOver(roomId: string, winner: number)
@@ -100,7 +124,7 @@ export default class SnakeGateway implements
 		// i have to understand if i can use socket default room
 		const roomId : string = this.makeId(5)
 		this.clientRooms[client.id] = roomId
-		this.rooms[roomId] = {state: this.game.initgame(), playerCount: 1}
+		this.rooms[roomId] = {state: this.game.createGameState(), playerCount: 1, moves: [{up: false, down: false},{up: false, down: false}]}
 
 		client.join(roomId)
 		client.data.number = 1

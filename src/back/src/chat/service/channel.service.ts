@@ -35,19 +35,20 @@ export class ChannelService {
 		return this.partService.getByChannel(id);
 	}
 
-	async getChanByUser(id : number) : Promise<ChannelInfo[]>
+	async getChanByUser(id : number) : Promise<any[]>
 	{
-		const res : ChannelInfo[] =  await this.channelDB
+		const res =  await this.channelDB
 			.createQueryBuilder("channel")
 			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId  = :userId AND partecipant.channelId = channel.id", {userId : id})
 			.select("partecipant.channelId")
 			.addSelect(['channel.id', "channel.name", "channel.isPrivate"])
 			.orderBy("channel.id", "ASC")
 			.getMany()
-		console.log("RES: ", res);
+		console.log("CHANNEL INFO", res)
 		return res;
 	}
 
+	
 	async getUserByChan(id: number) : Promise<User[]>
 	{
 		const res = await getRepository(User)
@@ -55,7 +56,6 @@ export class ChannelService {
 			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId = users.id")
 			.where("partecipant.channelId = :chId", {chId: id})
 			.getMany();
-			console.log("RAW MANY ", res)
 		return res;
 	}
 
@@ -68,6 +68,7 @@ export class ChannelService {
 			.getMany()
 		return res;
 	}
+
 
 
 	async getAllMessage(id : number) : Promise<Message[]>
@@ -83,7 +84,6 @@ export class ChannelService {
 			pass : channel.pass,
 			isPrivate : channel.isPrivate,
 		});
-		console.log("CHANNEL CREATED:" , ch)
 		this.partService.create(
 			{
 				id : 0,

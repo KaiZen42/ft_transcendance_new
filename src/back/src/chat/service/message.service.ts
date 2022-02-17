@@ -39,8 +39,6 @@ import { Message } from '../models/message.entity';
 		.where("message.channelId = :id", {id: channelId})
 		.select(["message.id","message.userId","message.userName","message.data"])
 		.getRawMany() */
-
-		console.log("MESSAGES By CHANNEL", res);
 	  return res;
 	}
   

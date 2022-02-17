@@ -58,7 +58,8 @@ export class chatController {
 		return ms;
 	}
 
-	@Get("channles/:idUser")
+
+	@Get("channels/:idUser")
 	async getChannels(@Param("idUser") userID: number) : Promise<ChannelInfo[]>
 	{
 		let someThings: ChannelInfo[] =  await this.chService.getChanByUser(userID)

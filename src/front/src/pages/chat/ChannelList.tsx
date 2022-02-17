@@ -1,164 +1,124 @@
 import { RestorePageOutlined } from '@mui/icons-material';
 import {
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  TextField,
+Box,
+List,
+ListItem,
+ListItemButton,
+ListItemText,
+TextField,
 } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import {
-  ChannelInfo,
-  MessageInfoPkg,
-  OpenRoomPkg,
+ChannelInfo,
+MessageInfoPkg,
+OpenRoomPkg,
 } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
 
 interface Prop {
-  socket: Socket | undefined;
-  userId: number;
-  room: string;
+socket: Socket | undefined;
+userId: number;
+room: string;
 }
 
 export function ChannelList({ socket, userId, room }: Prop) {
-  const [channels, setChannel] = useState<ChannelInfo[]>([]);
-  const [user, setUser] = useState<User[]>([]);
-  //const [openRoomPkg, setOpenPkg] = useState();
+const [channels, setChannel] = useState<ChannelInfo[]>([]);
+const [user, setUser] = useState<User[]>([]);
+//const [openRoomPkg, setOpenPkg] = useState();
 
-  const selectChannel = (event: any, id: number) => {
-    const viewRoom: OpenRoomPkg = {
-      idUser: userId,
-      room: '' + id,
-    };
-    socket?.emit('viewRoom', viewRoom);
-    console.log('Clicked ', viewRoom);
-  };
+const selectChannel = (event: any, id: number) => {
+	const viewRoom: OpenRoomPkg = {
+	idUser: userId,
+	room: '' + id,
+	};
+	socket?.emit('viewRoom', viewRoom);
+	console.log('Clicked ', viewRoom);
+};
 
-  useEffect(() => {
-    fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/channles/${userId}`,
-      { credentials: 'include' }
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        setChannel(result);
-      });
+async function getUser(chanId: number) {
+	console.log("GETUSERS")
+	await fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/OtherUserInChannel/${chanId}/User/${userId}`,
+	{ credentials: 'include' })
+		.then((response) => response.json())
+		.then((result) => setUser((prevUser) => {return([...prevUser, result[0]])}));
+}
 
-    socket?.on('notification', (msgInfo: MessageInfoPkg) => {
-      if (room !== msgInfo.room) {
-        let ch = channels.find((chan) => {
-          return chan.name == msgInfo.room;
-        });
-        if (ch !== undefined) ch.notification++;
-      }
-    });
-  }, []);
+useEffect(() => {
+	if ( channels.length === 0)
+	{
+		fetch( `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/channels/${userId}`,
+		{ credentials: 'include' })
+			.then((response) => response.json())
+			.then((result) => {
+				setChannel(result)
+				result.map((chan: ChannelInfo) => 
+				{
+					const opnePkj: OpenRoomPkg = {
+						idUser: userId,
+						room: chan.id.toString(),
+					};
+					getUser(chan.id);
+					socket?.emit('openRoom', opnePkj);
+				});
+		});
+	}
+	
 
-  async function getUser(chanId: number) {
-    console.log('CHAN ID:   ', chanId, 'USER ID:    ', userId);
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/OtherUserInChannel/${chanId}/User/${userId}`,
-      { credentials: 'include' }
-    )
-      .then((response) => response.json())
-      .then((result) => setUser(result));
-  }
-  // return(
-  // 	<div>
-  // 		<Box sx={{ p: 1, border: 1 }} >
-  // 		<List dense sx={{ width: '100%',minWidth: 100, maxWidth: 200, bgcolor: 'background.paper' }}>
-  // 			{channels.map( (chan: ChannelInfo) => {
-  // 				//joinPkg : SimpleJoinPkg =  { idUser: userId; room: toString(chan.id)}
-  // 				const opnePkj : OpenRoomPkg = { idUser: userId, room: chan.id.toString()};
-  // 				if (chan.notification === undefined)
-  // 					chan.notification = 0;
-  // 				socket?.emit("openRoom", opnePkj);
-  // 				return (
-  // 				<ListItem key={chan.id} onClick={e => selectChannel(e, chan.id)}>
-  // 				<ListItemButton>
-  // 						<ListItemText id="outlined-basic" primary={`${chan.isPrivate? "P" : ""} ${chan.name}`} />
-  // 				</ListItemButton>
-  // 			</ListItem>
-  // 			);})}
-  // 		</List>
-  // 		</Box>
-  // 	</div>
-  // );
+	socket?.on('notification', (msgInfo: MessageInfoPkg) => {
+	if (room !== msgInfo.room) 
+	{
+		let ch = channels.find((chan) => {  return chan.name == msgInfo.room; });
+		if (ch !== undefined) 
+		ch.notification++;
+	}
 
-  //   default function get_avatar(Chan: ChannelInfo)
-  //   {
-  // 	  let
-  // 	  return("")
-  //   }
+	});
+},[socket]);
 
-  return (
-    <div className="col-md-4 col-xl-3 chat">
-      <div className="card mb-sm-3 mb-md-0 contacts_card">
-        <div className="card-header">
-          <div className="user_info">
-            <span>Open Chats</span>
-          </div>
-        </div>
-        <div className="card-body contacts_body">
-          <ul className="contacts">
-            {channels.map((chan: ChannelInfo) => {
-              //joinPkg : SimpleJoinPkg =  { idUser: userId; room: toString(chan.id)}
-              const opnePkj: OpenRoomPkg = {
-                idUser: userId,
-                room: chan.id.toString(),
-              };
-              if (chan.notification === undefined) chan.notification = 0;
-              socket?.emit('openRoom', opnePkj);
-              getUser(chan.id);
-              return (
-                <li className="active">
-                  {' '}
-                  {/* TODO: aggiungere stato effettivo */}
-                  <div className="d-flex bd-highlight">
-                    <div className="img_cont">
-                      <img
-                        src={user?.avatar}
-                        className="rounded-circle user_img"
-                      />
-                      <span className="online_icon"></span>
-                    </div>
-                    <div className="user_info">
-                      <span>{user?.username}</span>
-                      <p>Kalid is online</p>
-                      {/* TODO: aggiungere stato effettivo */}
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-            {/* <li className="active">
+
+
+return (
+	<div className="col-md-4 col-xl-3 chat">
+	<div className="card mb-sm-3 mb-md-0 contacts_card">
+		<div className="card-header">
+		<div className="user_info">
+			<span>Open Chats</span>
+		</div>
+		</div>
+		<div className="card-body contacts_body">
+		{console.log("USERS FROM CHANNELS", user)}
+		<ul className="contacts">
+			{
+			channels.map((chan: ChannelInfo, i) => {
+				if (chan.notification === undefined) 
+					chan.notification = 0;
+				return (
+					<li className="active">
+					{' '}
+					{/* TODO: aggiungere stato effettivo */}
 					<div className="d-flex bd-highlight">
-					<div className="img_cont">
+						<div className="img_cont">
+						<img
+							src={user[i]?.avatar}
+							className="rounded-circle user_img"
+						/>
 						<span className="online_icon"></span>
+						</div>
+						<div className="user_info">
+						<span>{user[i]?.username}</span>
+						<p>{chan?.name}</p>
+						{/* TODO: aggiungere stato effettivo */}
+						</div>
 					</div>
-					<div className="user_info">
-						<span>Khalid</span>
-						<p>Kalid is online</p>
-					</div>
-					</div>
-				</li>
-				<li>
-					<div className="d-flex bd-highlight">
-					<div className="img_cont">
-						<span className="online_icon offline"></span>
-					</div>
-					<div className="user_info">
-						<span>Taherah Big</span>
-						<p>Taherah left 7 mins ago</p>
-					</div>
-					</div>
-				</li> */}
-          </ul>
-        </div>
-        <div className="card-footer"></div>
-      </div>
-    </div>
-  );
+					</li>
+				);
+				})
+			}
+		</ul>
+		</div>
+		<div className="card-footer"></div>
+	</div>
+	</div>
+);
 }

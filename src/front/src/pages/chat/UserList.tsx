@@ -7,6 +7,7 @@ import {
   ListItemAvatar,
   ListItemButton,
   ListItemText,
+  Stack,
 } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import { Box } from '@mui/system';
@@ -14,6 +15,37 @@ import React, { useState, useEffect, useRef } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
 import { CreationChannelPkg } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
+import { styled } from '@mui/material/styles';
+import Badge from '@mui/material/Badge';
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      animation: 'ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
+      content: '""',
+    },
+  },
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
+      opacity: 1,
+    },
+    '100%': {
+      transform: 'scale(2.4)',
+      opacity: 0,
+    },
+  },
+}));
 
 interface Prop {
   socket: Socket | undefined;
@@ -27,8 +59,9 @@ export function UserList({ socket, userId }: Prop) {
 
   const nameSubmit = (event: any) => {
     console.log(event.target.value);
-    if (event.target.value === undefined) {
-      event.preventDefault();
+    if (!event.target.value) {
+        console.log("AAAAAAAAAAAAA")
+      // event.preventDefault();
       fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users`, {
         credentials: 'include',
       })
@@ -92,20 +125,33 @@ export function UserList({ socket, userId }: Prop) {
             </div>
           </div>
         </div>
-        <div className="card-body contacts_body">
-          <ul className="contacts">
-            <li className="active">
-              <div className="d-flex bd-highlight">
-                <div className="img_cont">
-                  <span className="online_icon"></span>
+        {users.map((user: User) => (
+          <div className="card-body contacts_body">
+            <ul className="contacts">
+              <li>
+                <div className="d-flex bd-highlight">
+                  <div className="img_cont">
+                    <Stack direction="row" spacing={2}>
+                      <StyledBadge
+                        overlap="circular"
+                        invisible={true}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'right',
+                        }}
+                        variant="dot"
+                      >
+                        <Avatar alt="Img" src={user.avatar} />
+                      </StyledBadge>
+                    </Stack>
+                   </div>
+                  <div className="user_info">
+                    <span>{user.username}</span>
+                    <p>{user.username} is online</p>
+                  </div>
                 </div>
-                <div className="user_info">
-                  <span>Khalid</span>
-                  <p>Kalid is online</p>
-                </div>
-              </div>
-            </li>
-            <li>
+              </li>
+              {/* <li>
               <div className="d-flex bd-highlight">
                 <div className="img_cont">
                   <span className="online_icon offline"></span>
@@ -115,9 +161,10 @@ export function UserList({ socket, userId }: Prop) {
                   <p>Taherah left 7 mins ago</p>
                 </div>
               </div>
-            </li>
-          </ul>
-        </div>
+            </li> */}
+            </ul>
+          </div>
+        ))}
         <div className="card-footer"></div>
       </div>
     </div>

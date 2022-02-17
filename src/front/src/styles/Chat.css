@@ -1,3 +1,8 @@
+/* html, body {
+	background: -webkit-linear-gradient(330deg, #000, #04f183);
+	background: linear-gradient(120deg, #000, #028f4d);
+	overflow: hidden;
+  } */
   
   .chat__container {
 	display: -webkit-box;
@@ -13,22 +18,18 @@
 	-webkit-box-direction: normal;
 	-ms-flex-direction: column;
 	flex-direction: column;
-	height: 50vh;
+	height: 106vh;
 	width: 100vw;
   }
   
   .chat__container h1 {
-	font-family: Bebas Neue, sans-serif;
-	font-style: italic;
 	margin: 0.5em auto;
-	font-size: 35px;
+	color: #FFF;
 	text-align: center;
-	color: white;
-	opacity: 0.7;
   }
   
   .chat {
-	background: rgba(255, 255, 255, 0.05);
+	background: rgba(11, 11, 11, 0.05);
 	width: 600px;
 	height: 75%;
 	border-radius: 0.2em;
@@ -48,7 +49,7 @@
 	height: 0;
 	border-top: 10px solid transparent;
 	border-bottom: 10px solid transparent;
-	border-right: 10px solid rgba(255, 255, 255, 0.2);
+	border-right: 10px solid rgba(11, 11, 11, 0.2);
   }
   
   .chat__messages:nth-of-type(even) .chat__messages__user-message--ind-message {
@@ -63,7 +64,7 @@
 	height: 0;
 	border-top: 10px solid transparent;
 	border-bottom: 10px solid transparent;
-	border-left: 10px solid rgba(255, 255, 255, 0.2);
+	border-left: 10px solid rgba(11, 11, 11, 0.2);
   }
   
   .chat__messages__user-message {
@@ -71,7 +72,7 @@
   }
   
   .chat__messages__user-message--ind-message {
-	background: rgba(255, 255, 255, 0.2);
+	background: rgba(11, 11, 11, 0.2);
 	padding: 1em 0;
 	height: auto;
 	width: 65%;
@@ -92,7 +93,7 @@
   }
   
   .chat__user-list {
-	background: rgba(255, 255, 255, 0.1);
+	background: rgba(11, 11, 11, 0.1);
 	width: 25%;
 	height: 100%;
 	float: left;
@@ -101,8 +102,8 @@
   }
   
   .chat__user-list h1 {
-	background: rgba(255, 255, 255, 0.05);
-	color: rgba(255, 255, 255, 0.9);
+	background: rgba(11, 11, 11, 0.05);
+	color: rgba(11, 11, 11, 0.9);
 	font-size: 0.9em;
 	padding: 1em;
 	margin: 0;
@@ -144,7 +145,7 @@
   }
   
   .chat form input {
-	background: rgba(255, 255, 255, 0.03);
+	background: rgba(11, 11, 11, 0.03);
 	position: absolute;
 	bottom: 0;
 	right: 0;
@@ -152,22 +153,22 @@
 	width: 75%;
 	padding: 1.2em;
 	outline: none;
-	color: rgba(255, 255, 255, 0.9);
+	color: rgba(11, 11, 11, 0.9);
 	font-weight: 300;
   }
   
   ::-webkit-input-placeholder {
-	color: rgba(255, 255, 255, 0.9);
+	color: rgba(11, 11, 11, 0.9);
   }
   
   :-moz-placeholder {
-	color: rgba(255, 255, 255, 0.9);
+	color: rgba(11, 11, 11, 0.9);
   }
   
   ::-moz-placeholder {
-	color: rgba(255, 255, 255, 0.9);
+	color: rgba(11, 11, 11, 0.9);
   }
   
   :-ms-input-placeholder {
-	color: rgba(255, 255, 255, 0.9);
+	color: rgba(11, 11, 11, 0.9);
   }

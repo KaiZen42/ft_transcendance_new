@@ -74,6 +74,12 @@ export class UserController {
 		return this.user.getById(id);
 	}
 
+
+	@Get('username/:username')
+	async getByUsername(@Param('username') username: string): Promise<User[]> {
+	  return await this.user.getByUsername(username);
+	}
+
 //   @Put('image/:id')
 //   async updateImg(@Param('id') id: number, @Body() userData: UpdateUserImg) {
 //     await this.user.update(id, userData);

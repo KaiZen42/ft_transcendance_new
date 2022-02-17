@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef  } from "react";
-import socketIOClient, { Socket } from "socket.io-client";
-import { Message } from "../../models/Message.interface";
+import socketIOClient, { io, Socket } from "socket.io-client";
+import { MessagePkg } from "../../models/Chat.interface";
 
 interface Prop
 {
 	socket : Socket | undefined,
-	packet : Message
+	packet : MessagePkg,
+	room: string,
 }
 
-export function Sender({socket, packet} : Prop) {
+export function Sender({socket, packet, room} : Prop) {
 	const [msg, setMessage] = useState('');
 	
 	const handleSubmit = (event: any) => {
@@ -16,18 +17,16 @@ export function Sender({socket, packet} : Prop) {
 		if(packet !== undefined && msg !== "")
 		{
 			packet.data = msg;
-
-			socket?.emit('message', packet);
-			console.log("SEND TO SERVER:" , );
+			packet.room = room;
+			socket?.emit('channelMessage', packet);
+			console.log("SEND TO SERVER:" , room);
+			console.log(msg);
 		}
-		else
-		{
-			//packet === undefined ? console.log("NOT DEFINED PACKEGE") : null;
-		}
+		setMessage("");
 	}
 	
 	return(<div>
-		<form onSubmit={handleSubmit} >
+	<form onSubmit={handleSubmit} >
 		<label>
 			<input type="text" value={msg} onChange={e => setMessage(e.target.value)}/>
 		</label>

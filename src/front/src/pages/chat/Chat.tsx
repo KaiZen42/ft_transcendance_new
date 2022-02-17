@@ -112,7 +112,7 @@ export function Chat(/* {user} : Prop */) {
             <div className="card mb-sm-3 mb-md-0 contacts_card">
               <div className="card-header">
                 <div className="user_info">
-                  <span>Open Chats</span>
+                  <span>Your Chats</span>
                 </div>
               </div>
               <div className="card-body contacts_body">

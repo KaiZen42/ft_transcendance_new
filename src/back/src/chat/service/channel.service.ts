@@ -5,7 +5,8 @@ import {
 	Query
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
-  import { getConnection, Repository } from 'typeorm';
+import { User } from 'src/user/models/user.entity';
+  import { getConnection, getRepository, Repository } from 'typeorm';
 import { ChannelInfo } from '../dto/chat.dto';
 
 import { Channel } from '../models/channel.entity';
@@ -46,6 +47,16 @@ export class ChannelService {
 		console.log("RES: ", res);
 		return res;
 	}
+
+	async getUserByChan(id: number) : Promise<User[]>
+	{
+		const res = await getRepository(User)
+			.createQueryBuilder("user")
+			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.channelId = :chId", {chId: id} )
+			.getMany();
+		return res;
+	}
+
 
 	async getAllMessage(id : number) : Promise<Message[]>
 	{

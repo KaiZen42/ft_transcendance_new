@@ -42,6 +42,14 @@ export class chatController {
 		return ms;
 	}
 
+	@Get("UserInChannel/:channelId")
+	async getUsersByChannel(@Param("channelId") channelId: number) : Promise<any[]>
+	{
+		let ms : any[] =  await this.chService.getUserByChan(channelId);
+		console.log(`Users in(${channelId}): `, ms);
+		return ms;
+	}
+
 	@Get("channles/:idUser")
 	async getChannels(@Param("idUser") userID: number) : Promise<ChannelInfo[]>
 	{

@@ -130,7 +130,7 @@ export function UserList({ socket, userId }: Prop) {
             <ul className="contacts">
               <li>
                 <div className="d-flex bd-highlight">
-                  <div className="img_cont">
+                  <div className="img_cont" onClick={(e) => selectUser(e, user.id)}>
                     <Stack direction="row" spacing={2}>
                       <StyledBadge
                         overlap="circular"

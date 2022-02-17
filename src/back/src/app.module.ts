@@ -11,6 +11,8 @@ import { ChatModule } from './chat/chat.module';
 import { User } from './user/models/user.entity';
 import { Message } from './chat/models/message.entity';
 import { PongModule } from './game/pong.module';
+import { Channel } from './chat/models/channel.entity';
+import { Partecipant } from './chat/models/partecipant.entity';
 
 
 @Module({
@@ -22,7 +24,7 @@ import { PongModule } from './game/pong.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Message],
+      entities: [User, Message, Channel, Partecipant],
       autoLoadEntities: true,
       synchronize: true,
     })],

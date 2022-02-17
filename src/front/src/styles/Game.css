@@ -1,0 +1,35 @@
+.game--image {
+	height: 150px;
+	width: 150px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 3px solid white;
+  }
+
+.game-user {
+	box-shadow:
+		0 0 7px #fff,
+		0 0 10px rgb(217, 168, 226),
+		0 0 21px rgb(181, 90, 199),
+		0 0 42px rgb(201, 0, 241)
+}
+
+.game-opponent {
+	box-shadow:
+		0 0 7px #fff,
+		0 0 10px rgb(175, 194, 230),
+		0 0 21px rgb(112, 147, 216),
+		0 0 42px rgb(76, 123, 214)
+}
+
+.col-centered {
+	text-align: center;
+}
+
+.game-text {
+	font-size: 20px;
+	font-family: Bebas Neue, sans-serif;
+	font-style: italic;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	color: white;
+}

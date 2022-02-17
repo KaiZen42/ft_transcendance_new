@@ -1,14 +1,17 @@
 import { useRef, useEffect, useState } from 'react';
-import Prompt, { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import socketIOClient, { Socket } from 'socket.io-client';
-import '../styles/PongGame.css';
+import '../styles/Game.css';
+import opponent_img from "../assets/opponent.jpeg"
+
+const USER_COLOR = "rgb(201, 0, 241)"
+const OPPONENT_COLOR = "rgb(76, 123, 214)"
 
 interface Player {
   x: number;
   y: number;
   width: number;
   height: number;
-  color: string;
   score: number;
 }
 
@@ -19,7 +22,7 @@ interface Ball {
   speed: number;
   velocityX: number;
   velocityY: number;
-  color: string;
+  color: number;
 }
 
 interface Net {
@@ -31,7 +34,7 @@ interface Net {
 }
 
 interface GameState {
-  players: Player[];
+  players: [Player, Player];
   food: {
     x: number;
     y: number;
@@ -41,14 +44,24 @@ interface GameState {
   fieldHeight: number;
 }
 
+interface User {
+  username: string,
+  points: number,
+  avatar: string
+}
+
 export default function Pong(props: any) {
+
+  const [user, setUser] = useState<User>()
+  const [opponent, setOpponent] = useState<User>()
+
   const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let socket: Socket;
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
-  let playerNumber: number;
+  let playerNumber: number; 
   let searching: boolean = true;
   let net: Net = {
     x: 0,
@@ -78,7 +91,10 @@ export default function Pong(props: any) {
     ctx.fillRect(x, y, w, h);
   };
 
-  const drawCircle = (x: number, y: number, r: number, color: string) => {
+  const drawBall = (x: number, y: number, r: number, color: string) => {
+    if (playerNumber === 1)
+      x = canvas.width - x
+
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2, false);
@@ -88,6 +104,7 @@ export default function Pong(props: any) {
 
   const drawText = (text: string, x: number, y: number, color: string) => {
     ctx.fillStyle = color;
+    ctx.textAlign = "center"
     ctx.font = '45px Bebas Neue';
     ctx.fillText(text, x, y);
   };
@@ -98,40 +115,86 @@ export default function Pong(props: any) {
     }
   };
 
+  const drawField = () => {
+    // drawing my half
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2, 2);
+    ctx.lineTo(2, 2);
+    ctx.lineTo(2, canvas.height-2);
+    ctx.lineTo(canvas.width/2, canvas.height-2);
+    ctx.lineWidth = 4
+    ctx.shadowBlur = 4;
+    ctx.strokeStyle = OPPONENT_COLOR;
+    ctx.shadowColor = OPPONENT_COLOR;
+    ctx.stroke()
+    
+    // drawing opponent half
+    ctx.beginPath();
+    ctx.moveTo(canvas.width/2, 2);
+    ctx.lineTo(canvas.width-2, 2);
+    ctx.lineTo(canvas.width-2, canvas.height-2);
+    ctx.lineTo(canvas.width/2, canvas.height-2);
+    ctx.strokeStyle = USER_COLOR
+    ctx.shadowColor = USER_COLOR;
+    ctx.stroke()
+
+    ctx.shadowBlur = 0;
+  }
+
+  const drawPaddles = (players: [Player, Player]) => {
+
+    let player = players[playerNumber];
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = USER_COLOR;
+    ctx.shadowColor = USER_COLOR;
+    ctx.shadowBlur = 5;
+    ctx.strokeRect(players[0].x+2, player.y, player.width, player.height);
+
+    player = players[(playerNumber) ? 0 : 1]
+    ctx.strokeStyle = OPPONENT_COLOR;
+    ctx.shadowColor = OPPONENT_COLOR;
+    ctx.strokeRect(players[1].x-2, player.y, player.width, player.height);
+    ctx.shadowBlur = 0;
+  }
+
+  const drawScores = (scores: [number, number]) => {
+    let score = scores[playerNumber].toString()
+    ctx.strokeStyle = USER_COLOR;
+    ctx.shadowColor = USER_COLOR;
+    ctx.shadowBlur = 3;
+    ctx.textAlign = "center"
+    ctx.font = '55px Bebas Neue';
+    ctx.strokeText(score,  canvas.width / 4, canvas.height / 5);
+
+    score = scores[(playerNumber) ? 0 : 1].toString()
+    ctx.strokeStyle = OPPONENT_COLOR;
+    ctx.shadowColor = OPPONENT_COLOR;
+    ctx.strokeText(score,  (3 * canvas.width) / 4, canvas.height / 5);
+
+    ctx.shadowBlur = 0;
+  }
+
   const render = (state: GameState) => {
     // clear the canvas
     drawRect(0, 0, canvas.width, canvas.height, 'rgba(0, 0, 0, 0.3)');
 
     // draw field outline
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = 'white';
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    drawField()
 
     // draw the net
     drawNet();
 
     // draw the score
-    drawText(
-      state.players[0].score.toString(),
-      state.fieldWidth / 4,
-      state.fieldHeight / 5,
-      'rgb(201, 0, 241)'
-    );
-    drawText(
-      state.players[1].score.toString(),
-      (3 * state.fieldWidth) / 4,
-      state.fieldHeight / 5,
-      'rgb(76, 123, 214)'
-    );
+    drawScores([state.players[0].score, state.players[1].score])
 
     // draw the paddles
-    for (let i = 0; i < 2; i++) {
-      const player = state.players[i];
-      drawRect(player.x, player.y, player.width, player.height, player.color);
-    }
+    drawPaddles(state.players)
 
     // draw the ball
-    drawCircle(state.ball.x, state.ball.y, state.ball.radius, state.ball.color);
+    if (playerNumber===1 && state.ball.color)
+      state.ball.color = (state.ball.color === 1) ? 2 : 1
+    const ballColor = ["white", USER_COLOR, OPPONENT_COLOR][state.ball.color]
+    drawBall(state.ball.x, state.ball.y, state.ball.radius, ballColor);
   };
 
   const handleGameState = (state: GameState) => {
@@ -145,7 +208,6 @@ export default function Pong(props: any) {
   };
 
   const handleGameOver = (winner: number) => {
-    console.log('gameOver');
     if (winner == playerNumber)
       setTimeout(() => {
         alert('You win!');
@@ -156,48 +218,82 @@ export default function Pong(props: any) {
       }, 200);
   };
 
-  const handleInit = (number: number) => {
-    console.log('Game init: ' + number);
-    playerNumber = number;
-    console.log('player number: ' + playerNumber);
-  };
+  const handlePlayers = (players: [User, User]) => {
+    if (players[0].username === user?.username)
+    {
+      setOpponent(players[1])
+      playerNumber = 0
+    }
+    else
+    {
+      setOpponent(players[0])
+      playerNumber = 1
+    }
+  }
 
-  const joinGame = () => {
-    socket.emit('joinGame');
+  const joinGame = (tmp_user: User) => {
+    socket.emit('joinGame', tmp_user);
 
     document.addEventListener('keydown', keydown);
     document.addEventListener('keyup', keyup);
   };
 
   useEffect(() => {
+    async function getter() {
+      const res = await fetch(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {credentials: 'include'}
+      );
+      const user = await res.json();
+      setUser(user);
+      joinGame(user);
+    }
+
+    getter();
     canvas = canvasRef.current!;
     ctx = canvas.getContext('2d')!;
     canvas.width = 500;
     canvas.height = 50;
-    drawText('Searching for an opponent...', 10, 40, 'white');
+    drawText('Searching for an opponent...', 250, 40, 'white');
     if (!socket) {
       socket = socketIOClient(ENDPOINT);
       socket.on('gameState', handleGameState);
       socket.on('gameOver', handleGameOver);
-      socket.on('init', handleInit);
+      socket.on('players', handlePlayers);
     }
-
-    joinGame();
 
     return () => {
       socket.close();
     };
-  }, [props.start]);
+  }, []);
 
   return (
     <>
-      <div className="center">
-        <div className="d-flex flex-column align-items-center justify-content-center h-100">
-          <canvas ref={canvasRef} />
-          <NavLink to={'/'}>
-            <div>Back to home</div>
-          </NavLink>
+      <div className="container h-100 w-100">
+        <div className='row h-100 align-items-center'>
+          <div className='col col-centered'>
+             <img alt="profile image" src={user?.avatar} className="game--image game-user"/>
+             <p className='game-text'>{user?.username}</p>
+             <p className='game-text'>{user?.points}  <small>pts</small></p>
+          </div>
+          <div className="col col-centered">
+            <canvas ref={canvasRef} />
+          </div>
+          <div className='col col-centered'>
+            {
+              opponent ?
+                <>
+                <img alt="profile image" src={opponent.avatar} className="game--image game-opponent"/>
+                <p className='game-text'>{opponent.username}</p>
+                <p className='game-text'>{opponent.points}  <small>pts</small></p>
+                </>
+              :
+                <img alt="profile image" src={opponent_img} className="game--image game-opponent"/>
+            }
+          </div>
         </div>
+        <NavLink to={'/'} >
+          <div >Back to home</div>
+        </NavLink>
       </div>
       <video autoPlay muted loop className="video">
         <source src="./movie2.webm" type="video/webm" />

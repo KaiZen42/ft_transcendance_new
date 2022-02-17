@@ -1,21 +1,31 @@
 
 const FRAME_RATE = 50
 
-import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket} from "socket.io";
 import { PongService } from "./pong.service";
 
 interface RoomState {
 	[roomId: string] : {
 		state: any,
-		playerCount: number,
 		moves: [{
 			up: boolean,
 			down: boolean
 		},{
 			up: boolean,
 			down: boolean
-		}]
+		}],
+		users:[{
+			username: string,
+  			points: number,
+  			avatar: string
+		},
+		{
+			username: string,
+  			points: number,
+  			avatar: string
+		}],
+		intervalID: any
 	}
 }
 
@@ -23,40 +33,32 @@ interface ClientRoom {
 	[clientId: string] : string
 }
 
-interface RoomInterval {
-	[roomId: string] : any
-}
-
 @WebSocketGateway({ cors : true , namespace : "pong"})
 export default class PongGateway implements
-	OnGatewayDisconnect, OnGatewayConnection {
+	OnGatewayDisconnect {
 		constructor(private readonly game: PongService){}
 	
 	private loopLimit = 0
 	private clientRooms: ClientRoom = {} // works like a map, key=clientId, value=roomId
 	private rooms: RoomState = {} // works like a map, key=roomId, value=room state & playerCount
-	private roomIntervals : RoomInterval = {} //  works like a map, key=roomId, value=roomId
 	
 	@WebSocketServer()
 	private server: Server;
 
 	handleDisconnect(client: Socket) {
 		const roomId = this.clientRooms[client.id]
-		const winner = client.data.number === 1 ? 2 : 1
+		const winner = client.data.number ? 0 : 1
 
 		this.endGame(roomId, winner)
 	}
 
-	handleConnection(client: Socket, ...args: any[]) {
-		console.log("a player (" + client.id +") connected, list of rooms: ")
-	}
-
 	@SubscribeMessage('joinGame')
 	handleJoinGame(
+		@MessageBody() user: any,
 		@ConnectedSocket() client: Socket
 	){
 		this.loopLimit = 0
-		this.joinGame(client)
+		this.joinGame(client, user)
 	}
 
 	@SubscribeMessage('keyDown')
@@ -68,9 +70,9 @@ export default class PongGateway implements
 		if (!roomId)
 			return
 		if (key === "ArrowUp")
-			this.rooms[roomId].moves[client.data.number - 1].up = true
+			this.rooms[roomId].moves[client.data.number].up = true
 		else
-			this.rooms[roomId].moves[client.data.number - 1].down = true
+			this.rooms[roomId].moves[client.data.number].down = true
 	}
 
 	@SubscribeMessage('keyUp')
@@ -82,30 +84,32 @@ export default class PongGateway implements
 		if (!roomId)
 			return
 		if (key === "ArrowUp")
-			this.rooms[roomId].moves[client.data.number - 1].up = false
+			this.rooms[roomId].moves[client.data.number].up = false
 		else
-			this.rooms[roomId].moves[client.data.number - 1].down = false
+			this.rooms[roomId].moves[client.data.number].down = false
 	}
 	
 	startGameInterval(roomId: string) {
-		this.roomIntervals[roomId] = setInterval(() => {
+		this.server.to(roomId).emit("players", this.rooms[roomId].users)
+		this.rooms[roomId].intervalID = setInterval(() => {
 			const winner = this.game.gameLoop(this.rooms[roomId].state, this.rooms[roomId].moves)
 			if (!winner)
 				this.emitGameState(roomId, this.rooms[roomId].state)
 			else
 			{
 				this.emitGameState(roomId, this.rooms[roomId].state)
-				this.endGame(roomId, winner)
+				this.endGame(roomId, winner-1)
 			}
 		}, 1000 / FRAME_RATE)
 	}
 
 	endGame(roomId: string, winner: number)
 	{
+		if (!this.rooms[roomId])
+			return
 		this.emitGameOver(roomId, winner)
+		clearInterval(this.rooms[roomId].intervalID)
 		delete this.rooms[roomId]
-		clearInterval(this.roomIntervals[roomId])
-		delete this.roomIntervals[roomId]
 	}
 
 	emitGameState(roomId: string, state: any)
@@ -118,50 +122,37 @@ export default class PongGateway implements
 		this.server.to(roomId).emit("gameOver", winner)
 	}
 	
-	createGame(client: Socket)
+	createGame(client: Socket, user: any)
 	{
-		console.log("createGame")
-		// i have to understand if i can use socket default room
-		const roomId : string = this.makeId(5)
-		this.clientRooms[client.id] = roomId
-		this.rooms[roomId] = {state: this.game.createGameState(), playerCount: 1, moves: [{up: false, down: false},{up: false, down: false}]}
-
-		client.join(roomId)
-		client.data.number = 1
-		client.emit('init', 1)
+		this.clientRooms[client.id] = client.id
+		this.rooms[client.id] = {
+			state: this.game.createGameState(),
+			moves: [{up: false, down: false},{up: false, down: false}],
+			users: [{...user}, undefined],
+			intervalID: undefined
+		}
+		client.data.number = 0
 	}
 
-	joinGame(client: Socket)
+	joinGame(client: Socket, user: any)
 	{
-		console.log("joinGame")
 		this.loopLimit++
 		const available_rooms : string[] = Object.keys(this.rooms)
 		if (available_rooms.length === 0 || this.loopLimit >= 20)
-			return this.createGame(client)
+			return this.createGame(client, user)
 		const randPick = Math.floor(Math.random() * available_rooms.length)
 		const roomId = available_rooms[randPick]
 		const room = this.rooms[roomId]
-		if (room.playerCount === 1)
+		if (!room.users[1])
 		{
 			this.clientRooms[client.id] = roomId
-			this.rooms[roomId].playerCount = 2
+			this.rooms[roomId].users[1] = {...user}
 			client.join(roomId)
-			client.data.number = 2
-			client.emit('init', 2)
+			client.data.number = 1
 
 			this.startGameInterval(roomId)
 		}
 		else
-			this.joinGame(client)
-	}
-
-	makeId(length) {
-		let result           = '';
-		const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		const charactersLength = characters.length;
-		for (let i = 0; i < length; i++ ) {
-		   result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		}
-		return result;
+			this.joinGame(client, user)
 	}
 }

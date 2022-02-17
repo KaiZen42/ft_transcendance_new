@@ -122,11 +122,8 @@ export class UserService {
   }
 
   async userCookie(cookie): Promise<any> {
-    console.log('arrivo' + cookie);
     const data = await this.jwt.verifyAsync(cookie);
-    console.log(data['id']);
     const user = await this.getById(data['id']);
-    console.log('user=' + user.id);
     return user;
   }
 }

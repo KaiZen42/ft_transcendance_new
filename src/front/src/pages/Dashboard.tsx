@@ -2,7 +2,6 @@
 
 import Wrapper from "../components/Wrapper";
 import "../styles/neon_button.css"
-import "../styles/PongGame.css"
 import { NavLink } from "react-router-dom";
 
 export default function Dashboard() {

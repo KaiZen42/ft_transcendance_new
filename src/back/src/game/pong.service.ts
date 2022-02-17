@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common"
 
-const FIELD_WIDTH = 600
-const FIELD_HEIGHT = 400
+const FIELD_WIDTH = 750
+const FIELD_HEIGHT = 500
+const PADDLE_WIDTH = 15
+const PADDLE_HEIGHT = 125
+const BALL_RADIUS = 13
 
 @Injectable()
 export class PongService {
@@ -9,28 +12,26 @@ export class PongService {
 		return {
 			players: [{
 				x: 0,
-				y: FIELD_HEIGHT/2 - 100/2,
-				width: 10,
-				height: 100,
-				color: "WHITE",
+				y: FIELD_HEIGHT/2 - PADDLE_HEIGHT/2,
+				width: PADDLE_WIDTH,
+				height: PADDLE_HEIGHT,
 				score: 0
 			},
 			{
-				x: FIELD_WIDTH-10,
-				y: FIELD_HEIGHT/2 - 100/2,
-				width: 10,
-				height: 100,
-				color: "WHITE",
+				x: FIELD_WIDTH-PADDLE_WIDTH,
+				y: FIELD_HEIGHT/2 - PADDLE_HEIGHT/2,
+				width: PADDLE_WIDTH,
+				height: PADDLE_HEIGHT,
 				score: 0
 			}],
 			ball: {
 				x: FIELD_WIDTH/2,
 				y: FIELD_HEIGHT/2,
-				radius: 10,
+				radius: BALL_RADIUS,
 				speed: 5,
 				velocityX: 5,
 				velocityY: 5,
-				color: "white"
+				color: 0
 			},
 			fieldWidth: FIELD_WIDTH,
 			fieldHeight: FIELD_HEIGHT
@@ -71,6 +72,7 @@ export class PongService {
 		ball.y = FIELD_HEIGHT/2
 		ball.speed = 5
 		ball.velocityX *= -1
+		ball.color = 0
 	}
 	
 	gameLoop(state: any, moves: any): number {
@@ -90,6 +92,7 @@ export class PongService {
 		const player = state.players[(ball.x < state.fieldWidth/2) ? 0 : 1]
 
 		if (this.collision(ball, player)){
+			ball.color = (ball.x < state.fieldWidth/2) ? 1 : 2
 			let collidePoint = ball.y - (player.y + player.height/2)
 			collidePoint /= (player.height/2)
 

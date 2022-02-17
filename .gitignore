@@ -39,3 +39,4 @@ lerna-debug.log*
 
 # images
 src/back/imgs/
+.env

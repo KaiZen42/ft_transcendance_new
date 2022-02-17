@@ -1,8 +1,3 @@
-/* html, body {
-	background: -webkit-linear-gradient(330deg, #000, #04f183);
-	background: linear-gradient(120deg, #000, #028f4d);
-	overflow: hidden;
-  } */
   
   .chat__container {
 	display: -webkit-box;
@@ -23,9 +18,13 @@
   }
   
   .chat__container h1 {
+	font-family: Bebas Neue, sans-serif;
+	font-style: italic;
 	margin: 0.5em auto;
-	color: #FFF;
+	font-size: 35px;
 	text-align: center;
+	color: white;
+	opacity: 0.7;
   }
   
   .chat {

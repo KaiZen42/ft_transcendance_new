@@ -16,7 +16,7 @@ let idx: number = 0;
 export function Chat(/* {user} : Prop */) {
   const [pkg, setPkg] = useState<Message>();
   const [socket, setSocket] = useState<Socket>();
-  const [searchRes, setSearchRes] = useState("")
+  const [searchRes, setSearchRes] = useState('');
 
   function getUser() {
     fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
@@ -45,7 +45,7 @@ export function Chat(/* {user} : Prop */) {
     };
   }, []);
 
-  console.log("CACCA  " +searchRes); //cacca di debug
+  console.log('CACCA  ' + searchRes); //cacca di debug
 
   return socket === undefined ? (
     <Wrapper>
@@ -62,11 +62,11 @@ export function Chat(/* {user} : Prop */) {
         <video autoPlay muted loop className="video">
           <source src="movie2.webm" type="video/webm" />
         </video>
-       
+
         <h1>CHAT</h1>
         <div className="chat">
           <div className="chat__user-list">
-			<SearchBox setSearch={setSearchRes}/>
+            <SearchBox setSearch={setSearchRes} />
             {/* <h1>Friends Online</h1> */}
             <div className="chat__user--active">
               <p>Ale</p>
@@ -77,10 +77,7 @@ export function Chat(/* {user} : Prop */) {
             <div className="chat__user--away">
               <p>Ale</p>
             </div>
-			
           </div>
-		  
-		  
 
           <div className="chat__messages">
             <div className="chat__messages__user-message">
@@ -96,7 +93,6 @@ export function Chat(/* {user} : Prop */) {
           </form>
         </div>
       </div>
-
     </Wrapper>
   );
 }

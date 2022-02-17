@@ -4,10 +4,7 @@ import "../Error404.css"
 class Error404 extends React.Component {
     render() {
         return (
-            <div className="scene"       style={{
-                backgroundColor: "#212549",
-                height: "1000px",
-                            }}>
+            <div className="scene">
                 <div className="body-scene">
                 <div className="planet">
                     <div className="crater"></div>

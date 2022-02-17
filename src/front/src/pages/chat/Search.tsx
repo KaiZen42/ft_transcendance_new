@@ -5,7 +5,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { User } from '../../models/User.interface';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import { KeyboardReturnOutlined } from '@mui/icons-material';
 import { Avatar, Box } from '@mui/material';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({

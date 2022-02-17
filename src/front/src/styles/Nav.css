@@ -57,14 +57,16 @@
   }
   
   .header--icon--list > li {
-	margin-right: 70px;
-	display: inline;
-  }
-  
-  .header--icon {
+	  margin-right: 70px;
+	  display: inline;
+	  
+	}
+	
+	.header--icon {
+		
 	font-size: 2.7rem;
 	color: white;
-	position:relative; 
+	/* position:relative;  */
 	z-index:0;
 	cursor: pointer;
   }

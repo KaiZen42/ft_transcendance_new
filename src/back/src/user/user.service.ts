@@ -1,10 +1,14 @@
-import {
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
-import { Connection, getConnection, Repository } from 'typeorm';
+import {
+  Connection,
+  getConnection,
+  Repository,
+  Like,
+  getRepository,
+} from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import fetch from 'node-fetch';
@@ -23,15 +27,17 @@ export class UserService {
   }
 
   async getLeader(): Promise<User[]> {
-    return await this.
-    userDB.find({order: {points: "DESC"}})
+    return await this.userDB.find({ order: { points: 'DESC' } });
   }
 
   async getById(id: number): Promise<User> {
     return this.userDB.findOne({ where: { id: id } });
   }
-  async getByUsername(username: string): Promise<User> {
-    return this.userDB.findOne({ where: { username: username } });
+
+  async getByUsername(username: string): Promise<User[]> {
+    return await this.userDB.find({
+      where: { username: Like(`${username}%`) },
+    });
   }
 
   async getByEmail(email: string): Promise<User> {
@@ -54,17 +60,16 @@ export class UserService {
   // }
 
   async create(userData: CreateUserDto): Promise<User> {
-
     //const avatar = await this.find_image_url(userData.login)
 
     return this.userDB.save({
       id: userData.id,
       username: userData.login,
-      avatar : userData.image_url,
+      avatar: userData.image_url,
       two_fa_auth: false,
       points: 0,
       wins: 0,
-      losses: 0
+      losses: 0,
     });
   }
 
@@ -115,7 +120,10 @@ export class UserService {
     data = await response.json();
 
     const user: User = await this.getById(data.id);
-    token = await this.jwt.signAsync({ id: data.id, two_fa: user ? user.two_fa_auth : false });
+    token = await this.jwt.signAsync({
+      id: data.id,
+      two_fa: user ? user.two_fa_auth : false,
+    });
     res.cookie('token', token, { httpOnly: true });
     if (!user) return this.create(data);
     else return user;

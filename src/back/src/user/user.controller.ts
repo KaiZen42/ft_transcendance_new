@@ -10,6 +10,7 @@ import { IsNotEmptyObject } from 'class-validator';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 
+
 @Controller('users')
 export class UserController {
 	constructor(private readonly user: UserService,
@@ -27,7 +28,7 @@ export class UserController {
 //
 
   @Get('username/:username')
-  async getByUsername(@Param('username') username: string): Promise<User> {
+  async getByUsername(@Param('username') username: string): Promise<User[]> {
 	return await this.user.getByUsername(username);
   }
 

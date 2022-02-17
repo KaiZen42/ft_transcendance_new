@@ -3,7 +3,7 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes , Navigate} from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Chat from "./pages/chat/Chat";
+import Chat from "./pages/chat_f/Chat";
 import Leaderboard from "./pages/Leaderboard";
 import SignIn from "./pages/SignIn";
 import Error404 from "./pages/404";

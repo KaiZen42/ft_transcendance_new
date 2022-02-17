@@ -43,10 +43,6 @@ export class UserService {
   async getByEmail(email: string): Promise<User> {
     return this.userDB.findOne({ where: { email } });
   }
- // find(title: Like("%out #%"),
-  async getByUsername(username: string): Promise<User[]> {
-    return (await this.userDB.find({ where: { username : Like(`%${username}%`)}}));
-  }
 
   // async find_image_url(username: string)
   // {

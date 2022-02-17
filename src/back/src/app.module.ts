@@ -7,14 +7,14 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 //socket
-import { ChatModule, EventsModule } from './chat/chat.module';
+import { ChatModule } from './chat/chat.module';
 import { User } from './user/models/user.entity';
 import { Message } from './chat/models/message.entity';
 import { PongModule } from './game/pong.module';
 
 
 @Module({
-  imports: [UserModule, AuthModule, ChatModule, PongModule, EventsModule,
+  imports: [UserModule, AuthModule, ChatModule, PongModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'db',

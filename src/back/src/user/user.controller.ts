@@ -27,10 +27,6 @@ export class UserController {
 //   } 
 //
 
-  @Get('username/:username')
-  async getByUsername(@Param('username') username: string): Promise<User[]> {
-	return await this.user.getByUsername(username);
-  }
 
   @Get('email/:email')
   async getByEmail(@Param('email') email: string): Promise<User> {

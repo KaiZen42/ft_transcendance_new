@@ -30,6 +30,7 @@ export function Chat(/* {user} : Prop */) {
   const [pkg, setPkg] = useState<MessagePkg>();
   const [socket, setSocket] = useState<Socket>();
   const [roomState, setRoom] = useState('');
+  const [clicked, setClicked] = useState(false);
 
   function getUser() {
     fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
@@ -108,42 +109,7 @@ export function Chat(/* {user} : Prop */) {
           {pkg === undefined ? null : (
             <UserList socket={socket} userId={pkg.userId.id} />
           )}
-          <div className="col-md-4 col-xl-3 chat">
-            <div className="card mb-sm-3 mb-md-0 contacts_card">
-              <div className="card-header">
-                <div className="user_info">
-                  <span>Your Chats</span>
-                </div>
-              </div>
-              <div className="card-body contacts_body">
-                <ul className="contacts">
-                  <li className="active">
-                    <div className="d-flex bd-highlight">
-                      <div className="img_cont">
-                        <span className="online_icon"></span>
-                      </div>
-                      <div className="user_info">
-                        <span>Khalid</span>
-                        <p>Kalid is online</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="d-flex bd-highlight">
-                      <div className="img_cont">
-                        <span className="online_icon offline"></span>
-                      </div>
-                      <div className="user_info">
-                        <span>Taherah Big</span>
-                        <p>Taherah left 7 mins ago</p>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div className="card-footer"></div>
-            </div>
-          </div>
+          {pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState}/>}
           <div className="col-md-8 col-xl-6 chat">
             <div className="card">
               <div className="card-header msg_head">

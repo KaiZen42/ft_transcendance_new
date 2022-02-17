@@ -50,7 +50,7 @@ import { Partecipant } from '../models/partecipant.entity';
 	async create(partecipant: Partecipant): Promise<Partecipant> {
 	  return this.partecipantDB.save({
 		userId: partecipant.userId,
-		channel: partecipant.channelId,
+		channelId: partecipant.channelId,
 		muted : partecipant.muted,
 		mod : partecipant.mod,
 	  });

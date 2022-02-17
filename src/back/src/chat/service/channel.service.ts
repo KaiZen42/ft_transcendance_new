@@ -20,7 +20,7 @@ import { PartecipantService } from './partecipant.service';
 export class ChannelService {
 	constructor(
 		@InjectRepository(Channel) private readonly channelDB: Repository<Channel>,
-		private readonly partService: PartecipantService,
+		private readonly  partService: PartecipantService,
 		private readonly msgService: MessageService) 
 		{}
 
@@ -51,9 +51,21 @@ export class ChannelService {
 	async getUserByChan(id: number) : Promise<User[]>
 	{
 		const res = await getRepository(User)
-			.createQueryBuilder("user")
-			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.channelId = :chId", {chId: id} )
+			.createQueryBuilder("users")
+			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId = users.id")
+			.where("partecipant.channelId = :chId", {chId: id})
 			.getMany();
+			console.log("RAW MANY ", res)
+		return res;
+	}
+
+	async getOtherByChan(id: number , userId: number) : Promise<User[]>
+	{
+		const res = await getRepository(User)
+			.createQueryBuilder("users")
+			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId = users.id AND users.id != :userId",{ userId: userId})
+			.where("partecipant.channelId = :chId ", {chId: id})
+			.getMany()
 		return res;
 	}
 
@@ -71,7 +83,7 @@ export class ChannelService {
 			pass : channel.pass,
 			isPrivate : channel.isPrivate,
 		});
-
+		console.log("CHANNEL CREATED:" , ch)
 		this.partService.create(
 			{
 				id : 0,

@@ -12,9 +12,11 @@ id: number;
 @ManyToOne(() => User , user => user.id)
 userId: number;
 
- @ManyToOne(() => Channel , channel => channel.id)
+@Column({ nullable: false })
+@ManyToOne(() => Channel , channel => channel.id)
 channelId: number; 
 
+@Column({ nullable: false })
 @Column()
 muted: number; 
 

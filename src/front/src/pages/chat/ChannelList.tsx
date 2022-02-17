@@ -1,3 +1,4 @@
+import { RestorePageOutlined } from '@mui/icons-material';
 import {
   Box,
   List,
@@ -13,6 +14,7 @@ import {
   MessageInfoPkg,
   OpenRoomPkg,
 } from '../../models/Chat.interface';
+import { User } from '../../models/User.interface';
 
 interface Prop {
   socket: Socket | undefined;
@@ -22,6 +24,7 @@ interface Prop {
 
 export function ChannelList({ socket, userId, room }: Prop) {
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
+  const [user, setUser] = useState<User[]>([]);
   //const [openRoomPkg, setOpenPkg] = useState();
 
   const selectChannel = (event: any, id: number) => {
@@ -39,8 +42,9 @@ export function ChannelList({ socket, userId, room }: Prop) {
       { credentials: 'include' }
     )
       .then((response) => response.json())
-      .then((result) => setChannel(result));
-    console.log('CHANNELS: ', channels);
+      .then((result) => {
+        setChannel(result);
+      });
 
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
@@ -50,7 +54,17 @@ export function ChannelList({ socket, userId, room }: Prop) {
         if (ch !== undefined) ch.notification++;
       }
     });
-  }, [socket]);
+  }, []);
+
+  async function getUser(chanId: number) {
+    console.log('CHAN ID:   ', chanId, 'USER ID:    ', userId);
+    await fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/OtherUserInChannel/${chanId}/User/${userId}`,
+      { credentials: 'include' }
+    )
+      .then((response) => response.json())
+      .then((result) => setUser(result));
+  }
   // return(
   // 	<div>
   // 		<Box sx={{ p: 1, border: 1 }} >
@@ -73,18 +87,18 @@ export function ChannelList({ socket, userId, room }: Prop) {
   // 	</div>
   // );
 
-//   default function get_avatar(Chan: ChannelInfo)
-//   {
-// 	  let 
-// 	  return("")
-//   }
+  //   default function get_avatar(Chan: ChannelInfo)
+  //   {
+  // 	  let
+  // 	  return("")
+  //   }
 
   return (
     <div className="col-md-4 col-xl-3 chat">
       <div className="card mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
           <div className="user_info">
-            <span>Your Chats</span>
+            <span>Open Chats</span>
           </div>
         </div>
         <div className="card-body contacts_body">
@@ -97,44 +111,50 @@ export function ChannelList({ socket, userId, room }: Prop) {
               };
               if (chan.notification === undefined) chan.notification = 0;
               socket?.emit('openRoom', opnePkj);
+              getUser(chan.id);
               return (
-                <li className="active"> {/* TODO: aggiungere stato effettivo */}
+                <li className="active">
+                  {' '}
+                  {/* TODO: aggiungere stato effettivo */}
                   <div className="d-flex bd-highlight">
                     <div className="img_cont">
-					{/* 
-					 */}
+                      <img
+                        src={user?.avatar}
+                        className="rounded-circle user_img"
+                      />
                       <span className="online_icon"></span>
                     </div>
                     <div className="user_info">
-                      <span>Khalid</span>
+                      <span>{user?.username}</span>
                       <p>Kalid is online</p>
+                      {/* TODO: aggiungere stato effettivo */}
                     </div>
                   </div>
                 </li>
               );
             })}
             {/* <li className="active">
-                    <div className="d-flex bd-highlight">
-                      <div className="img_cont">
-                        <span className="online_icon"></span>
-                      </div>
-                      <div className="user_info">
-                        <span>Khalid</span>
-                        <p>Kalid is online</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="d-flex bd-highlight">
-                      <div className="img_cont">
-                        <span className="online_icon offline"></span>
-                      </div>
-                      <div className="user_info">
-                        <span>Taherah Big</span>
-                        <p>Taherah left 7 mins ago</p>
-                      </div>
-                    </div>
-                  </li> */}
+					<div className="d-flex bd-highlight">
+					<div className="img_cont">
+						<span className="online_icon"></span>
+					</div>
+					<div className="user_info">
+						<span>Khalid</span>
+						<p>Kalid is online</p>
+					</div>
+					</div>
+				</li>
+				<li>
+					<div className="d-flex bd-highlight">
+					<div className="img_cont">
+						<span className="online_icon offline"></span>
+					</div>
+					<div className="user_info">
+						<span>Taherah Big</span>
+						<p>Taherah left 7 mins ago</p>
+					</div>
+					</div>
+				</li> */}
           </ul>
         </div>
         <div className="card-footer"></div>

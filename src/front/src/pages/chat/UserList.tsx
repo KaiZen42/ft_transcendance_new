@@ -50,9 +50,10 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 interface Prop {
   socket: Socket | undefined;
   userId: number;
+  setClicked: (click: boolean) => void
 }
 
-export function UserList({ socket, userId }: Prop) {
+export function UserList({ socket, userId, setClicked }: Prop) {
   const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();
@@ -93,6 +94,7 @@ export function UserList({ socket, userId }: Prop) {
 
   function selectUser(e: any, otherId: number) {
     console.log(otherId);
+    setClicked(true);
     setCreationChannel({
       idUser: userId,
       otherUser: otherId,
@@ -106,6 +108,8 @@ export function UserList({ socket, userId }: Prop) {
     socket?.emit('createRoom', ch);
   }, [ch]);
 
+  // setClicked(false)
+// 
   return (
     <div className="col-md-4 col-xl-3 chat">
       <div className="card-search mb-sm-3 mb-md-0 contacts_card">

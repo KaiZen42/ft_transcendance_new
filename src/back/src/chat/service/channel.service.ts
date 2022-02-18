@@ -5,9 +5,10 @@ import {
 	Query
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
+import { channel } from 'diagnostics_channel';
 import { User } from 'src/user/models/user.entity';
   import { getConnection, getRepository, Repository } from 'typeorm';
-import { ChannelInfo } from '../dto/chat.dto';
+import { ChannelInfoDto } from '../dto/chat.dto';
 
 import { Channel } from '../models/channel.entity';
 import { Message } from '../models/message.entity';
@@ -44,10 +45,31 @@ export class ChannelService {
 			.addSelect(['channel.id', "channel.name", "channel.isPrivate"])
 			.orderBy("channel.id", "ASC")
 			.getMany()
-		console.log("CHANNEL INFO", res)
+		//console.log("CHANNEL INFO", res)
 		return res;
 	}
 
+	async getInfoChanByUser(id : number) : Promise<any[]>
+	{
+		const chanQb = await this.channelDB
+		.createQueryBuilder("channel")
+		.leftJoin("channel.partecipants", "partecipant")
+		.where("partecipant.userId = :userId", {userId: id})
+		.select("channel")
+
+		const res =  await this.channelDB
+			.createQueryBuilder("channel")
+			.from(chanQb)
+			.leftJoin("channel.partecipants", "partecipant")
+			.leftJoinAndSelect("partecipant.userId", "users")
+			.select(['channel.id', "channel.name", "channel.isPrivate" ])
+			.addSelect(["partecipant.id"])
+			.addSelect(["users.id","users.username", "users.avatar"])
+			.orderBy("channel.id", "ASC")
+			.getMany()
+		console.log("CHANNEL INFO", res)
+		return res;
+	}
 	
 	async getUserByChan(id: number) : Promise<User[]>
 	{

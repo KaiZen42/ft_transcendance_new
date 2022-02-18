@@ -219,16 +219,14 @@ export default function Pong(props: any) {
   };
 
   const handlePlayers = (players: [User, User]) => {
-    if (players[0].username === user?.username)
-    {
-      setOpponent(players[1])
-      playerNumber = 0
-    }
-    else
-    {
+    if (playerNumber)
       setOpponent(players[0])
-      playerNumber = 1
-    }
+    else
+      setOpponent(players[1])
+  }
+
+  const handlePlayerNumber = (number: number) => {
+    playerNumber = number
   }
 
   const joinGame = (tmp_user: User) => {
@@ -258,6 +256,7 @@ export default function Pong(props: any) {
       socket = socketIOClient(ENDPOINT);
       socket.on('gameState', handleGameState);
       socket.on('gameOver', handleGameOver);
+      socket.on('playerNumber', handlePlayerNumber)
       socket.on('players', handlePlayers);
     }
 

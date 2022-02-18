@@ -132,6 +132,7 @@ export default class PongGateway implements
 			intervalID: undefined
 		}
 		client.data.number = 0
+		client.emit("playerNumber", 0)
 	}
 
 	joinGame(client: Socket, user: any)
@@ -149,6 +150,7 @@ export default class PongGateway implements
 			this.rooms[roomId].users[1] = {...user}
 			client.join(roomId)
 			client.data.number = 1
+			client.emit("playerNumber", 1)
 
 			this.startGameInterval(roomId)
 		}

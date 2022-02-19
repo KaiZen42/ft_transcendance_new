@@ -111,7 +111,7 @@ export function UserList({ socket, userId, setClicked }: Prop) {
   // setClicked(false)
 // 
   return (
-    <div className="col-md-4 col-xl-3 chat">
+    <div className="col-md-3 col-xl-3 chat">
       <div className="card-search mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
           <div className="input-group">
@@ -129,9 +129,9 @@ export function UserList({ socket, userId, setClicked }: Prop) {
             </div>
           </div>
         </div>
+		<div className="card-body contacts_body">
+            <ul className="contacts scrollable-search">
         {users.map((user: User) => (
-          <div className="card-body contacts_body">
-            <ul className="contacts">
               <li>
                 <div className="d-flex bd-highlight">
                   <div className="img_cont" onClick={(e) => selectUser(e, user.id)}>
@@ -155,20 +155,9 @@ export function UserList({ socket, userId, setClicked }: Prop) {
                   </div>
                 </div>
               </li>
-  0            {/* <li>
-              <div className="d-flex bd-highlight">
-                <div className="img_cont">
-                  <span className="online_icon offline"></span>
-                </div>
-                <div className="user_info">
-                  <span>Taherah Big</span>
-                  <p>Taherah left 7 mins ago</p>
-                </div>
-              </div>
-            </li> */}
+			))}
             </ul>
-          </div>
-        ))}
+			</div>
         <div className="card-footer"></div>
       </div>
     </div>

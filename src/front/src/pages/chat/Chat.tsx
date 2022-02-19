@@ -110,7 +110,7 @@ export function Chat(/* {user} : Prop */) {
             <UserList socket={socket} userId={pkg.userId.id} setClicked={setClicked} />
           )}
           {pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState} clicked={clicked} setClicked={setClicked}/>}
-          <div className="col-md-8 col-xl-6 chat">
+          <div className="col-md-4 col-xl-6 chat">
             <div className="card">
               <div className="card-header msg_head">
                 <div className="d-flex bd-highlight">

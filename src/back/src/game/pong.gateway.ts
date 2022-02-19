@@ -1,7 +1,7 @@
 
 const FRAME_RATE = 50
 
-import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket} from "socket.io";
 import { PongService } from "./pong.service";
 
@@ -107,7 +107,8 @@ export default class PongGateway implements
 	{
 		if (!this.rooms[roomId])
 			return
-		this.emitGameOver(roomId, winner)
+		const scores : number[] = [this.rooms[roomId].state.players[0].score, this.rooms[roomId].state.players[1].score]
+		this.emitGameOver(roomId, winner, scores)
 		clearInterval(this.rooms[roomId].intervalID)
 		delete this.rooms[roomId]
 	}
@@ -117,9 +118,9 @@ export default class PongGateway implements
 		this.server.to(roomId).emit("gameState", state)
 	}
 
-	emitGameOver(roomId: string, winner: number)
+	emitGameOver(roomId: string, winner: number, scores: number[])
 	{
-		this.server.to(roomId).emit("gameOver", winner)
+		this.server.to(roomId).emit("gameOver", winner, scores)
 	}
 	
 	createGame(client: Socket, user: any)

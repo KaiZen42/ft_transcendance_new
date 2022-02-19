@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import socketIOClient, { Socket } from 'socket.io-client';
 import '../styles/Game.css';
 import opponent_img from "../assets/opponent.jpeg"
+import GamePopUp from '../components/GamePopPup';
 
 const USER_COLOR = "rgb(201, 0, 241)"
 const OPPONENT_COLOR = "rgb(76, 123, 214)"
@@ -47,13 +48,18 @@ interface GameState {
 interface User {
   username: string,
   points: number,
-  avatar: string
+  avatar: string,
+  score: number
 }
 
 export default function Pong(props: any) {
 
   const [user, setUser] = useState<User>()
   const [opponent, setOpponent] = useState<User>()
+  const [winner, setWinner] = useState<number>()
+  const [safe, setSafe] = useState<Socket>()
+
+  let navigate = useNavigate()
 
   const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
 
@@ -207,22 +213,29 @@ export default function Pong(props: any) {
     requestAnimationFrame(() => render(state));
   };
 
-  const handleGameOver = (winner: number) => {
-    if (winner == playerNumber)
-      setTimeout(() => {
-        alert('You win!');
-      }, 200);
-    else
-      setTimeout(() => {
-        alert('You lose.');
-      }, 200);
+  const endGame = (winner: number, scores: number[]) => {
+    setWinner(winner)
+    setUser(prevUser => ({
+      ...prevUser!,
+      score: scores[playerNumber]
+    }))
+    setOpponent(prevOpponent => ({
+      ...prevOpponent!,
+      score: scores[playerNumber ? 0 : 1]
+    }))
+  }
+
+  const handleGameOver = (winner: number, scores: number[]) => {
+    setTimeout(() => {
+      endGame(winner, scores)
+    }, 200)
   };
 
   const handlePlayers = (players: [User, User]) => {
     if (playerNumber)
-      setOpponent(players[0])
+      setOpponent({...players[0], score: 0})
     else
-      setOpponent(players[1])
+      setOpponent({...players[1], score: 0})
   }
 
   const handlePlayerNumber = (number: number) => {
@@ -236,39 +249,56 @@ export default function Pong(props: any) {
     document.addEventListener('keyup', keyup);
   };
 
+  const initSocket = () => {
+    if (safe)
+      safe.close()
+  
+    socket = socketIOClient(ENDPOINT);
+    socket.on('gameState', handleGameState);
+    socket.on('gameOver', handleGameOver);
+    socket.on('playerNumber', handlePlayerNumber)
+    socket.on('players', handlePlayers);
+    setSafe(socket)
+  }
+
+  const defaultCanva = () => {
+    canvas = canvasRef.current!;
+    ctx = canvas.getContext('2d')!;
+    canvas.width = 500;
+    canvas.height = 50;
+    drawText('Searching for an opponent...', 250, 40, 'white');
+  }
+
   useEffect(() => {
     async function getter() {
       const res = await fetch(
         `http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {credentials: 'include'}
       );
       const user = await res.json();
-      setUser(user);
+      setUser({...user, score: 0});
       joinGame(user);
     }
-
     getter();
-    canvas = canvasRef.current!;
-    ctx = canvas.getContext('2d')!;
-    canvas.width = 500;
-    canvas.height = 50;
-    drawText('Searching for an opponent...', 250, 40, 'white');
-    if (!socket) {
-      socket = socketIOClient(ENDPOINT);
-      socket.on('gameState', handleGameState);
-      socket.on('gameOver', handleGameOver);
-      socket.on('playerNumber', handlePlayerNumber)
-      socket.on('players', handlePlayers);
-    }
-
+    defaultCanva()
+    initSocket()
     return () => {
-      socket.close();
+      if (socket)
+        socket.close();
     };
   }, []);
+
+  const restartGame = () => {
+    setOpponent(undefined)
+    setWinner(undefined)
+    defaultCanva()
+    initSocket()
+    joinGame(user!)
+  }
 
   return (
     <>
       <div className="container h-100 w-100">
-        <div className='row h-100 align-items-center'>
+        <div className={`row align-items-center ${opponent ? "h-100" : "h-80"}`}>
           <div className='col col-centered'>
              <img alt="profile image" src={user?.avatar} className="game--image game-user"/>
              <p className='game-text'>{user?.username}</p>
@@ -290,10 +320,15 @@ export default function Pong(props: any) {
             }
           </div>
         </div>
-        <NavLink to={'/'} >
-          <div >Back to home</div>
-        </NavLink>
+        {
+          <div className='row align-items-end justify-content-center'>
+            <div className='col-2 col-centered '>
+              <button onClick={()=>{if (safe) safe.close();navigate("/")}}style={{backgroundColor : "white", width: "auto"}}>Back to home</button>
+            </div>
+          </div>
+        }
       </div>
+        <GamePopUp winner={winner} users={[user, opponent]} playAgain={restartGame}/>
       <video autoPlay muted loop className="video">
         <source src="./movie2.webm" type="video/webm" />
       </video>

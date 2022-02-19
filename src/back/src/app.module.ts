@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 // import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -13,7 +11,7 @@ import { Message } from './chat/models/message.entity';
 import { PongModule } from './game/pong.module';
 import { Channel } from './chat/models/channel.entity';
 import { Partecipant } from './chat/models/partecipant.entity';
-
+import { Match } from './game/models/match.entity';
 
 @Module({
   imports: [UserModule, AuthModule, ChatModule, PongModule,
@@ -24,12 +22,12 @@ import { Partecipant } from './chat/models/partecipant.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Message, Channel, Partecipant],
+      entities: [User, Message, Channel, Partecipant, Match],
       autoLoadEntities: true,
       synchronize: true,
     })],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
 

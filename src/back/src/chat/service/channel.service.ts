@@ -51,24 +51,25 @@ export class ChannelService {
 
 	async getInfoChanByUser(id : number) : Promise<any[]>
 	{
-		const chanQb = await this.channelDB
-		.createQueryBuilder("channel")
-		.leftJoin("channel.partecipants", "partecipant")
-		.where("partecipant.userId = :userId", {userId: id})
-		.select("channel")
+		// const chanQb = await this.channelDB
+		// .createQueryBuilder("channel")
+		// .leftJoin("channel.partecipants", "partecipant")
+		// .where("partecipant.userId = :userId", {userId: id})
+		// .select("channel")
 
-		const res =  await this.channelDB
-			.createQueryBuilder("channel")
-			.from(chanQb)
-			.leftJoin("channel.partecipants", "partecipant")
-			.leftJoinAndSelect("partecipant.userId", "users")
-			.select(['channel.id', "channel.name", "channel.isPrivate" ])
-			.addSelect(["partecipant.id"])
-			.addSelect(["users.id","users.username", "users.avatar"])
-			.orderBy("channel.id", "ASC")
-			.getMany()
-		console.log("CHANNEL INFO", res)
-		return res;
+		// const res =  await this.channelDB
+		// 	.createQueryBuilder("channel")
+		// 	.from(chanQb)
+		// 	.leftJoin("channel.partecipants", "partecipant")
+		// 	.leftJoinAndSelect("partecipant.userId", "users")
+		// 	.select(['channel.id', "channel.name", "channel.isPrivate" ])
+		// 	.addSelect(["partecipant.id"])
+		// 	.addSelect(["users.id","users.username", "users.avatar"])
+		// 	.orderBy("channel.id", "ASC")
+		// 	.getMany()
+		// console.log("CHANNEL INFO", res)
+		// return res;
+		return [1, 2]
 	}
 	
 	async getUserByChan(id: number) : Promise<User[]>

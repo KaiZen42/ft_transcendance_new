@@ -1,8 +1,9 @@
 
 const FRAME_RATE = 50
 
-import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket} from "socket.io";
+import { MatchService } from "./match.service";
 import { PongService } from "./pong.service";
 
 interface RoomState {
@@ -16,11 +17,13 @@ interface RoomState {
 			down: boolean
 		}],
 		users:[{
+			id: number
 			username: string,
   			points: number,
   			avatar: string
 		},
 		{
+			id: number,
 			username: string,
   			points: number,
   			avatar: string
@@ -36,7 +39,10 @@ interface ClientRoom {
 @WebSocketGateway({ cors : true , namespace : "pong"})
 export default class PongGateway implements
 	OnGatewayDisconnect {
-		constructor(private readonly game: PongService){}
+		constructor(
+			private readonly game: PongService,
+			private readonly match: MatchService
+		){}
 	
 	private loopLimit = 0
 	private clientRooms: ClientRoom = {} // works like a map, key=clientId, value=roomId
@@ -108,8 +114,21 @@ export default class PongGateway implements
 		if (!this.rooms[roomId])
 			return
 		const scores : number[] = [this.rooms[roomId].state.players[0].score, this.rooms[roomId].state.players[1].score]
+		if (scores[0] !== 5 && scores[1] !== 5)
+		{
+			scores[winner] = 5
+			scores[winner ? 0 : 1] = 0
+		}
 		this.emitGameOver(roomId, winner, scores)
 		clearInterval(this.rooms[roomId].intervalID)
+		const player1 = this.rooms[roomId].users[0].id
+		const player2 = this.rooms[roomId].users[1].id
+		this.match.create({
+			player1,
+			player2,
+			points1: scores[0],
+			points2: scores[1]
+		})
 		delete this.rooms[roomId]
 	}
 

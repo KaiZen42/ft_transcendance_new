@@ -24,6 +24,4 @@ export class Channel {
   @OneToMany(() => Partecipant , partecipant => partecipant.channelId)
   partecipants: Partecipant[]; 
 
-
-
 }

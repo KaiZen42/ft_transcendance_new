@@ -6,19 +6,19 @@ import { Channel } from './channel.entity';
 @Entity("message")
 export class Message {
 
-@PrimaryGeneratedColumn()
-id: number;
+	@PrimaryGeneratedColumn()
+	id: number;
 
-@ManyToOne(() => User , user => user.id)
-userId: number;
+	@ManyToOne(() => User , user => user.id)
+	userId: number;
 
-@ManyToOne(() => Channel , channel => channel.id)
-channelId: number;
+	@ManyToOne(() => Channel , channel => channel.id)
+	channelId: number;
 
-@Column()
-data: string; 
+	@Column()
+	data: string; 
 
-@Column("date")
-sendDate: Date;
+	@Column("date")
+	sendDate: Date;
 
 }

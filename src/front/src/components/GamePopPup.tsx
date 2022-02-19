@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { UserWL } from "../models/Game.interfaces"
 import "../styles/GamePopUp.css"
 
 interface User {
@@ -12,24 +13,50 @@ interface User {
 
 interface Props {
 	winner: number | undefined,
-	users: [User?, User?],
+	users: [UserWL?, User?],
 	playAgain: () => void
 }
 
 export default function GamePopUp({winner, users, playAgain}: Props) {
 
 	const [win, setWin] = useState<boolean>()
+	const [updatedPoints, SetUpdatedPoints] = useState<number>(0)
+	const [diffPoints, SetDiffPoints] = useState<number>(0)
+	const [wl, setWL] = useState<[number, number]>([0, 0])
 
 	let navigate = useNavigate()
 
 	useEffect(() => {
+		if (typeof winner === "undefined")
+			return
 		if (!users[0] || !users[1])
 			return
 		if (users[0].score > users[1].score)
+		{
 			setWin(true)
-		else if (users[1].score > users[0].score)
+			calcPoints(true)
+		}
+		else
+		{
 			setWin(false)
+			calcPoints(false)
+		}
 	}, [users])
+
+	const calcPoints = (iWin: boolean) => {
+		if (iWin)
+		{
+			SetUpdatedPoints(users[0]!.points + 30)
+			SetDiffPoints(30)
+			setWL([users[0]!.wins+1, users[0]!.losses])
+		}
+		else
+		{
+			SetUpdatedPoints(users[0]!.points - 30 < 0 ? 0 : users[0]!.points - 30)
+			SetDiffPoints(-(users[0]!.points - 30 < 0 ? users[0]!.points : 30))
+			setWL([users[0]!.wins, users[0]!.losses+1])
+		}
+	}
 
 	return (
 		<div
@@ -42,7 +69,7 @@ export default function GamePopUp({winner, users, playAgain}: Props) {
 		{
 			(typeof winner !== "undefined") &&
 			<div className={`game-popup ${win ? "popup-win" : "popup-lost"}`}>
-				<div className="flex-col">
+				<div className="flex-col sp-even" style={{height:"100%"}}>
 					<div className="flex-col">
 						<h2 className={`game-popup-title ${win ? "title-win" : "title-lost"}`}>{win ? "YOU WON!" : "YOU LOST"}</h2>
 						<p className="game-popup-text fnt-30 nice-shadow">Final Result</p>
@@ -62,7 +89,27 @@ export default function GamePopUp({winner, users, playAgain}: Props) {
 							<p className="game-popup-text nice-shadow">{users[1]?.username}</p>
 						</div>
 					</div>
-					<div className="flex-col sp-around" style={{height: "100px"}}>
+					<div className="flex-col sp-around" style={{height: "100px", width: "100%"}}>
+						<p className="game-popup-text fnt-30 nice-shadow" style={{marginBottom:"0px"}}>Your Stats</p>
+						<div className="flex-row sp-even" style={{width: "100%"}}>
+							<div className="game-popup-text nice-shadow">points</div>
+							<div className="flex-row sp-around" style={{width: "20%", maxWidth:"60px"}}>
+								<div className="game-popup-text nice-border">{updatedPoints} </div>
+								{
+									diffPoints>0 ?
+										<div className="game-popup-text border-pos"><small>(+{diffPoints})</small></div>
+									:
+										<div className="game-popup-text border-neg"><small>{`${diffPoints ? "("+diffPoints+")" : ""}`}</small></div>
+
+								}
+							</div>
+						</div>
+						<div className="flex-row sp-even" style={{width: "100%"}}>
+							<div className="game-popup-text nice-shadow">wins-losses</div>
+							<div className={`game-popup-text ${(wl[0]>wl[1] ? "border-pos" : (wl[1]>wl[0] ? "border-neg" : ""))}`} style={{width: "20%", maxWidth:"60px"}}>{wl![0]} - {wl![1]}</div>
+						</div>
+					</div>
+					<div className="flex-col sp-even" style={{height: "100px"}}>
 						<button className="game-popup-btn btn-play" onClick={() => playAgain()}>PLAY AGAIN</button>
 						<button className="game-popup-btn btn-home" onClick={() => navigate("/")}>BACK TO HOME</button>
 					</div>

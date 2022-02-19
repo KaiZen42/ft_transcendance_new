@@ -46,3 +46,13 @@ export interface User {
 	avatar: string,
 	score: number
 }
+
+export interface UserWL {
+	id: string
+	username: string,
+	points: number,
+	avatar: string,
+	score: number,
+	wins: number,
+	losses: number
+}

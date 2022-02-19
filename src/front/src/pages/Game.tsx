@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import socketIOClient, { Socket } from 'socket.io-client';
 import opponent_img from "../assets/opponent.jpeg"
 import GamePopUp from '../components/GamePopPup';
-import { GameState, Net, OPPONENT_COLOR, Player, User, USER_COLOR } from '../models/Game.interfaces';
+import { GameState, Net, OPPONENT_COLOR, Player, User, UserWL, USER_COLOR } from '../models/Game.interfaces';
 
 import '../styles/Game.css';
 
@@ -11,7 +11,7 @@ export default function Pong() {
 
   const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
 
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<UserWL>()
   const [opponent, setOpponent] = useState<User>()
   const [winner, setWinner] = useState<number>()
   const [safe, setSafe] = useState<Socket>()
@@ -197,7 +197,7 @@ export default function Pong() {
     playerNumber = number
   }
 
-  const joinGame = (tmp_user: User) => {
+  const joinGame = (tmp_user: UserWL) => {
     socket.emit('joinGame', {
       id: tmp_user.id,
 	    username: tmp_user.username,
@@ -224,9 +224,9 @@ export default function Pong() {
   const defaultCanva = () => {
     canvas = canvasRef.current!;
     ctx = canvas.getContext('2d')!;
-    canvas.width = 500;
-    canvas.height = 50;
-    drawText('Searching for an opponent...', 250, 40, 'white');
+    canvas.width = 750;
+    canvas.height = 40;
+    drawText('Searching for an opponent...', 375, 40, 'white');
   }
 
   useEffect(() => {

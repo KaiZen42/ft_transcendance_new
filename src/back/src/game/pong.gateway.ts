@@ -3,38 +3,10 @@ const FRAME_RATE = 50
 
 import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket} from "socket.io";
+import { User } from "src/user/models/user.entity";
+import { ClientRoom, GameState, RoomStateMap } from "./interfaces/pong.interfaces";
 import { MatchService } from "./match.service";
 import { PongService } from "./pong.service";
-
-interface RoomState {
-	[roomId: string] : {
-		state: any,
-		moves: [{
-			up: boolean,
-			down: boolean
-		},{
-			up: boolean,
-			down: boolean
-		}],
-		users:[{
-			id: number
-			username: string,
-  			points: number,
-  			avatar: string
-		},
-		{
-			id: number,
-			username: string,
-  			points: number,
-  			avatar: string
-		}],
-		intervalID: any
-	}
-}
-
-interface ClientRoom {
-	[clientId: string] : string
-}
 
 @WebSocketGateway({ cors : true , namespace : "pong"})
 export default class PongGateway implements
@@ -46,7 +18,7 @@ export default class PongGateway implements
 	
 	private loopLimit = 0
 	private clientRooms: ClientRoom = {} // works like a map, key=clientId, value=roomId
-	private rooms: RoomState = {} // works like a map, key=roomId, value=room state & playerCount
+	private rooms: RoomStateMap = {} // works like a map, key=roomId, value=room state & playerCount
 	
 	@WebSocketServer()
 	private server: Server;
@@ -121,18 +93,21 @@ export default class PongGateway implements
 		}
 		this.emitGameOver(roomId, winner, scores)
 		clearInterval(this.rooms[roomId].intervalID)
-		const player1 = this.rooms[roomId].users[0].id
-		const player2 = this.rooms[roomId].users[1].id
-		this.match.create({
-			player1,
-			player2,
-			points1: scores[0],
-			points2: scores[1]
-		})
+		if (this.rooms[roomId].users[0] && this.rooms[roomId].users[1])
+		{
+			const player1 = this.rooms[roomId].users[0].id
+			const player2 = this.rooms[roomId].users[1].id
+			this.match.create({
+				player1,
+				player2,
+				points1: scores[0],
+				points2: scores[1]
+			})
+		}
 		delete this.rooms[roomId]
 	}
 
-	emitGameState(roomId: string, state: any)
+	emitGameState(roomId: string, state: GameState)
 	{
 		this.server.to(roomId).emit("gameState", state)
 	}
@@ -142,7 +117,7 @@ export default class PongGateway implements
 		this.server.to(roomId).emit("gameOver", winner, scores)
 	}
 	
-	createGame(client: Socket, user: any)
+	createGame(client: Socket, user: User)
 	{
 		this.clientRooms[client.id] = client.id
 		this.rooms[client.id] = {
@@ -155,7 +130,7 @@ export default class PongGateway implements
 		client.emit("playerNumber", 0)
 	}
 
-	joinGame(client: Socket, user: any)
+	joinGame(client: Socket, user: User)
 	{
 		this.loopLimit++
 		const available_rooms : string[] = Object.keys(this.rooms)

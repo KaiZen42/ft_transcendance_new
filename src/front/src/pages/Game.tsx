@@ -1,58 +1,15 @@
 import { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socketIOClient, { Socket } from 'socket.io-client';
-import '../styles/Game.css';
 import opponent_img from "../assets/opponent.jpeg"
 import GamePopUp from '../components/GamePopPup';
+import { GameState, Net, OPPONENT_COLOR, Player, User, USER_COLOR } from '../models/Game.interfaces';
 
-const USER_COLOR = "rgb(201, 0, 241)"
-const OPPONENT_COLOR = "rgb(76, 123, 214)"
+import '../styles/Game.css';
 
-interface Player {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  score: number;
-}
+export default function Pong() {
 
-interface Ball {
-  x: number;
-  y: number;
-  radius: number;
-  speed: number;
-  velocityX: number;
-  velocityY: number;
-  color: number;
-}
-
-interface Net {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string;
-}
-
-interface GameState {
-  players: [Player, Player];
-  food: {
-    x: number;
-    y: number;
-  };
-  ball: Ball;
-  fieldWidth: number;
-  fieldHeight: number;
-}
-
-interface User {
-  username: string,
-  points: number,
-  avatar: string,
-  score: number
-}
-
-export default function Pong(props: any) {
+  const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
 
   const [user, setUser] = useState<User>()
   const [opponent, setOpponent] = useState<User>()
@@ -60,8 +17,6 @@ export default function Pong(props: any) {
   const [safe, setSafe] = useState<Socket>()
 
   let navigate = useNavigate()
-
-  const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let socket: Socket;
@@ -140,7 +95,7 @@ export default function Pong(props: any) {
     ctx.lineTo(canvas.width-2, 2);
     ctx.lineTo(canvas.width-2, canvas.height-2);
     ctx.lineTo(canvas.width/2, canvas.height-2);
-    ctx.strokeStyle = USER_COLOR
+    ctx.strokeStyle = USER_COLOR;
     ctx.shadowColor = USER_COLOR;
     ctx.stroke()
 
@@ -243,7 +198,12 @@ export default function Pong(props: any) {
   }
 
   const joinGame = (tmp_user: User) => {
-    socket.emit('joinGame', tmp_user);
+    socket.emit('joinGame', {
+      id: tmp_user.id,
+	    username: tmp_user.username,
+	    points: tmp_user.points,
+	    avatar: tmp_user.avatar
+    });
 
     document.addEventListener('keydown', keydown);
     document.addEventListener('keyup', keyup);
@@ -285,6 +245,7 @@ export default function Pong(props: any) {
       if (socket)
         socket.close();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const restartGame = () => {
@@ -300,7 +261,7 @@ export default function Pong(props: any) {
       <div className="container h-100 w-100">
         <div className={`row align-items-center ${opponent ? "h-100" : "h-80"}`}>
           <div className='col col-centered'>
-             <img alt="profile image" src={user?.avatar} className="game--image game-user"/>
+             <img alt="profile" src={user?.avatar} className="game--image game-user"/>
              <p className='game-text'>{user?.username}</p>
              <p className='game-text'>{user?.points}  <small>pts</small></p>
           </div>
@@ -311,12 +272,12 @@ export default function Pong(props: any) {
             {
               opponent ?
                 <>
-                <img alt="profile image" src={opponent.avatar} className="game--image game-opponent"/>
+                <img alt="profile" src={opponent.avatar} className="game--image game-opponent"/>
                 <p className='game-text'>{opponent.username}</p>
                 <p className='game-text'>{opponent.points}  <small>pts</small></p>
                 </>
               :
-                <img alt="profile image" src={opponent_img} className="game--image game-opponent"/>
+                <img alt="profile" src={opponent_img} className="game--image game-opponent"/>
             }
           </div>
         </div>

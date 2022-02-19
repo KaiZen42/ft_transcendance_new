@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common"
+import { GameState, Player, RoomState } from "./interfaces/pong.interfaces"
 
 const FIELD_WIDTH = 750
 const FIELD_HEIGHT = 500
@@ -8,7 +9,7 @@ const BALL_RADIUS = 13
 
 @Injectable()
 export class PongService {
-	createGameState() {
+	createGameState() : GameState {
 		return {
 			players: [{
 				x: 0,
@@ -39,7 +40,7 @@ export class PongService {
 	}
 
 	// collision detection
-	collision(ball: any, paddle: any): boolean {
+	collision(ball: GameState["ball"], paddle: Player): boolean {
 		const ballTop = ball.y - ball.radius
 		const ballBottom = ball.y + ball.radius
 		const ballLeft = ball.x - ball.radius
@@ -55,7 +56,7 @@ export class PongService {
 	}
 
 	// move the paddles
-	updatePlayers(players: any, moves: any, fieldHeight: number) {
+	updatePlayers(players: [Player, Player], moves: RoomState["moves"], fieldHeight: number) {
 		if (moves[0].up)
 			players[0].y = (players[0].y - 5 >= 0) ? players[0].y - 5 : 0
 		if (moves[0].down)
@@ -67,7 +68,7 @@ export class PongService {
 	}
 
 	// reset ball
-	resetBall(ball: any) {
+	resetBall(ball: GameState["ball"]) {
 		ball.x = FIELD_WIDTH/2
 		ball.y = FIELD_HEIGHT/2
 		ball.speed = 5
@@ -75,7 +76,7 @@ export class PongService {
 		ball.color = 0
 	}
 	
-	gameLoop(state: any, moves: any): number {
+	gameLoop(state: GameState, moves: RoomState["moves"]): number {
 		if (!state)
 			return
 		

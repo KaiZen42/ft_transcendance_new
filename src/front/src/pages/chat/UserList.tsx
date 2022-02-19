@@ -155,7 +155,7 @@ export function UserList({ socket, userId, setClicked }: Prop) {
                   </div>
                 </div>
               </li>
-              {/* <li>
+  0            {/* <li>
               <div className="d-flex bd-highlight">
                 <div className="img_cont">
                   <span className="online_icon offline"></span>

@@ -30,9 +30,18 @@ export interface OpenRoomPkg
 
 export interface ChannelInfo
 {
-	id: number;
-	name: string;
-	isPrivate: boolean;
+		id: number;
+		name: string;
+		isPrivate: boolean;
+		partecipants: 
+		{
+			id: number,
+			userId:{
+				id: number,
+				username: string,
+				avatar: string
+			}
+		}[];
 	notification: number ;
 }
 

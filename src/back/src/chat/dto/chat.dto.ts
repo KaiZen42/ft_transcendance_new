@@ -50,7 +50,7 @@ export class messageDto {
 	data: string;
   }
   
-  export class ChannelInfo
+  export class ChannelInfoDto
 {
 	@IsNotEmpty()
 	id: number;
@@ -58,6 +58,17 @@ export class messageDto {
 	name: string;
 	@IsNotEmpty()
 	isPrivate: boolean;
+
+	@IsNotEmpty()
+	partecipants: 
+	{
+		id: number,
+		userId:{
+			id: number,
+			username: string,
+			avatar: string
+		}
+	}[]
 
 }
 

@@ -42,6 +42,8 @@ import { Partecipant } from '../models/partecipant.entity';
 			//channelId: 1
 		return res;
 	} */
+
+
 	
 	async getByChannel(channelId: number): Promise<Partecipant[]> {
 	  return this.partecipantDB.find({ where: { channelId } });

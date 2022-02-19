@@ -79,6 +79,12 @@ export class UserService {
     });
   }
 
+  async updatePoints(id: number, userData:{points: number, wins: number, losses: number}): Promise<any> {
+    return this.userDB.update(id, {
+      ...userData,
+    });
+  }
+
   async addImage(id: number, image_url: string) {
     return this.userDB.update(id, { avatar: image_url });
   }

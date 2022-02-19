@@ -256,6 +256,23 @@ export default function Pong() {
     joinGame(user!)
   }
 
+  async function updatePoints(points: number, wins: number, losses: number){
+    fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${user!.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({points, wins, losses}),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setUser({...data, score: 0});
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+
   return (
     <>
       <div className="container h-100 w-100">
@@ -289,7 +306,7 @@ export default function Pong() {
           </div>
         }
       </div>
-        <GamePopUp winner={winner} users={[user, opponent]} playAgain={restartGame}/>
+        <GamePopUp winner={winner} users={[user, opponent]} playAgain={restartGame} updatePoints={updatePoints}/>
       <video autoPlay muted loop className="video">
         <source src="./movie2.webm" type="video/webm" />
       </video>

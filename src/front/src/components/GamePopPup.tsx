@@ -14,10 +14,11 @@ interface User {
 interface Props {
 	winner: number | undefined,
 	users: [UserWL?, User?],
-	playAgain: () => void
+	playAgain: () => void,
+	updatePoints: (points: number, wins: number, losses: number) => void
 }
 
-export default function GamePopUp({winner, users, playAgain}: Props) {
+export default function GamePopUp({winner, users, playAgain, updatePoints}: Props) {
 
 	const [win, setWin] = useState<boolean>()
 	const [updatedPoints, SetUpdatedPoints] = useState<number>(0)
@@ -106,12 +107,12 @@ export default function GamePopUp({winner, users, playAgain}: Props) {
 						</div>
 						<div className="flex-row sp-even" style={{width: "100%"}}>
 							<div className="game-popup-text nice-shadow">wins-losses</div>
-							<div className={`game-popup-text ${(wl[0]>wl[1] ? "border-pos" : (wl[1]>wl[0] ? "border-neg" : ""))}`} style={{width: "20%", maxWidth:"60px"}}>{wl![0]} - {wl![1]}</div>
+							<div className={`game-popup-text ${(wl[0]>wl[1] ? "border-pos" : (wl[1]>wl[0] ? "border-neg" : "nice-border"))}`} style={{width: "20%", maxWidth:"60px"}}>{wl![0]} - {wl![1]}</div>
 						</div>
 					</div>
 					<div className="flex-col sp-even" style={{height: "100px"}}>
-						<button className="game-popup-btn btn-play" onClick={() => playAgain()}>PLAY AGAIN</button>
-						<button className="game-popup-btn btn-home" onClick={() => navigate("/")}>BACK TO HOME</button>
+						<button className="game-popup-btn btn-play" onClick={() => {updatePoints(updatedPoints, wl[0], wl[1]);playAgain()}}>PLAY AGAIN</button>
+						<button className="game-popup-btn btn-home" onClick={() => {updatePoints(updatedPoints, wl[0], wl[1]);navigate("/")}}>BACK TO HOME</button>
 					</div>
 				</div>
 			</div>

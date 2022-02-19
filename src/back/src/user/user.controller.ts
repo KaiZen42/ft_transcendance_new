@@ -70,6 +70,11 @@ export class UserController {
 		return this.user.getById(id);
 	}
 
+	@Put('updatepoints/:id') 
+	async updatePoints(@Param('id') id: number, @Body() userData: {points: number, wins: number, losses: number}) {
+		await this.user.updatePoints(id, userData);
+		return this.user.getById(id);
+	}
 
 	@Get('username/:username')
 	async getByUsername(@Param('username') username: string): Promise<User[]> {

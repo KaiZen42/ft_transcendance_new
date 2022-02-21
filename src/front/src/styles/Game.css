@@ -37,3 +37,16 @@
 .h-80 {
 	height: 80%;
 }
+
+.ptop-15 {
+	padding-top :"15%";
+}
+
+/* @media (max-width: 1200px)
+{
+	.test.row {
+		flex-direction: column!important;
+		justify-content: space-evenly!important;
+	}
+		
+} */

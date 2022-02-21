@@ -191,6 +191,7 @@ export default function Pong() {
       setOpponent({...players[0], score: 0})
     else
       setOpponent({...players[1], score: 0})
+    startCountdown()
   }
 
   const handlePlayerNumber = (number: number) => {
@@ -227,6 +228,22 @@ export default function Pong() {
     canvas.width = 750;
     canvas.height = 40;
     drawText('Searching for an opponent...', 375, 40, 'white');
+  }
+
+  const startCountdown = () => {
+    let num = 3
+    setTimeout(()=>{
+      drawRect(canvas.width/2-20, 62, 40, 40, 'black');
+      drawText((num--).toString(), canvas.width / 2, canvas.height / 5, 'white');  
+    }, 500)
+    setTimeout(() => {
+      const intvl = setInterval(() => {
+        drawRect(canvas.width/2-20, 62, 40, 40, 'black');
+        drawText((num--).toString(), canvas.width / 2, canvas.height / 5, 'white');  
+        if (num===0)
+          clearInterval(intvl)
+      },1000);
+    }, 500)
   }
 
   useEffect(() => {
@@ -276,7 +293,7 @@ export default function Pong() {
   return (
     <>
       <div className="container h-100 w-100">
-        <div className={`row align-items-center ${opponent ? "h-100" : "h-80"}`}>
+        <div className={`row align-items-center ${opponent ? "h-100" : "h-80"}`} style={{paddingTop: opponent ? "" : "15%"}}>
           <div className='col col-centered'>
              <img alt="profile" src={user?.avatar} className="game--image game-user"/>
              <p className='game-text'>{user?.username}</p>
@@ -299,9 +316,9 @@ export default function Pong() {
           </div>
         </div>
         {
-          <div className='row align-items-end justify-content-center'>
+          <div className='row align-items-start justify-content-center' style={{height:"20%"}}>
             <div className='col-2 col-centered '>
-              <button onClick={()=>{if (safe) safe.close();navigate("/")}}style={{backgroundColor : "white", width: "auto"}}>Back to home</button>
+              <button onClick={()=>{if (safe) safe.close();navigate("/")}} style={{backgroundColor : "white", width: "auto"}} className="game-popup-btn btn-home">BACK TO HOME</button>
             </div>
           </div>
         }

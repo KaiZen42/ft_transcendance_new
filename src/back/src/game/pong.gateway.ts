@@ -70,17 +70,20 @@ export default class PongGateway implements
 	}
 	
 	startGameInterval(roomId: string) {
+		this.emitGameState(roomId, this.rooms[roomId].state)
 		this.server.to(roomId).emit("players", this.rooms[roomId].users)
-		this.rooms[roomId].intervalID = setInterval(() => {
-			const winner = this.game.gameLoop(this.rooms[roomId].state, this.rooms[roomId].moves)
-			if (!winner)
-				this.emitGameState(roomId, this.rooms[roomId].state)
-			else
-			{
-				this.emitGameState(roomId, this.rooms[roomId].state)
-				this.endGame(roomId, winner-1)
-			}
-		}, 1000 / FRAME_RATE)
+		setTimeout(() => {
+			this.rooms[roomId].intervalID = setInterval(() => {
+				const winner = this.game.gameLoop(this.rooms[roomId].state, this.rooms[roomId].moves)
+				if (!winner)
+					this.emitGameState(roomId, this.rooms[roomId].state)
+				else
+				{
+					this.emitGameState(roomId, this.rooms[roomId].state)
+					this.endGame(roomId, winner-1)
+				}
+			}, 1000 / FRAME_RATE)
+		}, 3200);
 	}
 
 	async handleQuit(id: number)
@@ -105,7 +108,6 @@ export default class PongGateway implements
 			scores[winner] = 5
 			scores[winner ? 0 : 1] = 0
 			this.handleQuit(this.rooms[roomId].users[winner ? 0 : 1].id)
-			// TODO handle quit del loser
 		}
 		this.emitGameOver(roomId, winner, scores)
 		clearInterval(this.rooms[roomId].intervalID)

@@ -6,6 +6,7 @@ import {
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
 import { channel } from 'diagnostics_channel';
+import { userInfo } from 'os';
 import { User } from 'src/user/models/user.entity';
   import { getConnection, getRepository, Repository } from 'typeorm';
 import { ChannelInfoDto } from '../dto/chat.dto';
@@ -49,27 +50,26 @@ export class ChannelService {
 		return res;
 	}
 
-	async getInfoChanByUser(id : number) : Promise<any[]>
+		async getInfoChanByUser(id : number) : Promise<any[]>
 	{
-		// const chanQb = await this.channelDB
-		// .createQueryBuilder("channel")
-		// .leftJoin("channel.partecipants", "partecipant")
-		// .where("partecipant.userId = :userId", {userId: id})
-		// .select("channel")
-
-		// const res =  await this.channelDB
-		// 	.createQueryBuilder("channel")
-		// 	.from(chanQb)
-		// 	.leftJoin("channel.partecipants", "partecipant")
-		// 	.leftJoinAndSelect("partecipant.userId", "users")
-		// 	.select(['channel.id', "channel.name", "channel.isPrivate" ])
-		// 	.addSelect(["partecipant.id"])
-		// 	.addSelect(["users.id","users.username", "users.avatar"])
-		// 	.orderBy("channel.id", "ASC")
-		// 	.getMany()
+		const res = await this.channelDB
+		.createQueryBuilder("channel")
+		.where(qb => {
+			const subQuery = qb.subQuery()
+				.select(["channel.id"])
+				.from(Channel, "channel")
+				.leftJoin("channel.partecipants", "partecipant", "partecipant.channelId = channel.id")
+				.where("partecipant.userId = :userId", {userId: id})
+				.getQuery();
+			return "channel.id IN " + subQuery;
+		})
+		.select(['channel.id', "channel.name", "channel.isPrivate",  "partecipant.id", "users.id", "users.username", "users.avatar"  ])
+		.leftJoin("channel.partecipants", "partecipant")
+		.leftJoin("partecipant.userId", "users" )
+		.orderBy("channel.id", "ASC")
+		.getMany()
 		// console.log("CHANNEL INFO", res)
-		// return res;
-		return [1, 2]
+		 return res;
 	}
 	
 	async getUserByChan(id: number) : Promise<User[]>

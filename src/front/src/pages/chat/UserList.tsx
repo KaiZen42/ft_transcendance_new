@@ -50,10 +50,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 interface Prop {
   socket: Socket | undefined;
   userId: number;
-  setClicked: (click: boolean) => void
 }
 
-export function UserList({ socket, userId, setClicked }: Prop) {
+export function UserList({ socket, userId }: Prop) {
   const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();
@@ -94,7 +93,6 @@ export function UserList({ socket, userId, setClicked }: Prop) {
 
   function selectUser(e: any, otherId: number) {
     console.log(otherId);
-    setClicked(true);
     setCreationChannel({
       idUser: userId,
       otherUser: otherId,
@@ -132,7 +130,7 @@ export function UserList({ socket, userId, setClicked }: Prop) {
 		<div className="card-body contacts_body">
             <ul className="contacts scrollable-search">
         {users.map((user: User) => (
-              <li>
+              <li key="user.id">
                 <div className="d-flex bd-highlight">
                   <div className="img_cont" onClick={(e) => selectUser(e, user.id)}>
                     <Stack direction="row" spacing={2}>

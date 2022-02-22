@@ -50,7 +50,7 @@ export class ChannelService {
 		return res;
 	}
 
-		async getInfoChanByUser(id : number) : Promise<any[]>
+	async getInfoChanByUser(id : number) : Promise<any[]>
 	{
 		const res = await this.channelDB
 		.createQueryBuilder("channel")
@@ -71,6 +71,20 @@ export class ChannelService {
 		// console.log("CHANNEL INFO", res)
 		 return res;
 	}
+
+	async getInfoChanById(id : number) : Promise<any>
+	{
+		const res = await this.channelDB
+		.createQueryBuilder("channel")
+		.where("channel.id = :chId", {chId: id})
+		.select(['channel.id', "channel.name", "channel.isPrivate",  "partecipant.id", "users.id", "users.username", "users.avatar"  ])
+		.leftJoin("channel.partecipants", "partecipant")
+		.leftJoin("partecipant.userId", "users" )
+		.getOne()
+		// console.log("CHANNEL INFO", res)
+		 return res;
+	}
+
 	
 	async getUserByChan(id: number) : Promise<User[]>
 	{

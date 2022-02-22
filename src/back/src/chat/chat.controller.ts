@@ -75,4 +75,12 @@ export class chatController {
 		return someThings;
 	}
 
+	@Get("ChannelsInfoId/:idChan")
+	async getChannelsInfoById(@Param("idChan") chanId: number) : Promise<ChannelInfoDto>
+	{
+		let someThings: ChannelInfoDto =  await this.chService.getInfoChanById(chanId)
+		console.log("QUALCOSA: ", someThings);
+		return someThings;
+	}
+
 }

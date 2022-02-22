@@ -20,11 +20,9 @@ interface Prop {
 	socket: Socket | undefined;
 	userId: number;
 	room: string;
-	clicked: boolean;
-	setClicked: Function;
 }
 
-export function ChannelList({ socket, userId, room, clicked, setClicked }: Prop) {
+export function ChannelList({ socket, userId, room}: Prop) {
 	const [channels, setChannel] = useState<ChannelInfo[]>([]);
 	//const [openRoomPkg, setOpenPkg] = useState();
 
@@ -37,7 +35,44 @@ export function ChannelList({ socket, userId, room, clicked, setClicked }: Prop)
 		console.log('Clicked ', viewRoom);
 	};
 
+	async function getRooms() {
+		await fetch(
+			`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelsInfo/${userId}`,
+			{ credentials: 'include' })
+				.then((response) => response.json())
+				.then((result) => {
+					result.map((chan: ChannelInfo) => 
+					{
+						const opnePkj: OpenRoomPkg = {
+							idUser: userId,
+							room: chan.id.toString(),
+							};
+						socket?.emit('openRoom', opnePkj);
+					});
+				 setChannel(result);
+			});
+		};
+	
+	async function getRoom(chanId: string) {
+		await fetch(
+			`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelsInfoId/${chanId}`,
+			{ credentials: 'include' })
+				.then((response) => response.json())
+				.then((result) => {
+
+						const opnePkj: OpenRoomPkg = {
+							idUser: userId,
+							room: result.id.toString(),
+							};
+						socket?.emit('openRoom', opnePkj);
+						console.log('join in created room');
+						setChannel(prevChan => {return [...prevChan, result]});
+						});
+		}
+
 	useEffect(() => {
+		if (channels.length == 0)
+			getRooms();
 		socket?.on('notification', (msgInfo: MessageInfoPkg) => {
 			if (room !== msgInfo.room) {
 				let ch = channels.find((chan) => {
@@ -46,43 +81,24 @@ export function ChannelList({ socket, userId, room, clicked, setClicked }: Prop)
 				if (ch !== undefined) ch.notification++;
 			}
 		});
-
+		socket?.on('createdPrivateRoom', (prvRoom: OpenRoomPkg) => {
+			console.log('Recived Private invite:');
+			console.log(prvRoom);
+			
+			// setRoom(prvRoom.room);
+			if (userId === prvRoom.idUser) {
+				getRoom(prvRoom.room);
+			}
+		  });
 		return () => {
 			socket?.removeListener('notification');
 		};
-	}, []);
+	}, [socket]);
 
-	useEffect(() => {
-	if (!clicked && channels.length) return;
-		async function getter() {
-			await fetch(
-				`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelsInfo/${userId}`,
-				{ credentials: 'include' })
-					.then((response) => response.json())
-					.then((result) => {
-						result.map((chan: ChannelInfo) => 
-						{
-							const opnePkj: OpenRoomPkg = {
-								idUser: userId,
-								room: chan.id.toString(),
-								};
-							socket?.emit('openRoom', opnePkj);
-						});
-				 	setChannel(result);
-				});
-			}
-			getter();
-
-	setClicked(false);
-	
-		console.log('PRIMA:   ', clicked);
-		// clicked = false;
-		// console.log('DOPO:   ', clicked);
-	}, [socket, clicked]);
 
 	function selectUser(info: ChannelInfo)
 	{
-		return ( info.partecipants[0].id === userId ? info.partecipants[1].userId : info.partecipants[0].userId )
+		return ( info.partecipants[0].userId.id === userId ? info.partecipants[1].userId : info.partecipants[0].userId )
 	}
 
 	return (

@@ -8,10 +8,11 @@ interface Prop
 {
 	socket : Socket | undefined,
 	room: string
+	userId: number;
 }
 
 let key: number = 0;
-export default function MessageBox({socket, room}: Prop)
+export default function MessageBox({socket, room, userId}: Prop)
 {
 	const [chats, setChats] = useState<MessagePkg[]>([]);
 	console.log("Render mex box");
@@ -30,18 +31,51 @@ export default function MessageBox({socket, room}: Prop)
 		console.log("ACTUAL ROOM ", room);
 		if (chats.length === 0 ||  chats[0].room !== room)
 		{
-			fetch(`http://${process.env.REACT_APP_BASE_IP}:3000/api/chat/CHmessage/${+room}`, {credentials: 'include'})
+			fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/CHmessage/${+room}`, {credentials: 'include'})
 			.then(response => response.json())
 			.then(result => setChats(result));
 			socket?.on('message', messageListener);
 		}
 	},[socket,room]);
-
+	
 	return(
-		<div>
-			<p>MESSAGES:</p>
-			{console.log("CHATS: ", chats)}
-			{ chats.map(msg => (<p key={key++}> {msg.userId.username}: {msg.data} </p>))}
+
+			
+			<div>
+			{chats.map((msg: MessagePkg) => {return(
+				<div className={msg.userId.id === userId ? "d-flex justify-content-start mb-4" 
+					: "d-flex justify-content-end mb-4"}>
+					<div className="img_cont_msg"></div>
+					<div className="msg_cotainer">
+						{msg.data}
+						<span className="msg_time">8:40 AM, Today</span>
+					</div>
+				</div>
+			)})}
+			
 		</div>
 	);
 }
+
+
+{/* <div>
+			<p>MESSAGES:</p>
+			
+			{ chats.map(msg => (<p key={key++}> {msg.userId.username}: {msg.data} </p>))}
+		</div> */}
+
+	/* 	<div className="d-flex justify-content-start mb-4">
+			<div className="img_cont_msg"></div>
+			<div className="msg_cotainer">
+				Hi, how are you samim?
+				<span className="msg_time">8:40 AM, Today</span>
+			</div>
+		</div>
+		
+		<div className="d-flex justify-content-end mb-4">
+			<div className="msg_cotainer_send">
+				Hi Khalid i am good tnx how about you?
+				<span className="msg_time_send">8:55 AM, Today</span>
+			</div>
+			<div className="img_cont_msg"></div>
+		</div> */

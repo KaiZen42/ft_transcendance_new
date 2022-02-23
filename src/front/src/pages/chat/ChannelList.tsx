@@ -18,7 +18,7 @@ import { User } from '../../models/User.interface';
 
 interface Prop {
 	socket: Socket | undefined;
-	userId: number;
+	userId: number ;
 	room: string;
 }
 
@@ -65,7 +65,7 @@ export function ChannelList({ socket, userId, room}: Prop) {
 							room: result.id.toString(),
 							};
 						socket?.emit('openRoom', opnePkj);
-						console.log('join in created room');
+						console.log('join in created room', result);
 						setChannel(prevChan => {return [...prevChan, result]});
 						});
 		}
@@ -73,6 +73,11 @@ export function ChannelList({ socket, userId, room}: Prop) {
 	useEffect(() => {
 		if (channels.length == 0)
 			getRooms();
+		else if(room !== undefined && room !== "" && !channels.find( ch => ch.id.toString() == room))
+		{
+			console.log("not FOUND CHID");
+			getRoom(room);
+		}
 		socket?.on('notification', (msgInfo: MessageInfoPkg) => {
 			if (room !== msgInfo.room) {
 				let ch = channels.find((chan) => {
@@ -86,18 +91,22 @@ export function ChannelList({ socket, userId, room}: Prop) {
 			console.log(prvRoom);
 			
 			// setRoom(prvRoom.room);
-			if (userId === prvRoom.idUser) {
+			if (userId === prvRoom.idUser && !channels.find( ch => ch.id.toString() == room)) {
+				console.log("PRIVATE");
 				getRoom(prvRoom.room);
 			}
 		  });
 		return () => {
 			socket?.removeListener('notification');
 		};
-	}, [socket]);
+	}, [socket,room]);
 
 
 	function selectUser(info: ChannelInfo)
 	{
+		if (info.partecipants.length < 2)
+			return null
+		{console.log("USERD ID CHLIST", info.partecipants)}
 		return ( info.partecipants[0].userId.id === userId ? info.partecipants[1].userId : info.partecipants[0].userId )
 	}
 
@@ -117,22 +126,23 @@ export function ChannelList({ socket, userId, room}: Prop) {
 							if (chan.notification === undefined) chan.notification = 0;
 							return (
 								<li className="active" key={chan.id}>
+									<button className='bg-transparent'  onClick={(e) => selectChannel(e, chan.id)}>
 									{/* TODO: aggiungere stato effettivo */}
 									<div className="d-flex bd-highlight">
-										{console.log("avatar",selectUser(chan))}
 										{chan.isPrivate ? <div className="img_cont">
 											<img
-												src={selectUser(chan).avatar}
+												src={selectUser(chan)?.avatar}
 												className="rounded-circle user_img"
 											/>
 											<span className="online_icon"></span>
 										</div> : null}
 										<div className="user_info">
-											<span>{chan.isPrivate ? selectUser(chan).username : chan?.name}</span>
+											<span>{chan.isPrivate ? selectUser(chan)?.username : chan?.name}</span>
 											<p>{chan?.name}</p>
 											{/* TODO: aggiungere stato effettivo */}
 										</div>
 									</div>
+									</button>
 								</li>
 							);
 						})}

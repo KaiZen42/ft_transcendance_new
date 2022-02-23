@@ -60,7 +60,6 @@ export function UserList({ socket, userId }: Prop) {
   const nameSubmit = (event: any) => {
     console.log(event.target.value);
     if (!event.target.value) {
-        console.log("AAAAAAAAAAAAA")
       // event.preventDefault();
       fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users`, {
         credentials: 'include',
@@ -103,7 +102,8 @@ export function UserList({ socket, userId }: Prop) {
 
   useEffect(() => {
     console.log(ch);
-    socket?.emit('createRoom', ch);
+    if (ch?.otherUser !== userId)
+      socket?.emit('createRoom', ch);
   }, [ch]);
 
   // setClicked(false)

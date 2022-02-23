@@ -4,6 +4,11 @@
 	overflow: hidden;
   } */
 
+.tBtn{
+  background-color: Transparent;
+  outline:none;
+}
+
 .chat__container {
   display: -webkit-box;
   display: -ms-flexbox;

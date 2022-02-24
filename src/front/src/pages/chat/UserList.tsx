@@ -131,8 +131,8 @@ export function UserList({ socket, userId }: Prop) {
             <ul className="contacts scrollable-search">
         {users.map((user: User) => (
               <li key="user.id">
-                <div className="d-flex bd-highlight">
-                  <div className="img_cont" onClick={(e) => selectUser(e, user.id)}>
+                <div className="d-flex bd-highlight" onClick={(e) => selectUser(e, user.id)} style={{cursor:"pointer"}}>
+                  <div className="img_cont" >
                     <Stack direction="row" spacing={2}>
                       <StyledBadge
                         overlap="circular"

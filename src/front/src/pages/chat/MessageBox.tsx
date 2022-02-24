@@ -3,6 +3,7 @@ import io, { Socket } from "socket.io-client";
 import { Sender } from "./Sender";
 import Wrapper from "../../components/Wrapper";
 import {  MessagePkg } from "../../models/Chat.interface";
+import MessageHeader from "./MessageHeader";
 
 interface Prop
 {
@@ -33,26 +34,28 @@ export default function MessageBox({socket, room, userId}: Prop)
 		{
 			fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/CHmessage/${+room}`, {credentials: 'include'})
 			.then(response => response.json())
-			.then(result => setChats(result));
+			.then(result => {
+				console.log("MESSAGE LIST PRE", result)
+				result.sort((a: MessagePkg, b: MessagePkg) => {return a.sendData < b.sendData} )
+				console.log("MESSAGE LIST PSOT", result)
+				setChats(result)});
 			socket?.on('message', messageListener);
 		}
 	},[socket,room]);
 	
 	return(
-
-			
-			<div>
-			{chats.map((msg: MessagePkg) => {return(
-				<div className={msg.userId.id === userId ? "d-flex justify-content-start mb-4" 
-					: "d-flex justify-content-end mb-4"}>
-					<div className="img_cont_msg"></div>
-					<div className="msg_cotainer">
-						{msg.data}
-						<span className="msg_time">8:40 AM, Today</span>
-					</div>
+		<div>
+			{chats.map((msg: MessagePkg, i) => {return(
+			<div key={i} className={msg.userId.id === userId ? "d-flex justify-content-start mb-4" 
+				: "d-flex justify-content-end mb-4"}>
+				<div className="img_cont_msg"></div>
+				<div className={msg.userId.id === userId ? "msg_cotainer" 
+								: "msg_cotainer_send"}>
+					{msg.data}
+					<span className="msg_time">8:40 AM, Today</span>
 				</div>
+			</div>
 			)})}
-			
 		</div>
 	);
 }

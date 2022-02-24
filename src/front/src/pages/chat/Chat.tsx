@@ -39,13 +39,14 @@ function getUser() {
 	.then((response) => response.json())
 	.then((result) => {
 		setPkg({
-		data: '',
-		userId: {
-			id: result.id,
-			username: result.username,
-		},
-		room: '',
-		sendData: 0,
+			id: 0,
+			data: '',
+			userId: {
+				id: result.id,
+				username: result.username,
+			},
+			room: '',
+			sendData: new Date(),
 		});
 	});
 	console.log('ESPLOSOOOO');
@@ -76,7 +77,8 @@ useEffect(() => {
 			setRoom(newRoom);
 		});
 	return () => {
-		sock.close();
+		if (sock.connected)
+			sock.close();
 	};
 }, [pkg]);
 
@@ -103,34 +105,18 @@ return (
 	<div className="container--fluid">
 		{console.log("CHAT INFO", pkg)}
 		<div className="row h-100">
-		{pkg === undefined ? null : (
-			<UserList socket={socket} userId={pkg.userId.id} />
-		)}
-		{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState}/>}
-		<div className="col-md-4 col-xl-6 chat">
-			<div className="card-body msg_card_body">
-				<MessageHeader room={roomState}/>
-				{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState} userId={pkg.userId.id}/>}
-				<div className="card-footer">
-					<div className="input-group">
-					<div className="input-group-append">
-						<span className="input-group-text attach_btn">
-						<i className="fas fa-paperclip"></i>
-						</span>
-					</div>
-					<textarea
-						name=""
-						className="form-control type_msg"
-						placeholder="Type your message..."
-					></textarea>
-					<div className="input-group-append">
-						<span className="input-group-text send_btn">
-						<i className="fas fa-location-arrow"></i>
-						</span>
-					</div>
+			{pkg === undefined ? null : (
+				<UserList socket={socket} userId={pkg.userId.id} />
+			)}
+			{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState}/>}
+			<div className="col-md-4 col-xl-6 chat">
+				<div className="card-body msg_card_body">
+					<div className="card">
+						<MessageHeader room={roomState}/>
+						{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState} userId={pkg.userId.id}/>}
 					</div>
 				</div>
-				</div>
+				{pkg === undefined ? (null) : <Sender socket={socket} room={roomState} packet={pkg}/>}
 			</div>
 		</div>
 	</div>

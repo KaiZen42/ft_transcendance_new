@@ -6,13 +6,14 @@
   } */
 
   export interface MessagePkg {
+	id: number;
 	data: string;
 	userId: {
 		id : number;
 		username : string;
 		};
 	room: string;
-	sendData: number;
+	sendData: Date;
 	
   };
 

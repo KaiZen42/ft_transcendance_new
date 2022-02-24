@@ -12,9 +12,13 @@ interface Prop
 export function Sender({socket, packet, room} : Prop) {
 	const [msg, setMessage] = useState('');
 	
-	const handleSubmit = (event: any) => {
+	
+	function handleSubmit(event: any){
 		event.preventDefault();
-		if(packet !== undefined && msg !== "")
+		console.log("MESASGE", msg);
+		if(packet !== undefined 
+			&& msg !== "" 
+			&& msg  !== undefined)
 		{
 			packet.data = msg;
 			packet.room = room;
@@ -25,13 +29,38 @@ export function Sender({socket, packet, room} : Prop) {
 		setMessage("");
 	}
 	
-	return(<div>
-	<form onSubmit={handleSubmit} >
-		<label>
-			<input type="text" value={msg} onChange={e => setMessage(e.target.value)}/>
-		</label>
-		<input type="submit" value="Send" />
-	</form>
-	</div>)
+	return(
+			<div className="card-footer">
+				<div className="input-group"  >
+					<div className="input-group-append">
+						<span className="input-group-text attach_btn">
+							<i className="fas fa-paperclip"></i>
+						</span>
+					</div>
+					<textarea 
+						name=""
+						className="form-control type_msg"
+						placeholder="Type your message..."
+						onChange={e => setMessage(e.target.value)}
+					></textarea>
+					<div className="input-group-append">
+						<span className="input-group-text send_btn">
+							<i className="fas fa-location-arrow" onClick={handleSubmit}></i>
+						</span>
+					</div>
+				</div>
+			</div>
+
+	)
 }
 
+
+
+{/* <div>
+<form onSubmit={handleSubmit} >
+	<label>
+		<input type="text" value={msg} onChange={e => setMessage(e.target.value)}/>
+	</label>
+	<input type="submit" value="Send" />
+</form>
+</div> */}

@@ -10,7 +10,7 @@ export default function MessageHeader({room} : Prop)
 {
 	return(
 		
-		<div className="card">
+		
 					<div className="card-header msg_head">
 						<div className="d-flex bd-highlight">
 							<div className="img_cont">
@@ -49,7 +49,6 @@ export default function MessageHeader({room} : Prop)
 								</li>
 							</ul>
 						</div> */}
-					</div> 
-				</div>
+					</div>
 	)
 }

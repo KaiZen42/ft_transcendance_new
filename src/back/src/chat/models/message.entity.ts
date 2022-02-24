@@ -18,7 +18,7 @@ export class Message {
 	@Column()
 	data: string; 
 
-	@Column("date")
+	@Column()
 	sendDate: Date;
 
 }

@@ -46,7 +46,7 @@ function getUser() {
 				username: result.username,
 			},
 			room: '',
-			sendData: new Date(),
+			sendDate: new Date(),
 		});
 	});
 	console.log('ESPLOSOOOO');

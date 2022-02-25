@@ -36,24 +36,37 @@ export default function MessageBox({socket, room, userId}: Prop)
 			.then(response => response.json())
 			.then(result => {
 				console.log("MESSAGE LIST PRE", result)
-				result.sort((a: MessagePkg, b: MessagePkg) => {return a.sendData < b.sendData} )
+				result.sort((a: MessagePkg, b: MessagePkg) => {return a.sendDate < b.sendDate} )
 				console.log("MESSAGE LIST PSOT", result)
 				setChats(result)});
 			socket?.on('message', messageListener);
 		}
 	},[socket,room]);
 	
+	const handleTime = (dataD: Date) => {
+		let data= new Date(dataD)
+		let day: number = data.getDate()
+		let month: number = data.getMonth()
+		let year: number = data.getFullYear()
+		let hrs: number = data.getHours()
+		let mins = data.getMinutes()
+		let hr: string = (hrs <= 9) ? '0' + String(hrs) : String(hrs);
+		let mn: string = (mins < 10) ? '0' + mins.toString() : mins.toString();
+		const postTime = day + "/" + month + "/" + year + " " + hr + ':' + mn;
+		return postTime
+	  }
+	
 	return(
 		<div>
 			{chats.map((msg: MessagePkg, i) => {return(
-			<div key={i} className={msg.userId.id === userId ? "d-flex justify-content-start mb-4" 
-				: "d-flex justify-content-end mb-4"}>
+			<div key={i} className={msg.userId.id === userId ? "test d-flex justify-content-start mb-4" 
+				: "test d-flex justify-content-end mb-4"}>
 				<div className="img_cont_msg"></div>
 				<div className={msg.userId.id === userId ? "msg_cotainer" 
 								: "msg_cotainer_send"}>
 					{msg.data}
-					<span className="msg_time">8:40 AM, Today</span>
 				</div>
+				<span className={msg.userId.id === userId ? "msg_time" : "msg_time_send"}>{handleTime(msg.sendDate)}</span>
 			</div>
 			)})}
 		</div>

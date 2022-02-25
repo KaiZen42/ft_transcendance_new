@@ -13,7 +13,7 @@
 		username : string;
 		};
 	room: string;
-	sendData: Date;
+	sendDate: Date;
 	
   };
 

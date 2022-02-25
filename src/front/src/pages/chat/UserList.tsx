@@ -17,35 +17,9 @@ import { CreationChannelPkg } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
+import StyledBadge from '../../styles/StyleBage';
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
-  '& .MuiBadge-badge': {
-    backgroundColor: '#44b700',
-    color: '#44b700',
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    '&::after': {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      borderRadius: '50%',
-      animation: 'ripple 1.2s infinite ease-in-out',
-      border: '1px solid currentColor',
-      content: '""',
-    },
-  },
-  '@keyframes ripple': {
-    '0%': {
-      transform: 'scale(.8)',
-      opacity: 1,
-    },
-    '100%': {
-      transform: 'scale(2.4)',
-      opacity: 0,
-    },
-  },
-}));
+
 
 interface Prop {
   socket: Socket | undefined;
@@ -59,6 +33,7 @@ export function UserList({ socket, userId }: Prop) {
 
   const nameSubmit = (event: any) => {
     if (event.target.value) {
+      event.preventDefault();
       (async () => {
         const data = await fetch(
           `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${event.target.value}`,
@@ -126,7 +101,7 @@ export function UserList({ socket, userId }: Prop) {
                     <Stack direction="row" spacing={2}>
                       <StyledBadge
                         overlap="circular"
-                        invisible={true}
+                        invisible={false}
                         anchorOrigin={{
                           vertical: 'bottom',
                           horizontal: 'right',

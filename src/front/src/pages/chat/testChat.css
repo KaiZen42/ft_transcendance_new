@@ -167,7 +167,7 @@ background-color: #c23616 !important;
 .user_info{
 margin-top: auto;
 margin-bottom: auto;
-margin-left: 15px;
+/* margin-left: 15px; */
 }
 .user_info span{
 font-size: 20px;

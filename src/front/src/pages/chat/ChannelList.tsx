@@ -18,6 +18,7 @@ interface Prop {
 
 export function ChannelList({ socket, userId, room }: Prop) {
   const [selected, setSelected] = useState(false);
+  const [activeID, setActiveID] = useState(0);
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
   //const [openRoomPkg, setOpenPkg] = useState();
 
@@ -29,6 +30,8 @@ export function ChannelList({ socket, userId, room }: Prop) {
     socket?.emit('viewRoom', viewRoom);
     console.log('Clicked ', viewRoom);
 	setSelected(true)
+	console.log("ID", id)
+	setActiveID(id)
   };
 
   async function getRooms() {
@@ -123,17 +126,17 @@ export function ChannelList({ socket, userId, room }: Prop) {
           </div>
         </div>
         <div className="card-body contacts_body">
-          <ul className="contacts">
+          <ul className="contacts" >
             {console.log('rooms: ', channels)}
 
             {channels.map((chan: ChannelInfo) => {
               if (chan.notification === undefined) chan.notification = 0;
               return (
-                <li className={selected ? "active" : ""} key={chan.id}>
+                <li className={selected &&  activeID === chan.id ? "active" : ""} key={chan.id} style={{border: '1px solid white',borderRadius: '10px'}}>
                  
                   {/* TODO: aggiungere stato effettivo */}
                   <div
-                    className="d-flex bd-highlight"
+                    className="d-flex"
                     onClick={(e) => selectChannel(e, chan.id)}
                     style={{ cursor: 'pointer' }}
                   >

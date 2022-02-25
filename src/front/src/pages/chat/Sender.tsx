@@ -32,17 +32,17 @@ export function Sender({socket, packet, room} : Prop) {
 	return(
 			<div className="card-footer">
 				<div className="input-group"  >
-					<div className="input-group-append">
+					{/* <div className="input-group-append">
 						<span className="input-group-text attach_btn">
 							<i className="fas fa-paperclip"></i>
 						</span>
-					</div>
-					<textarea 
+					</div> */}
+					<input 
 						name=""
 						className="form-control type_msg"
 						placeholder="Type your message..."
 						onChange={e => setMessage(e.target.value)}
-					></textarea>
+					/>
 					<div className="input-group-append">
 						<span className="input-group-text send_btn">
 							<i className="fas fa-location-arrow" onClick={handleSubmit}></i>

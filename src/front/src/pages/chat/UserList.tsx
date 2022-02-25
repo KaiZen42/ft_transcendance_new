@@ -58,35 +58,22 @@ export function UserList({ socket, userId }: Prop) {
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();
 
   const nameSubmit = (event: any) => {
-    console.log(event.target.value);
-    if (!event.target.value) {
-      // event.preventDefault();
-      fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/users`, {
-        credentials: 'include',
-      })
-        .then((response) => response.json())
-        .then((result) => {
+    if (event.target.value) {
+      (async () => {
+        const data = await fetch(
+          `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${event.target.value}`,
+          { credentials: 'include' }
+        );
+        const result = data.json();
+        result.then((res) => {
+          console.log(res);
           setUsers(
-            result.sort((a: User, b: User) =>
-              a.username.localeCompare(b.username)
-            )
+            res.sort((a: User, b: User) => a.username.localeCompare(b.username))
           );
         });
+      })();
     } else {
-      event.preventDefault();
-      fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${event.target.value}`,
-        { credentials: 'include' }
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result);
-          setUsers(
-            result.sort((a: User, b: User) =>
-              a.username.localeCompare(b.username)
-            )
-          );
-        });
+      setUsers([]);
     }
   };
 
@@ -102,12 +89,11 @@ export function UserList({ socket, userId }: Prop) {
 
   useEffect(() => {
     console.log(ch);
-    if (ch?.otherUser !== userId)
-      socket?.emit('createRoom', ch);
+    if (ch?.otherUser !== userId) socket?.emit('createRoom', ch);
   }, [ch]);
 
   // setClicked(false)
-// 
+  //
   return (
     <div className="col-md-3 col-xl-3 chat">
       <div className="card-search mb-sm-3 mb-md-0 contacts_card">
@@ -127,12 +113,16 @@ export function UserList({ socket, userId }: Prop) {
             </div>
           </div>
         </div>
-		<div className="card-body contacts_body">
-            <ul className="contacts scrollable-search">
-        {users.map((user: User) => (
+        <div className="card-body contacts_body">
+          <ul className="contacts scrollable-search">
+            {users.map((user: User) => (
               <li key="user.id">
-                <div className="d-flex bd-highlight" onClick={(e) => selectUser(e, user.id)} style={{cursor:"pointer"}}>
-                  <div className="img_cont" >
+                <div
+                  className="d-flex bd-highlight"
+                  onClick={(e) => selectUser(e, user.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="img_cont">
                     <Stack direction="row" spacing={2}>
                       <StyledBadge
                         overlap="circular"
@@ -146,16 +136,16 @@ export function UserList({ socket, userId }: Prop) {
                         <Avatar alt="Img" src={user.avatar} />
                       </StyledBadge>
                     </Stack>
-                   </div>
+                  </div>
                   <div className="user_info">
                     <span>{user.username}</span>
                     <p>{user.username} is online</p>
                   </div>
                 </div>
               </li>
-			))}
-            </ul>
-			</div>
+            ))}
+          </ul>
+        </div>
         <div className="card-footer"></div>
       </div>
     </div>

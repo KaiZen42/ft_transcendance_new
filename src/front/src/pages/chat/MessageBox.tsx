@@ -62,8 +62,8 @@ export default function MessageBox({socket, room, userId}: Prop)
 			<div key={i} className={msg.userId.id === userId ? "test d-flex justify-content-start mb-4" 
 				: "test d-flex justify-content-end mb-4"}>
 				<div className="img_cont_msg"></div>
-				<div className={msg.userId.id === userId ? "msg_cotainer" 
-								: "msg_cotainer_send"}>
+				<div className={msg.userId.id === userId ? "msg_cotainer box1 box2" 
+								: "msg_cotainer_send box1 box2"}>
 					{msg.data}
 				</div>
 				<span className={msg.userId.id === userId ? "msg_time" : "msg_time_send"}>{handleTime(msg.sendDate)}</span>

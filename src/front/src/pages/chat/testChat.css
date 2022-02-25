@@ -187,7 +187,20 @@ font-size: 20px;
 cursor: pointer;
 margin-right: 20px;
 }
+
+.box1 {
+    word-break: break-all;
+    margin: 10px;
+  }
+  
+  .box2 {
+    overflow-wrap: break-word; 
+  }
+
 .msg_cotainer{
+/* word-wrap: break-word;      IE 5.5-7 */
+/* white-space: -moz-pre-wrap; Firefox 1.0-2.0 */
+/* white-space: pre-wrap;      current browsers */
 margin-top: auto;
 margin-bottom: auto;
 margin-left: 10px;
@@ -200,6 +213,10 @@ position: relative;
     position: relative;;
 }
 .msg_cotainer_send{
+    
+/* word-wrap: break-word;      IE 5.5-7 */
+/* white-space: -moz-pre-wrap; Firefox 1.0-2.0 */
+/* white-space: pre-wrap;      current browsers */
 margin-top: auto;
 margin-bottom: auto;
 margin-right: 10px;
@@ -212,14 +229,14 @@ position: relative;
 position: absolute;
 bottom: -1rem;
 left:3.7rem;
-color: rgba(255,255,255,0.5);
+color: rgba(255, 255, 255, 0.883);
 font-size: 10px;
 }
 .msg_time_send{
 position: absolute;
 bottom: -1rem;
 right: 0.5rem;
-color: rgba(255,255,255,0.5);
+color: rgba(255, 255, 255, 0.883);
 font-size: 10px;
 }
 .msg_head{

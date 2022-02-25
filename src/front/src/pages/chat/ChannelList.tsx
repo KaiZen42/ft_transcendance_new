@@ -143,7 +143,7 @@ export function ChannelList({ socket, userId, room }: Prop) {
                           <Stack direction="row" spacing={2}>
                             <StyledBadge
                               overlap="circular"
-                              invisible={selected}
+                              invisible={false}
                               anchorOrigin={{
                                 vertical: 'bottom',
                                 horizontal: 'right',

@@ -16,11 +16,15 @@ interface Prop {
   room: string;
 }
 
+
 export function ChannelList({ socket, userId, room }: Prop) {
   const [selected, setSelected] = useState(false);
   const [activeID, setActiveID] = useState(0);
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
   //const [openRoomPkg, setOpenPkg] = useState();
+
+ 
+
 
   const selectChannel = (event: any, id: number) => {
     const viewRoom: OpenRoomPkg = {
@@ -72,7 +76,8 @@ export function ChannelList({ socket, userId, room }: Prop) {
   }
 
   useEffect(() => {
-    if (channels.length == 0) getRooms();
+    if (channels.length == 0) 
+      getRooms();
     else if (
       room !== undefined &&
       room !== '' &&
@@ -109,9 +114,6 @@ export function ChannelList({ socket, userId, room }: Prop) {
 
   function selectUser(info: ChannelInfo) {
     if (info.partecipants.length < 2) return null;
-    {
-      console.log('USERD ID CHLIST', info.partecipants);
-    }
     return info.partecipants[0].userId.id === userId
       ? info.partecipants[1].userId
       : info.partecipants[0].userId;
@@ -127,9 +129,11 @@ export function ChannelList({ socket, userId, room }: Prop) {
         </div>
         <div className="card-body contacts_body">
           <ul className="contacts" >
-            {console.log('rooms: ', channels)}
-
-            {channels.map((chan: ChannelInfo) => {
+            {console.log('rooms: ',new Set(channels))}
+            {channels.map((chan: ChannelInfo, i) => {
+              //TODO: fix duplicate 
+              if (channels.findIndex((ch) => ch.id == chan.id) !== i)
+                return;
               if (chan.notification === undefined) chan.notification = 0;
               return (
                 <li className={selected &&  activeID === chan.id ? "active" : ""} key={chan.id} style={{border: '1px solid white',borderRadius: '10px'}}>

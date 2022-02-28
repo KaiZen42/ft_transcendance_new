@@ -58,6 +58,13 @@ export class chatController {
 		return ms;
 	}
 
+	@Get("TEST/:id1/:id2")
+	async getTest(@Param("id1") id1: number, @Param("id2") id2: number) : Promise<any[]>
+	{
+		let ms : any[] =  await this.chService.getPrivateByUsersId(id1, id2);
+		console.log(`Users in(): `, ms);
+		return ms;
+	}
 
 	/* @Get("channels/:idUser")
 	async getChannels(@Param("idUser") userID: number) : Promise<ChannelInfoDto[]>

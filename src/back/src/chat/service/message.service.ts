@@ -22,6 +22,8 @@ import { Message } from '../models/message.entity';
 	async getByUser(userId: number): Promise<Message[]> {
 		return this.messageDB.find({ where: { userId } });
 	}
+
+
   
 	async getByChannel(channelId: number): Promise<Message[]> {
 		let res: Message[] = await this.messageDB
@@ -30,7 +32,7 @@ import { Message } from '../models/message.entity';
 			.innerJoinAndSelect("message.channelId", "channel")
 			.where("message.channelId = :idd", {idd: channelId})
 			.select(["user.id", "user.username", "message"])
-			.orderBy("message.sendDate", "ASC")
+			.orderBy("message.id", "ASC")
 			.getMany();
 
 		

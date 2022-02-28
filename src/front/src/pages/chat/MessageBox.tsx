@@ -35,9 +35,6 @@ export default function MessageBox({socket, room, userId}: Prop)
 			fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/CHmessage/${+room}`, {credentials: 'include'})
 			.then(response => response.json())
 			.then(result => {
-				console.log("MESSAGE LIST PRE", result)
-				result.sort((a: MessagePkg, b: MessagePkg) => {return a.sendDate < b.sendDate} )
-				console.log("MESSAGE LIST PSOT", result)
 				setChats(result)});
 			socket?.on('message', messageListener);
 		}
@@ -59,14 +56,14 @@ export default function MessageBox({socket, room, userId}: Prop)
 	return(
 		<div>
 			{chats.map((msg: MessagePkg, i) => {return(
-			<div key={i} className={msg.userId.id === userId ? "test d-flex justify-content-start mb-4" 
+			<div key={i} className={msg.userId.id !== userId ? "test d-flex justify-content-start mb-4" 
 				: "test d-flex justify-content-end mb-4"}>
 				<div className="img_cont_msg"></div>
-				<div className={msg.userId.id === userId ? "msg_cotainer box1 box2" 
+				<div className={msg.userId.id !== userId ? "msg_cotainer box1 box2" 
 								: "msg_cotainer_send box1 box2"}>
 					{msg.data}
 				</div>
-				<span className={msg.userId.id === userId ? "msg_time" : "msg_time_send"}>{handleTime(msg.sendDate)}</span>
+				<span className={msg.userId.id !== userId ? "msg_time" : "msg_time_send"}>{handleTime(msg.sendDate)}</span>
 			</div>
 			)})}
 		</div>

@@ -38,7 +38,7 @@ export function Sender({socket, packet, room} : Prop) {
 						</span>
 					</div> */}
 					<input 
-						name=""
+						name="mex"
 						className="form-control type_msg"
 						placeholder="Type your message..."
 						onChange={e => setMessage(e.target.value)}

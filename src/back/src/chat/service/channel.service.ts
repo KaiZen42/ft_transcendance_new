@@ -106,7 +106,27 @@ export class ChannelService {
 		return res;
 	}
 
-
+	async getPrivateByUsersId(userId1: number, userId2: number): Promise<any> {
+		const res = await this.channelDB
+		.createQueryBuilder("channel")
+		.select("channel.id")
+		.where(qb => {
+			const subQuery = qb.subQuery()
+			.select(["channel.id"])
+			.from(Channel, "channel")
+			.leftJoin("channel.partecipants", "partecipant",  
+				"partecipant.userId  = :userId1 AND partecipant.channelId = channel.id", {userId1})
+			.where("partecipant.userId = :userId1", {userId1})
+			.getQuery();
+			return "channel.id IN (" + subQuery +")";
+		})
+		
+		.leftJoin("channel.partecipants", "partecipant",  
+			"partecipant.userId  = :userId2 AND partecipant.channelId = channel.id", {userId2})
+		.andWhere("partecipant.userId = :userId2 AND channel.isPrivate = true", {userId2} )
+		.getOne()
+		return (res) 
+	}
 
 	async getAllMessage(id : number) : Promise<Message[]>
 	{

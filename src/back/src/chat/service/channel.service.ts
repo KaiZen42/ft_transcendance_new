@@ -96,17 +96,27 @@ export class ChannelService {
 		return res;
 	}
 
-	async getOtherByChan(id: number , userId: number) : Promise<User[]>
+	async getOtherByChan(id: number , userId: number) : Promise<User>
 	{
 		const res = await getRepository(User)
 			.createQueryBuilder("users")
 			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId = users.id AND users.id != :userId",{ userId: userId})
 			.where("partecipant.channelId = :chId ", {chId: id})
-			.getMany()
+			.getOne()
 		return res;
 	}
 
-	async getPrivateByUsersId(userId1: number, userId2: number): Promise<any> {
+	async getChanName(id: number , userId: number) : Promise<any>
+	{
+		const res: any = await getRepository(User)
+			.createQueryBuilder("users")
+			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId = users.id AND users.id != :userId",{ userId: userId})
+			.where("partecipant.channelId = :chId ", {chId: id})
+			.getOne()
+		return res;
+	}
+
+	async getPrivateChanByUsersId(userId1: number, userId2: number): Promise<any> {
 		const res = await this.channelDB
 		.createQueryBuilder("channel")
 		.select("channel.id")

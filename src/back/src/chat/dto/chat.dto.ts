@@ -78,7 +78,7 @@ export class viewRoomDto {
 	idUser: number;
   
 /* 	@IsNotEmpty()
-	username: string; */
+	name: string; */
 	
 	@IsNotEmpty()
 	room : string;

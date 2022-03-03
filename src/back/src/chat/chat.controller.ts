@@ -53,16 +53,18 @@ export class chatController {
 	@Get("OtherUserInChannel/:channelId/User/:userId")
 	async getOtherUsersByChannel(@Param("channelId") channelId: number, @Param("userId") userId: number) : Promise<any[]>
 	{
-		let ms : any[] =  await this.chService.getOtherByChan(channelId, userId);
+		let ms : any =  await this.chService.getOtherByChan(channelId, userId);
 		console.log(`Users in(${channelId}): `, ms);
 		return ms;
 	}
 
-	@Get("TEST/:id1/:id2")
-	async getTest(@Param("id1") id1: number, @Param("id2") id2: number) : Promise<any[]>
+
+
+	@Get("TEST/:chanId/:userId")
+	async getTest(@Param("chanId") id1: number, @Param("userId") id2: number) : Promise<any>
 	{
-		let ms : any[] =  await this.chService.getPrivateByUsersId(id1, id2);
-		console.log(`Users in(): `, ms);
+		let ms : any =  await this.chService.getChanName(id1, id2);
+		console.log(`NAME is(): `, ms);
 		return ms;
 	}
 

@@ -78,7 +78,7 @@ export class ChatGateway
 		chan.pass = data?.pass;
 		chan.mode = chan.isPrivate ? "PRI" : "PUB";
 		
-		if (chan.isPrivate && await this.channelService.getPrivateByUsersId(data.idUser, data.otherUser) !== undefined){
+		if (chan.isPrivate && await this.channelService.getPrivateChanByUsersId(data.idUser, data.otherUser) !== undefined){
 			return //{event: "viewedRoom", data: "" + chan.id} ;
 		}
 		chan.id = (await this.channelService.create(chan, [data.idUser, data.otherUser])).id;

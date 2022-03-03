@@ -9,6 +9,7 @@ import {
 MessageInfoPkg,
 MessagePkg,
 OpenRoomPkg,
+ViewRoomPkg,
 } from '../../models/Chat.interface';
 import { response } from 'express';
 import { UserList } from './UserList';
@@ -112,7 +113,7 @@ return (
 			<div className="col-md-4 col-xl-6 chat">
 				<div className="card-body msg_card_body">
 					<div className="card">
-						<MessageHeader room={roomState}/>
+						{pkg === undefined ? (null) : <MessageHeader room={roomState} userId={pkg.userId.id}/>}
 						{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState} userId={pkg.userId.id}/>}
 					</div>
 				</div>

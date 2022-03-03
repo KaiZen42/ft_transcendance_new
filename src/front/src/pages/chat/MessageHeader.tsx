@@ -4,6 +4,7 @@ import { Room } from "@mui/icons-material";
 interface Prop
 {
 	room: string
+	userId: number;
 }
 
 export default function MessageHeader({room} : Prop)

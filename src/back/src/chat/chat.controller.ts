@@ -92,4 +92,11 @@ export class chatController {
 		return someThings;
 	}
 
+	@Get("GetMessageCounter/:idChan")
+	async GetMessageCounter(@Param("idChan") chanId: number) : Promise<number>
+	{
+		let someThings: number =  await this.msgService.getCounterByChannel(chanId)
+		return someThings;
+	}
+
 }

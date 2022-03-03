@@ -30,6 +30,14 @@
 	object-position: 50% 50%;
   }
 
+  .scrollable-msg {
+    overflow-y: auto;
+	overflow-x: hidden;
+	max-height: 58vh;
+	padding: 25px;
+	object-position: 100% 100%;
+  }
+
 .card{
     height: 70vh;
     border-radius: 15px !important;

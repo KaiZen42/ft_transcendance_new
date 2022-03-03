@@ -43,6 +43,24 @@ import { Message } from '../models/message.entity';
 		.getRawMany() */
 	  return res;
 	}
+
+	async getCounterByChannel(channelId: number): Promise<number> {
+		let res: number = await this.messageDB
+			.createQueryBuilder("message")
+			.leftJoinAndSelect("message.userId", "user")
+			.innerJoinAndSelect("message.channelId", "channel")
+			.where("message.channelId = :idd", {idd: channelId})
+			.select(["user.id", "user.username", "message"])
+			.getCount();
+
+		
+		/* .createQueryBuilder("message")
+		.leftJoinAndSelect("message.userId", "user")
+		.where("message.channelId = :id", {id: channelId})
+		.select(["message.id","message.userId","message.userName","message.data"])
+		.getRawMany() */
+	  return res;
+	}
   
 	async create(message: Message): Promise<Message> {
 	  return this.messageDB.save({
@@ -56,5 +74,7 @@ import { Message } from '../models/message.entity';
 	async delete(id: number) {
 	  return this.messageDB.delete({ id });
 	}
+
+	
   }
   

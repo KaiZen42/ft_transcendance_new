@@ -40,13 +40,13 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
       setChatInfo({
         username: selectUser(chan)?.username,
         avatar: selectUser(chan)?.avatar,
-        roomId: room,
+        roomId: chan?.id,
       });
     } else {
       setChatInfo({
         username: chan?.name,
         avatar: undefined,
-        roomId: room,
+        roomId: chan?.id,
       });
     }
   };
@@ -85,6 +85,19 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
         setChannel((prevChan) => {
           return [...prevChan, result];
         });
+        if (result.isPrivate) {
+          setChatInfo({
+            username: selectUser(result)?.username,
+            avatar: selectUser(result)?.avatar,
+            roomId: room,
+          });
+        } else {
+          setChatInfo({
+            username: result?.name,
+            avatar: undefined,
+            roomId: room,
+          });
+        }
       });
   }
 
@@ -143,7 +156,6 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
           <ul className="contacts">
             {console.log('rooms: ', new Set(channels))}
             {channels.map((chan: ChannelInfo, i) => {
-              //TODO: fix duplicate
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
               if (chan.notification === undefined) chan.notification = 0;
               return (

@@ -1,3 +1,4 @@
+import e from "express";
 import React, { useState, useEffect, useRef  } from "react";
 import socketIOClient, { io, Socket } from "socket.io-client";
 import { MessagePkg } from "../../models/Chat.interface";
@@ -28,6 +29,14 @@ export function Sender({socket, packet, room} : Prop) {
 		}
 		setMessage("");
 	}
+
+	function enterSubmit(e: any)
+	{
+		if(e.code === "Enter")
+		{
+			handleSubmit(e);
+		}
+	}
 	
 	return(
 			<div className="card-footer">
@@ -42,6 +51,8 @@ export function Sender({socket, packet, room} : Prop) {
 						className="form-control type_msg"
 						placeholder="Type your message..."
 						onChange={e => setMessage(e.target.value)}
+						onKeyDown={enterSubmit}
+						value={msg}
 					/>
 					<div className="input-group-append">
 						<span className="input-group-text send_btn">

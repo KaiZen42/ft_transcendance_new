@@ -91,7 +91,7 @@ export function UserList({ socket, userId }: Prop) {
         <div className="card-body contacts_body">
           <ul className="contacts scrollable-search">
             {users.map((user: User) => (
-              <li key="user.id">
+              <li key={user.id}>
                 <div
                   className="d-flex bd-highlight"
                   onClick={(e) => selectUser(e, user.id)}

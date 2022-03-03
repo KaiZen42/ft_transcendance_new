@@ -1,18 +1,31 @@
 import { RestorePageOutlined, Room } from '@mui/icons-material';
+import { Avatar } from '@mui/material';
+import { ChatInfo } from '../../models/Chat.interface';
+import StyledBadge from '../../styles/StyleBage';
 
 interface Prop {
-  room: string;
+  chatInfo: ChatInfo | undefined;
 }
 
-export default function MessageHeader({ room }: Prop) {
+export default function MessageHeader({ chatInfo }: Prop) {
   return (
     <div className="card-header msg_head">
       <div className="d-flex bd-highlight">
         <div className="img_cont">
-          <span className="online_icon"></span>
+            <StyledBadge
+              overlap="circular"
+              invisible={false}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              variant="dot"
+            >
+              <Avatar alt="Img" src={chatInfo?.avatar} />
+            </StyledBadge>
         </div>
         <div className="user_info">
-          <span>{room}</span>
+          <span>{chatInfo?.username}</span>
           <p>1767 Messages</p>
         </div>
 

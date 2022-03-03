@@ -151,7 +151,7 @@ export class ChannelService {
 			pass : channel.pass,
 			isPrivate : channel.isPrivate,
 		});
-		this.partService.create(
+		await this.partService.create(
 			{
 				id : 0,
 				userId: userId[0],
@@ -161,7 +161,7 @@ export class ChannelService {
 			});
 
 		if (ch.isPrivate)
-			this.partService.create(
+			await this.partService.create(
 				{
 					id : 0,
 					userId: userId[1],

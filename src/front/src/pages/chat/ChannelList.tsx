@@ -1,5 +1,6 @@
 import { RestorePageOutlined } from '@mui/icons-material';
 import { Avatar, Stack } from '@mui/material';
+import { channel } from 'diagnostics_channel';
 import React, { useState, useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import {
@@ -9,15 +10,16 @@ import {
 } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
 import StyledBadge from '../../styles/StyleBage';
+import InfoChat from './Chat';
 
 interface Prop {
   socket: Socket | undefined;
   userId: number;
   room: string;
-  setChanName: Function;
+  setChatInfo: Function;
 }
 
-export function ChannelList({ socket, userId, room, setChanName }: Prop) {
+export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
   const [selected, setSelected] = useState(false);
   const [activeID, setActiveID] = useState(0);
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
@@ -33,10 +35,19 @@ export function ChannelList({ socket, userId, room, setChanName }: Prop) {
     setSelected(true);
     console.log('ID', id);
     setActiveID(id);
+
     if (chan.isPrivate) {
-      setChanName(selectUser(chan)?.username);
+      setChatInfo({
+        username: selectUser(chan)?.username,
+        avatar: selectUser(chan)?.avatar,
+        roomId: room,
+      });
     } else {
-      setChanName(chan?.name);
+      setChatInfo({
+        username: chan?.name,
+        avatar: undefined,
+        roomId: room,
+      });
     }
   };
 

@@ -18,6 +18,7 @@ import { Grid } from '@mui/material';
 import './testChat.css';
 import { ChannelList } from './ChannelList';
 import MessageHeader from './MessageHeader';
+import { ChatInfo } from '../../models/Chat.interface';
 const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
 
 /* export class inviteDto {
@@ -31,8 +32,8 @@ const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
 export function Chat(/* {user} : Prop */) {
 const [pkg, setPkg] = useState<MessagePkg>();
 const [socket, setSocket] = useState<Socket>();
-const [roomState, setRoom] = useState('');
-const [chanName, setChanName] = useState('');
+const [room, setRoom] = useState('');
+const [chatInfo, setChatInfo] = useState<ChatInfo>();
 
 function getUser() {
 	fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
@@ -110,16 +111,17 @@ return (
 			{pkg === undefined ? null : (
 				<UserList socket={socket} userId={pkg.userId.id} />
 			)}
-			{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState} setChanName={setChanName}/>}
+			{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={room} setChatInfo={setChatInfo}/>}
+			{ chatInfo === undefined ? null :
 			<div className="col-md-4 col-xl-6 chat">
 				<div className="card-body msg_card_body">
 					<div className="card">
-						<MessageHeader room={chanName}/>
-						{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState} userId={pkg.userId.id}/>}
+						<MessageHeader chatInfo={chatInfo}/>
+						{pkg === undefined ? (null) : <MessageBox socket={socket} room={room} userId={pkg.userId.id}/>}
 					</div>
 				</div>
-				{pkg === undefined ? (null) : <Sender socket={socket} room={roomState} packet={pkg}/>}
-			</div>
+				{pkg === undefined ? (null) : <Sender socket={socket} room={room} packet={pkg}/>}
+			</div> }
 		</div>
 	</div>
 	</Wrapper>

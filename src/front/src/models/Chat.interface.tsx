@@ -64,3 +64,9 @@ export interface ViewRoomPkg {
 	idUser: number;
 	room : string;
   }
+
+  export interface ChatInfo{
+	username: string;
+	avatar: string;
+	roomId: string;
+}

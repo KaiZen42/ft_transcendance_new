@@ -31,6 +31,7 @@ export function Chat(/* {user} : Prop */) {
 const [pkg, setPkg] = useState<MessagePkg>();
 const [socket, setSocket] = useState<Socket>();
 const [roomState, setRoom] = useState('');
+const [chanName, setChanName] = useState('');
 
 function getUser() {
 	fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
@@ -108,11 +109,11 @@ return (
 			{pkg === undefined ? null : (
 				<UserList socket={socket} userId={pkg.userId.id} />
 			)}
-			{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState}/>}
+			{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState} setChanName={setChanName}/>}
 			<div className="col-md-4 col-xl-6 chat">
 				<div className="card-body msg_card_body">
 					<div className="card">
-						<MessageHeader room={roomState}/>
+						<MessageHeader room={chanName}/>
 						{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState} userId={pkg.userId.id}/>}
 					</div>
 				</div>

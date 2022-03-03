@@ -14,28 +14,30 @@ interface Prop {
   socket: Socket | undefined;
   userId: number;
   room: string;
+  setChanName: Function;
 }
 
-
-export function ChannelList({ socket, userId, room }: Prop) {
+export function ChannelList({ socket, userId, room, setChanName }: Prop) {
   const [selected, setSelected] = useState(false);
   const [activeID, setActiveID] = useState(0);
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
   //const [openRoomPkg, setOpenPkg] = useState();
 
- 
-
-
-  const selectChannel = (event: any, id: number) => {
+  const selectChannel = (event: any, id: number, chan: ChannelInfo) => {
     const viewRoom: OpenRoomPkg = {
       idUser: userId,
       room: '' + id,
     };
     socket?.emit('viewRoom', viewRoom);
     console.log('Clicked ', viewRoom);
-	setSelected(true)
-	console.log("ID", id)
-	setActiveID(id)
+    setSelected(true);
+    console.log('ID', id);
+    setActiveID(id);
+    if (chan.isPrivate) {
+      setChanName(selectUser(chan)?.username);
+    } else {
+      setChanName(chan?.name);
+    }
   };
 
   async function getRooms() {
@@ -76,8 +78,7 @@ export function ChannelList({ socket, userId, room }: Prop) {
   }
 
   useEffect(() => {
-    if (channels.length == 0) 
-      getRooms();
+    if (channels.length == 0) getRooms();
     else if (
       room !== undefined &&
       room !== '' &&
@@ -128,20 +129,22 @@ export function ChannelList({ socket, userId, room }: Prop) {
           </div>
         </div>
         <div className="card-body contacts_body">
-          <ul className="contacts" >
-            {console.log('rooms: ',new Set(channels))}
+          <ul className="contacts">
+            {console.log('rooms: ', new Set(channels))}
             {channels.map((chan: ChannelInfo, i) => {
-              //TODO: fix duplicate 
-              if (channels.findIndex((ch) => ch.id == chan.id) !== i)
-                return;
+              //TODO: fix duplicate
+              if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
               if (chan.notification === undefined) chan.notification = 0;
               return (
-                <li className={selected &&  activeID === chan.id ? "active" : ""} key={chan.id} style={{border: '1px solid white',borderRadius: '10px'}}>
-                 
+                <li
+                  className={selected && activeID === chan.id ? 'active' : ''}
+                  key={chan.id}
+                  style={{ border: '1px solid white', borderRadius: '10px' }}
+                >
                   {/* TODO: aggiungere stato effettivo */}
                   <div
                     className="d-flex"
-                    onClick={(e) => selectChannel(e, chan.id)}
+                    onClick={(e) => selectChannel(e, chan.id, chan)}
                     style={{ cursor: 'pointer' }}
                   >
                     {chan.isPrivate ? (

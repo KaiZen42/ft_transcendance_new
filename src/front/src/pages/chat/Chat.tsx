@@ -9,6 +9,7 @@ import {
 MessageInfoPkg,
 MessagePkg,
 OpenRoomPkg,
+ViewRoomPkg,
 } from '../../models/Chat.interface';
 import { response } from 'express';
 import { UserList } from './UserList';

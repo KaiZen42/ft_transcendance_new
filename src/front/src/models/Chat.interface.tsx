@@ -62,6 +62,5 @@ export interface JoinChannelPkg {
 export interface ViewRoomPkg {
 
 	idUser: number;
-	username: string;
 	room : string;
   }

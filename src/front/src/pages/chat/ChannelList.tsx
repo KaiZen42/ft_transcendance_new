@@ -163,11 +163,11 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
         <div className="card-header">
           <div className="user_info">
             <span>Open Chats</span>
-            <span id="action_menu_btn" onClick={(e) => setClick(!click)}>
+            <span id="action_menu_btn" style={{zIndex: 0}} onClick={(e) => setClick(!click)}>
               <i className="fas fa-ellipsis-v"></i>
             </span>
             {click === true ? (
-              <div className="action_menu">
+              <div className="action_menu" style={{zIndex: 1}}>
                 <ul>
                   <li onClick={(e) => setVisibleJoin('visible')}>
                     <i className="fas fa-users"></i> Join Group
@@ -203,6 +203,7 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
                         <div className="img_cont">
                           <Stack direction="row" spacing={2}>
                             <StyledBadge
+                            style={{zIndex: 0}}
                               overlap="circular"
                               invisible={false}
                               anchorOrigin={{

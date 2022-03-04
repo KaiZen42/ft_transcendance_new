@@ -19,6 +19,7 @@ import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import StyledBadge from '../../styles/StyleBage';
 import zIndex from '@mui/material/styles/zIndex';
+import { Margin } from '@mui/icons-material';
 
 interface Prop {
   socket: Socket | undefined;
@@ -33,6 +34,8 @@ export function CreateGroup({
   isVisible = 'hidden',
   setVisibility,
 }: Prop) {
+
+  const [groupName, setGroupName] = useState('');
   /*   const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>(); */
@@ -72,6 +75,11 @@ export function CreateGroup({
     console.log(ch);
     if (ch?.otherUser !== userId) socket?.emit('createRoom', ch);
   }, [ch]); */
+
+  useEffect(() => {
+
+  }, [groupName])
+
   return (
     <div
       style={{
@@ -82,13 +90,13 @@ export function CreateGroup({
     >
       <div className="group-create mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
-          <div className="input-group-prepend">
+          <div className="input-group-prepend" style={{marginBottom: 10}}>
             <input
               type="text"
               placeholder="Insert a Group Name"
               name=""
               className="form-control search"
-              //onChange={nameSubmit}
+              onChange={e => setGroupName(e.target.value)}
             />
             <span className="input-group-text search_btn">
               <i className="fas fa-check"></i>
@@ -116,6 +124,7 @@ export function CreateGroup({
           </div>
         </div>
         <div className="card-body contacts_body">
+        <div className='glow'>NAME: {groupName}</div>
           <ul className="contacts scrollable-search">
             {/* users.map((user: User) => (
               <li key={user.id}>

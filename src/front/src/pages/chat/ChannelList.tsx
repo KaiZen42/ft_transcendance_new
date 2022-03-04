@@ -23,6 +23,7 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
   const [selected, setSelected] = useState(false);
   const [activeID, setActiveID] = useState(0);
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
+  const [click, setClick] = useState(false);
   //const [openRoomPkg, setOpenPkg] = useState();
 
   const selectChannel = (event: any, id: number, chan: ChannelInfo) => {
@@ -144,12 +145,37 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
       : info.partecipants[0].userId;
   }
 
+  useEffect(() => {
+    console.log('CLICCATO:  ', click);
+  }, [click]);
+
   return (
-    <div className="col-md-3 col-xl-2 chat">
+    <div className="col-md-3 col-xl-2 chat" onClick={e => click? setClick(false): null}>
       <div className="card mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
           <div className="user_info">
             <span>Open Chats</span>
+            <span id="action_menu_btn" onClick={(e) => setClick(!click)}>
+              <i className="fas fa-ellipsis-v"></i>
+            </span>
+            {click === true ? (
+              <div className="action_menu">
+                <ul>
+                  <li>
+                    <i className="fas fa-user-circle"></i> View profile
+                  </li>
+                  <li>
+                    <i className="fas fa-users"></i> Add to close friends
+                  </li>
+                  <li>
+                    <i className="fas fa-plus"></i> Create Group
+                  </li>
+                  <li>
+                    <i className="fas fa-ban"></i> Block
+                  </li>
+                </ul>
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="card-body contacts_body">

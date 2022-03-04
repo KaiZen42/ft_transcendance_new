@@ -162,16 +162,10 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
               <div className="action_menu">
                 <ul>
                   <li>
-                    <i className="fas fa-user-circle"></i> View profile
-                  </li>
-                  <li>
-                    <i className="fas fa-users"></i> Add to close friends
+                    <i className="fas fa-users"></i> Join Group
                   </li>
                   <li>
                     <i className="fas fa-plus"></i> Create Group
-                  </li>
-                  <li>
-                    <i className="fas fa-ban"></i> Block
                   </li>
                 </ul>
               </div>

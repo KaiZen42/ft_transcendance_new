@@ -57,6 +57,14 @@
   background-color: rgba(168, 12, 182, 0.603) !important;
 }
 
+.group-create {
+  height: 50%;
+  width: 50%;
+  margin: 25%;
+  border-radius: 15px !important;
+  background-color: rgba(64, 3, 163, 0.699) !important;
+}
+
 .card-chat {
   height: 50vh;
   width: 300%;

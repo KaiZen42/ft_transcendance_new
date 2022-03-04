@@ -11,6 +11,7 @@ import {
 import { User } from '../../models/User.interface';
 import StyledBadge from '../../styles/StyleBage';
 import InfoChat from './Chat';
+import { CreateGroup } from './CreateGroup';
 import { JoinGroup } from './JoinGroup';
 
 interface Prop {
@@ -26,6 +27,7 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
   const [click, setClick] = useState(false);
   const [visibleJoin, setVisibleJoin] = useState('hidden');
+  const [visibleCreate, setVisibleCreate] = useState('hidden');
 
   //const [openRoomPkg, setOpenPkg] = useState();
 
@@ -170,7 +172,7 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
                   <li onClick={(e) => setVisibleJoin('visible')}>
                     <i className="fas fa-users"></i> Join Group
                   </li>
-                  <li>
+                  <li onClick={(e) => setVisibleCreate('visible')}>
                     <i className="fas fa-plus"></i> Create Group
                   </li>
                 </ul>
@@ -240,6 +242,12 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
         userId={userId}
         isVisible={visibleJoin}
         setVisibility={setVisibleJoin}
+      />
+      <CreateGroup
+        socket={socket}
+        userId={userId}
+        isVisible={visibleCreate}
+        setVisibility={setVisibleCreate}
       />
     </div>
   );

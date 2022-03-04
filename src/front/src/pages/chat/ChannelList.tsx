@@ -11,6 +11,7 @@ import {
 import { User } from '../../models/User.interface';
 import StyledBadge from '../../styles/StyleBage';
 import InfoChat from './Chat';
+import { JoinGroup } from './JoinGroup';
 
 interface Prop {
   socket: Socket | undefined;
@@ -24,6 +25,8 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
   const [activeID, setActiveID] = useState(0);
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
   const [click, setClick] = useState(false);
+  const [visibleJoin, setVisibleJoin] = useState('hidden');
+
   //const [openRoomPkg, setOpenPkg] = useState();
 
   const selectChannel = (event: any, id: number, chan: ChannelInfo) => {
@@ -150,7 +153,10 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
   }, [click]);
 
   return (
-    <div className="col-md-3 col-xl-2 chat" onClick={e => click? setClick(false): null}>
+    <div
+      className="col-md-3 col-xl-2 chat"
+      onClick={(e) => (click ? setClick(false) : null)}
+    >
       <div className="card mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
           <div className="user_info">
@@ -161,7 +167,7 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
             {click === true ? (
               <div className="action_menu">
                 <ul>
-                  <li>
+                  <li onClick={(e) => setVisibleJoin('visible')}>
                     <i className="fas fa-users"></i> Join Group
                   </li>
                   <li>
@@ -229,6 +235,12 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
         </div>
         <div className="card-footer"></div>
       </div>
+      <JoinGroup
+        socket={socket}
+        userId={userId}
+        isVisible={visibleJoin}
+        setVisibility={setVisibleJoin}
+      />
     </div>
   );
 }

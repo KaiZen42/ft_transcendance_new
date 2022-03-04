@@ -19,6 +19,7 @@ import './testChat.css';
 import { ChannelList } from './ChannelList';
 import MessageHeader from './MessageHeader';
 import { ChatInfo } from '../../models/Chat.interface';
+import { JoinGroup } from './JoinGroup';
 const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
 
 /* export class inviteDto {
@@ -34,6 +35,7 @@ export function Chat(/* {user} : Prop */) {
   const [socket, setSocket] = useState<Socket>();
   const [room, setRoom] = useState('');
   const [chatInfo, setChatInfo] = useState<ChatInfo>();
+  const [openJoin, setOpenJoin] = useState(false);
 
   function getUser() {
     fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {

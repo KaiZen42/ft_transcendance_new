@@ -5,68 +5,68 @@
 	data: string;
   } */
 
-  export interface MessagePkg {
-	id: number;
-	data: string;
-	userId: {
-		id : number;
-		username : string;
-		};
-	room: string;
-	sendDate: Date;
-	
+export interface MessagePkg {
+  id: number;
+  data: string;
+  userId: {
+    id: number;
+    username: string;
   };
-
-  export interface MessageInfoPkg {
-	room: string;
-	user: string;
-	
-  }
-
-export interface OpenRoomPkg
-{
-	idUser: number;
-	room : string;
+  room: string;
+  sendDate: Date;
 }
 
-export interface ChannelInfo
-{
-		id: number;
-		name: string;
-		isPrivate: boolean;
-		partecipants: 
-		{
-			id: number,
-			userId:{
-				id: number,
-				username: string,
-				avatar: string
-			}
-		}[];
-	notification: number ;
+export interface MessageInfoPkg {
+  room: string;
+  user: string;
+}
+
+export interface OpenRoomPkg {
+  idUser: number;
+  room: string;
+}
+
+export interface ChannelInfo {
+  id: number;
+  name: string;
+  isPrivate: boolean;
+  partecipants: {
+    id: number;
+    userId: {
+      id: number;
+      username: string;
+      avatar: string;
+    };
+  }[];
+  notification: number;
+}
+
+export interface ShortChannel {
+  id: number;
+  name: string;
+  mode: string;
 }
 
 export interface CreationChannelPkg {
-	idUser: number ;
-	otherUser: number;
-	pass: string;
-	name: string;
-  }
+  idUser: number;
+  otherUser: number;
+  pass: string;
+  name: string;
+}
 
 export interface JoinChannelPkg {
-	idUser: number ;
-	username: string
-	key: string;
+  idUser: number;
+  username: string;
+  key: string;
 }
 
 export interface ViewRoomPkg {
+  idUser: number;
+  room: string;
+}
 
-	idUser: number;
-	room : string;
-  }
-
-  export interface ChatInfo{
-	username: string;
-	avatar: string;
-	roomId: string;
+export interface ChatInfo {
+  username: string;
+  avatar: string;
+  roomId: string;
 }

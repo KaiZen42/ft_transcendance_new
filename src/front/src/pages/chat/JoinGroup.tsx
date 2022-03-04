@@ -13,7 +13,7 @@ import { blue } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import React, { useState, useEffect, useRef } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
-import { CreationChannelPkg } from '../../models/Chat.interface';
+import { CreationChannelPkg, ShortChannel } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
@@ -36,51 +36,45 @@ export function JoinGroup({
   /*   const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>(); */
+  const [channels, setChannels] = useState<ShortChannel[]>([]);
 
-  /*   const nameSubmit = (event: any) => {
+  const nameSubmit = (event: any) => {
     if (event.target.value) {
       event.preventDefault();
       (async () => {
         const data = await fetch(
-          `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${event.target.value}`,
+          `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelByName/${event.target.value}`,
           { credentials: 'include' }
         );
         const result = data.json();
         result.then((res) => {
-          console.log(res);
-          setUsers(
-            res.sort((a: User, b: User) => a.username.localeCompare(b.username))
-          );
+          console.log('TEST API CAHN NAME', res);
+          setChannels(res);
         });
       })();
     } else {
-      setUsers([]);
+      setChannels([]);
     }
   };
 
-  function selectGroup(e: any, otherId: number) {
-    console.log(otherId);
-    setCreationChannel({
-      idUser: userId,
-      otherUser: otherId,
-      pass: '',
-      name: '',
-    });
-  } */
+  function selectChannel(e: any, chan: ShortChannel) {
+    console.log('clicked ', chan);
 
-  /*   useEffect(() => {
-    console.log(ch);
-    if (ch?.otherUser !== userId) socket?.emit('createRoom', ch);
-  }, [ch]); */
+  }
+
+  useEffect(() => {
+    console.log('RERENDER LIST');
+  }, [channels]);
+
   return (
     <div
       style={{
-        visibility: isVisible === 'hidden' ? "hidden" : "visible",
+        visibility: isVisible === 'hidden' ? 'hidden' : 'visible',
         opacity: '1',
       }}
-      className="overlay"
+      className="overlay "
     >
-      <div className="group-search mb-sm-3 mb-md-0 contacts_card">
+      <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
         <div className="card-header">
           <div className="input-group">
             <input
@@ -88,7 +82,7 @@ export function JoinGroup({
               placeholder="Search..."
               name=""
               className="form-control search"
-              //onChange={nameSubmit}
+              onChange={nameSubmit}
             />
             <div className="input-group-prepend">
               <span className="input-group-text search_btn">
@@ -105,35 +99,25 @@ export function JoinGroup({
         </div>
         <div className="card-body contacts_body">
           <ul className="contacts scrollable-search">
-            {/* users.map((user: User) => (
-              <li key={user.id}>
-                <div
-                  className="d-flex bd-highlight"
-                  onClick={(e) => selectUser(e, user.id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className="img_cont">
-                    <Stack direction="row" spacing={2}>
-                      <StyledBadge
-                        overlap="circular"
-                        invisible={false}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'right',
-                        }}
-                        variant="dot"
-                      >
-                        <Avatar alt="Img" src={user.avatar} />
-                      </StyledBadge>
-                    </Stack>
+            {console.log('CHANNELS TEST: ', channels)}
+            {channels.map((chan: ShortChannel, i) => {
+              console.log('CHAN', chan);
+              return (
+                <li key={chan.id}>
+                  <div
+                    className="d-flex bd-highlight"
+                    onClick={(e) => selectChannel(e, chan)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="user_info">
+                      <span>{chan.name}</span>
+                      <p>{chan.id}</p>
+                      <p>{chan.mode}</p>
+                    </div>
                   </div>
-                  <div className="user_info">
-                    <span>{user.username}</span>
-                    <p>{user.username} is online</p>
-                  </div>
-                </div>
-              </li>
-            )) */}
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className="card-footer"></div>

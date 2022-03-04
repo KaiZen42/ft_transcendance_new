@@ -60,10 +60,10 @@ export class chatController {
 
 
 
-	@Get("TEST/:chanId/:userId")
-	async getTest(@Param("chanId") id1: number, @Param("userId") id2: number) : Promise<any>
+	@Get("ChannelByName/:name")
+	async getTest(@Param("name") name: string) : Promise<any[]>
 	{
-		let ms : any =  await this.chService.getChanName(id1, id2);
+		let ms : any[] =  await this.chService.getByName(name);
 		console.log(`NAME is(): `, ms);
 		return ms;
 	}

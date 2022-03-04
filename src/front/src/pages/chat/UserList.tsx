@@ -19,8 +19,6 @@ import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import StyledBadge from '../../styles/StyleBage';
 
-
-
 interface Prop {
   socket: Socket | undefined;
   userId: number;

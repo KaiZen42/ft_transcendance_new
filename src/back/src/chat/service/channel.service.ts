@@ -8,7 +8,7 @@ import {
 import { channel } from 'diagnostics_channel';
 import { userInfo } from 'os';
 import { User } from 'src/user/models/user.entity';
-  import { getConnection, getRepository, Repository } from 'typeorm';
+  import { getConnection, getRepository, Like, Repository } from 'typeorm';
 import { ChannelInfoDto } from '../dto/chat.dto';
 
 import { Channel } from '../models/channel.entity';
@@ -31,6 +31,19 @@ export class ChannelService {
 		return this.channelDB.findOne({ where: { id } });
 	}
 
+	async getByName(name : string) : Promise<any[]>
+	{
+		const res =  await this.channelDB
+			.createQueryBuilder("channel")
+			.select(["channel.id", "channel.name", "channel.mode"])
+			.where(`channel.name LIKE '${name}%'`)
+			.andWhere(" channel.isPrivate = false ")
+			.andWhere(" channel.mode != 'PRI'")
+			.orderBy("channel.name", "ASC")
+			.getMany()
+		//console.log("CHANNEL INFO", res)
+		return res;
+	}
 
 	async getAllPart(id : number) : Promise<Partecipant[]>
 	{

@@ -59,7 +59,6 @@ export function JoinGroup({
 
   function selectChannel(e: any, chan: ShortChannel) {
     console.log('clicked ', chan);
-
   }
 
   useEffect(() => {
@@ -98,12 +97,18 @@ export function JoinGroup({
           </div>
         </div>
         <div className="card-body contacts_body">
-          <ul className="contacts scrollable-search">
-            {console.log('CHANNELS TEST: ', channels)}
-            {channels.map((chan: ShortChannel, i) => {
-              console.log('CHAN', chan);
-              return (
-                <li key={chan.id}>
+          {console.log('CHANNELS TEST: ', channels)}
+          {channels.map((chan: ShortChannel, i) => {
+            console.log('CHAN', chan);
+            return (
+              <li key={chan.id}>
+                <Stack direction="row" spacing={2}>
+                  <Avatar alt="Img" src={'./group_icon.png'} />
+                </Stack>
+                <ul
+                  className="group-contacts scrollable-search"
+                  id="horizontal-list"
+                >
                   <div
                     className="d-flex bd-highlight"
                     onClick={(e) => selectChannel(e, chan)}
@@ -115,10 +120,10 @@ export function JoinGroup({
                       <p>{chan.mode}</p>
                     </div>
                   </div>
-                </li>
-              );
-            })}
-          </ul>
+                </ul>
+              </li>
+            );
+          })}
         </div>
         <div className="card-footer"></div>
       </div>

@@ -52,9 +52,14 @@
 .group-search {
   height: 50%;
   width: 50%;
-  margin: 25%;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  margin-left: 25%;
+  margin-right: 10%;
+  position: absolute;
   border-radius: 15px !important;
-  background-color: rgba(168, 12, 182, 0.603) !important;
+  background-color: rgba(168, 12, 182, 0.521) !important;
+  backdrop-filter: blur(2px);
 }
 
 .group-create {
@@ -62,9 +67,14 @@
   width: 50%;
   margin: 25%;
   border-radius: 15px !important;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  margin-left: 25%;
+  margin-right: 10%;
+  position: absolute;
   /* ackground-color: transparent; */
-
-  background-color: rgba(64, 3, 163, 0.699) !important;
+  backdrop-filter: blur(2px);
+  background-color: rgba(64, 3, 163, 0.61) !important;
 }
 
 .card-chat {
@@ -153,6 +163,16 @@
   padding: 0;
   object-position: 50% 50%;
 }
+
+.group-contacts {
+  list-style: none;
+  padding: 0;
+  object-position: 50% 50%;
+  background-color: rgba(0, 0, 0, 0.342);
+  
+  border-radius: 15px !important;
+}
+
 .contacts li {
   width: 100% !important;
   padding: 5px 10px;
@@ -289,7 +309,8 @@
   z-index: 1;
   position: absolute;
   padding: 15px 0;
-  background-color: rgba(0, 0, 0, 0.877);
+  background-color: rgba(0, 0, 0, 0.445);
+  backdrop-filter: blur(2px);
   color: white;
   border-radius: 15px;
   top: 30px;

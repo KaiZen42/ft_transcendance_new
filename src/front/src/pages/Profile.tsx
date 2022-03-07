@@ -1,26 +1,92 @@
+import { height } from "@mui/system";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import ProfilePopUp1 from "../components/ProfilePopUp1";
 import Wrapper from "../components/Wrapper";
 import { User } from "../models/User.interface";
+import { DisplayUser } from '../models/User.interface';
+import '../styles/Profile.css';
 
 export default function Profile() {
 
 	const [user, setUser] = useState<User>();
-
+	const [visibility, setVisibility] = useState(false);
+  	const [invisible, setInvisible] = useState(false);
+	  
+	
     useEffect(() => {(
       async () => {
         const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {withCredentials: true});
-        setUser(data);
+		setUser(data);
       }
+	  
     )();
+	
     }, []);
+
+	const updateUser = async (updatedUser: User) => {
+		const res = await axios.put(
+		  `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${updatedUser.id}`,
+		  {
+			...updatedUser,
+		  }
+		);
+		setUser(res.data);
+	  };
+
+	  const popupCloseHandler = () => {
+		setVisibility(false);
+	  };
 
 	return(
 		<Wrapper>
-			<img src={user?.avatar}/>
-			<p>Username: {user?.username}</p>
-			<p>Wins: 0</p>
-			<p>Losses: 0</p>
+			
+	<div className="container mt-5 mb-5">
+    <div className="row no-gutters">
+        <div className="col-md-8 col-lg-8">
+            <div className="d-flex flex-column">
+                <div className="info-header d-flex flex-row justify-content-between align-items-center p-5 bg-dark text-white">
+        		<div className="col-md-4 col-lg-4" >
+					<img className="img--profile" src={user?.avatar}/></div>
+                    <h3 className="display-5" >{user?.username} </h3>
+					<i className="bi bi-gear popup--form--icon" style={{ fontSize: "1.5rem", }} onClick={() => setVisibility(true)}></i>
+					{/* <i className="bi bi-pencil popup--form--icon"></i> */}
+					<i className=""></i>
+					<i className=""></i>
+					<i className=""></i>
+                </div>
+                <div className="p-3 bg-black text-white">
+                    <h6>Test</h6>
+                </div>
+                <div className="d-flex flex-row text-white" >
+                    <div className="p-3 mx-2 bg-primary text-center info-block">
+                        <h4>Wins</h4>
+                        <h6>{user?.wins}</h6>
+                    </div>
+                    <div className="p-3 bg-success text-center info-block">
+                        <h4>Losses</h4>
+                        <h6>{user?.losses}</h6>
+                    </div>
+                    <div className="p-3 mx-2 bg-warning text-center info-block">
+                        <h4>Points</h4>
+                        <h6>{user?.points}</h6>
+                    </div>
+                    
+                </div>
+				
+            </div>
+			<div>
+
+					<ProfilePopUp1
+					onClose={popupCloseHandler}
+					show={visibility}
+					user={user!}
+					updateState={updateUser}
+					/>
+        </div>
+			</div>
+    </div>
+</div>
 		</Wrapper>
 	)
 }

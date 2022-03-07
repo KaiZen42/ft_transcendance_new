@@ -14,6 +14,9 @@ export interface User {
   avatar: string;
   username: string;
   two_fa_auth: boolean;
+  wins?: number;
+  losses?: number;
+  points?: number;
 }
 
 export interface DisplayUser {

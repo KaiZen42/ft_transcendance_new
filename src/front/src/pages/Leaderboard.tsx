@@ -2,15 +2,8 @@ import { useEffect, useState } from 'react';
 import Wrapper from '../components/Wrapper';
 import '../styles/Leaderboard.css';
 import LeaderboardRow from '../components/LeaderboardRow';
+import { DisplayUser } from '../models/User.interface';
 
-interface DisplayUser {
-  id: string;
-  avatar: string;
-  username: string;
-  wins: number;
-  losses: number;
-  points: number;
-}
 
 export default function Leaderboard() {
   const [users, setUsers] = useState<DisplayUser[]>([]);

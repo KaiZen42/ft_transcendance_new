@@ -1,4 +1,5 @@
 
+
 import axios from "axios";
 import { ChangeEvent, createRef, FormEvent, useEffect, useState } from "react";
 import { User } from "../models/User.interface";
@@ -20,7 +21,7 @@ interface UpdateUser {
   auth_code: string
 }
 
-export default function ProfilePopUp({onClose, show, user, updateState}: Props) {
+export default function ProfilePopUp1({onClose, show, user, updateState}: Props) {
   const [valid, setValid] = useState({
     username: true,
     auth_code: true
@@ -237,22 +238,7 @@ export default function ProfilePopUp({onClose, show, user, updateState}: Props) 
             </>
           }
         </div>
-        <div className="row justify-content-center">
-          <div className="col-2" style={{"textAlign" : "right"}}>
-            <span className="form-label">wins</span>
-          </div>
-          <div className="col-2">
-            <span className="form-text">0</span>
-          </div>
-        </div>
-        <div className="row justify-content-center">
-          <div className="col-2" style={{"textAlign" : "right"}}>
-            <span className="form-label">losses</span>
-          </div>
-          <div className="col-2">
-            <span className="form-text">0</span>
-          </div>
-        </div>
+        
         <div className="row justify-content-center">
           <div className="col-5">
             <span className="form-label">2FA authentication</span>

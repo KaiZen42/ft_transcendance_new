@@ -12,6 +12,7 @@ export default function Nav() {
   const [user, setUser] = useState<User>();
   const [visibility, setVisibility] = useState(false);
   const [invisible, setInvisible] = useState(false);
+  const navigate = useNavigate();
 
   const handleBadgeVisibility = () => {
     setInvisible(!invisible);
@@ -76,7 +77,8 @@ export default function Nav() {
         </li>
       </ul>
       <div className="header--signout">
-        <div className="header--photo_name" onClick={() => setVisibility(true)}>
+        {/* <div className="header--photo_name" onClick={() => setVisibility(true)}> */}
+        <div className="header--photo_name" onClick={() => navigate("/profile")}>
           <img alt="profile image" src={user?.avatar} className="nav--image" />
           <div className="header--text">{user?.username}</div>
         </div>
@@ -85,12 +87,12 @@ export default function Nav() {
           onClick={signOutUser}
         ></i>
       </div>
-      <ProfilePopUp
+      {/* <ProfilePopUp
         onClose={popupCloseHandler}
         show={visibility}
         user={user!}
         updateState={updateUser}
-      />
+      /> */}
     </header>
   );
 }

@@ -31,30 +31,32 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
 
   //const [openRoomPkg, setOpenPkg] = useState();
 
+  function chatInfo(current: ChannelInfo | undefined)
+  {
+    if (current?.isPrivate) {
+      setChatInfo({
+        username: selectUser(current)?.username,
+        avatar: selectUser(current)?.avatar,
+        roomId: room,
+      });
+    } else {
+      setChatInfo({
+        username: current?.name,
+        avatar: undefined,
+        roomId: room,
+      });
+    }
+  }
+
   const selectChannel = (event: any, id: number, chan: ChannelInfo) => {
     const viewRoom: OpenRoomPkg = {
       idUser: userId,
       room: '' + id,
     };
     socket?.emit('viewRoom', viewRoom);
-    console.log('Clicked ', viewRoom);
     setSelected(true);
-    console.log('ID', id);
     setActiveID(id);
-
-    if (chan.isPrivate) {
-      setChatInfo({
-        username: selectUser(chan)?.username,
-        avatar: selectUser(chan)?.avatar,
-        roomId: chan?.id,
-      });
-    } else {
-      setChatInfo({
-        username: chan?.name,
-        avatar: undefined,
-        roomId: chan?.id,
-      });
-    }
+    chatInfo(chan);
   };
 
   async function getRooms() {
@@ -87,36 +89,27 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
           room: result.id.toString(),
         };
         socket?.emit('openRoom', opnePkj);
-        console.log('join in created room', result);
         setChannel((prevChan) => {
           return [...prevChan, result];
         });
-        if (result.isPrivate) {
-          setChatInfo({
-            username: selectUser(result)?.username,
-            avatar: selectUser(result)?.avatar,
-            roomId: room,
-          });
-        } else {
-          setChatInfo({
-            username: result?.name,
-            avatar: undefined,
-            roomId: room,
-          });
-        }
+        chatInfo(result)
       });
   }
 
   useEffect(() => {
+    //---------CONDITION 1 FIRST RENDER----------
     if (channels.length == 0) getRooms();
+    //---------CONDITION 2 ADD NEW ROOM----------
     else if (
       room !== undefined &&
       room !== '' &&
       !channels.find((ch) => ch.id.toString() == room)
     ) {
-      console.log('not FOUND CHID');
       getRoom(room);
     }
+    //---------CONDITION 3 LOAD EXIST ROOM----------
+    else if (room !== undefined && room !== '') 
+        chatInfo(channels.find((ch) => ch.id.toString() == room))
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
         let ch = channels.find((chan) => {
@@ -126,15 +119,12 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
       }
     });
     socket?.on('createdPrivateRoom', (prvRoom: OpenRoomPkg) => {
-      console.log('Recived Private invite:');
-      console.log(prvRoom);
 
       // setRoom(prvRoom.room);
       if (
         userId === prvRoom.idUser &&
         !channels.find((ch) => ch.id.toString() == room)
       ) {
-        console.log('PRIVATE');
         getRoom(prvRoom.room);
       }
     });
@@ -151,7 +141,6 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
   }
 
   useEffect(() => {
-    console.log('CLICCATO:  ', click);
   }, [click]);
 
   return (
@@ -182,7 +171,6 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
         </div>
         <div className="card-body contacts_body">
           <ul className="contacts">
-            {console.log('rooms: ', new Set(channels))}
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
               if (chan.notification === undefined) chan.notification = 0;

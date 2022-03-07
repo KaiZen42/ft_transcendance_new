@@ -30,8 +30,9 @@ import { Partecipant } from '../models/partecipant.entity';
 	}
 
 	async isPartecipant(channelId: number, userId: number): Promise<boolean> {
-		return this.partecipantDB.findOne({ where: { channelId, userId } }) !== undefined;
-	  }
+		const ret = await this.partecipantDB.findOne({ where: { channelId, userId } });
+		return (ret !== undefined )
+	}
   
 	async create(partecipant: Partecipant): Promise<Partecipant> {
 	  return this.partecipantDB.save({

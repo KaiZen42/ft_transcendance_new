@@ -22,7 +22,6 @@ class SignUp extends React.Component {
       passwordConfirm: this.passwordConf,
     });
 
-    console.log(response.data);
     this.setState({
       redirect: true
     })

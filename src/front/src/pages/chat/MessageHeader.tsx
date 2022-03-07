@@ -9,22 +9,6 @@ interface Prop {
 }
 
 export default function MessageHeader({ chatInfo }: Prop) {
-
-/*   const [nMsg, SetNMsg] = useState(0);
-  async function getCounter() {
-    console.log('INFO:    ', chatInfo);
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetMessageCounter/${chatInfo?.roomId}`,
-      {
-        credentials: 'include',
-      }
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        SetNMsg(result);
-      });
-  }
-  getCounter(); */
   useEffect(() => {
     
   }, [chatInfo])

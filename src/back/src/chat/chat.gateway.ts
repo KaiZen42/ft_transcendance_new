@@ -72,15 +72,21 @@ export class ChatGateway
 	@SubscribeMessage('createRoom')
 	async createRoom(socket: Socket, data: creationDto) : Promise<WsResponse<string> >
 	{
+		this.logger.log(`CREATE ROOM FORM DATA `, data)
+		if (data.otherUser !== null && data.otherUser !== undefined){
+			const existChan = await this.channelService.getPrivateChanByUsersId(data.idUser, data.otherUser)
+			if (existChan !== undefined)
+			{
+				this.server.to(socket.id).emit("viewedRoom", existChan.id + "" )
+				return //{event: "viewedRoom", data: "" + chan.id} ;
+			}
+		}
 		const chan: Channel = new Channel();
 		chan.isPrivate = (data.otherUser !== undefined);
 		chan.name = chan.isPrivate ? `${data.idUser}`+ `${data.otherUser}` : data?.name;
 		chan.pass = data?.pass;
 		chan.mode = chan.isPrivate ? "PRI" : "PUB";
 		
-		if (chan.isPrivate && await this.channelService.getPrivateChanByUsersId(data.idUser, data.otherUser) !== undefined){
-			return //{event: "viewedRoom", data: "" + chan.id} ;
-		}
 		chan.id = (await this.channelService.create(chan, [data.idUser, chan.isPrivate? data.otherUser : null])).id;
 
 		socket.join("" + chan.id);

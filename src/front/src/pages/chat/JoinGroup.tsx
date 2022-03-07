@@ -33,9 +33,6 @@ export function JoinGroup({
   isVisible = 'hidden',
   setVisibility,
 }: Prop) {
-  /*   const [otherUser, setOtherUser] = useState(0);
-  const [users, setUsers] = useState<User[]>([]);
-  const [ch, setCreationChannel] = useState<CreationChannelPkg>(); */
   const [channels, setChannels] = useState<ShortChannel[]>([]);
 
   const nameSubmit = (event: any) => {
@@ -48,7 +45,6 @@ export function JoinGroup({
         );
         const result = data.json();
         result.then((res) => {
-          console.log('TEST API CAHN NAME', res);
           setChannels(res);
         });
       })();
@@ -63,7 +59,6 @@ export function JoinGroup({
       room: '' + chan.id,
     };
     socket?.emit('joinRoom', viewRoom);
-    console.log('clicked and opened', chan);
     setVisibility('hidden')
   }
 
@@ -74,7 +69,6 @@ export function JoinGroup({
         else
           console.log("Join Fail")
     })
-    console.log('RERENDER LIST');
   }, [channels]);
 
   return (
@@ -109,9 +103,7 @@ export function JoinGroup({
           </div>
         </div>
         <div className="card-body contacts_body">
-          {console.log('CHANNELS TEST: ', channels)}
           {channels.map((chan: ShortChannel, i) => {
-            console.log('CHAN', chan);
             return (
               <li key={chan.id}>
                 <Stack direction="row" spacing={2}>

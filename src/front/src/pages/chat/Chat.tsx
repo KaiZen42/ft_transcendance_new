@@ -22,14 +22,6 @@ import { ChatInfo } from '../../models/Chat.interface';
 import { JoinGroup } from './JoinGroup';
 const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
 
-/* export class inviteDto {
-
-	@IsNotEmpty()
-	userId: number;
-	@IsNotEmpty()
-	room : string;
-} */
-
 export function Chat(/* {user} : Prop */) {
   const [pkg, setPkg] = useState<MessagePkg>();
   const [socket, setSocket] = useState<Socket>();
@@ -54,8 +46,6 @@ export function Chat(/* {user} : Prop */) {
           sendDate: new Date(),
         });
       });
-    console.log('ESPLOSOOOO');
-    console.log(pkg);
   }
 
   useEffect(() => {
@@ -63,23 +53,17 @@ export function Chat(/* {user} : Prop */) {
     const sock = io(WS_SERVER);
     setSocket(sock);
 
-    sock.on('connect', () => {
+/*     sock.on('connect', () => {
       console.log('connected');
-    });
-    /* sock.on("createRoom", (room: PrivateInvite) => 
-			{
-				console.log('channel created:');
-				console.log(room);
-				setRoom(room.room);
-			}); */
+    }); */
     sock.on('viewedRoom', (roomView: string) => {
       setRoom(roomView);
-      console.log('CURRENT ROOM: ', roomView);
+      /* console.log('CURRENT ROOM: ', roomView); */
     });
     sock.on('createRoom', (newRoom: string) => {
-      console.log('Created a room:');
+    /*   console.log('Created a room:');
       console.log(newRoom);
-      console.log(pkg);
+      console.log(pkg); */
       setRoom(newRoom);
     });
     return () => {
@@ -88,27 +72,8 @@ export function Chat(/* {user} : Prop */) {
   }, [pkg]);
 
   return (
-    // socket === undefined ?  (<Wrapper> <div>Not Connected</div> </Wrapper>)
-    // : (
-    // 	<Wrapper>
-    // 		<Box display="flex" flexDirection="row">
-    // 			<Box width="100%">
-    // 				{pkg === undefined ? (null) : <MessageBox socket={socket} room={roomState}/>}
-    // 				{pkg === undefined ? (null) : <Sender socket={socket} packet={pkg} room={roomState}/>}
-    // 			</Box>
-    // 			<Box sx={{ minWidth : "fit-content" }}>
-    // 				{pkg === undefined ? (null) : <UserList socket={socket} userId={pkg.userId.id}/>}
-    // 			</Box>
-    // 			<Box sx={{ minWidth : "fit-content" }}>
-    // 				{pkg === undefined ? (null) : <ChannelList socket={socket} userId={pkg.userId.id} room={roomState}/>}
-    // 			</Box>
-    // 		</Box>
-    // 	</Wrapper>
-    // )
-
     <Wrapper>
       <div className="container--fluid">
-        {console.log('CHAT INFO', pkg)}
         <div className="row h-100">
           {pkg === undefined ? null : (
             <UserList socket={socket} userId={pkg.userId.id} />

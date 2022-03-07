@@ -39,7 +39,6 @@ export function UserList({ socket, userId }: Prop) {
         );
         const result = data.json();
         result.then((res) => {
-          console.log(res);
           setUsers(
             res.sort((a: User, b: User) => a.username.localeCompare(b.username))
           );
@@ -51,7 +50,6 @@ export function UserList({ socket, userId }: Prop) {
   };
 
   function selectUser(e: any, otherId: number) {
-    console.log(otherId);
     setCreationChannel({
       idUser: userId,
       otherUser: otherId,
@@ -61,8 +59,7 @@ export function UserList({ socket, userId }: Prop) {
   }
 
   useEffect(() => {
-    console.log(ch);
-    if (ch?.otherUser !== userId) socket?.emit('createRoom', ch);
+    if (ch !== undefined && ch?.otherUser !== userId ) socket?.emit('createRoom', ch);
   }, [ch]);
 
   // setClicked(false)
@@ -89,33 +86,35 @@ export function UserList({ socket, userId }: Prop) {
         <div className="card-body contacts_body">
           <ul className="contacts scrollable-search">
             {users.map((user: User) => (
-              <li key={user.id}>
-                <div
-                  className="d-flex bd-highlight"
-                  onClick={(e) => selectUser(e, user.id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className="img_cont">
-                    <Stack direction="row" spacing={2}>
-                      <StyledBadge
-                        overlap="circular"
-                        invisible={false}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'right',
-                        }}
-                        variant="dot"
-                      >
-                        <Avatar alt="Img" src={user.avatar} />
-                      </StyledBadge>
-                    </Stack>
+              user.id !== userId ?
+                <li key={user.id}>
+                  <div
+                    className="d-flex bd-highlight"
+                    onClick={(e) => selectUser(e, user.id)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="img_cont">
+                      <Stack direction="row" spacing={2}>
+                        <StyledBadge
+                          overlap="circular"
+                          invisible={false}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                          }}
+                          variant="dot"
+                        >
+                          <Avatar alt="Img" src={user.avatar} />
+                        </StyledBadge>
+                      </Stack>
+                    </div>
+                    <div className="user_info">
+                      <span>{user.username}</span>
+                      <p>{user.username} is online</p>
+                    </div>
                   </div>
-                  <div className="user_info">
-                    <span>{user.username}</span>
-                    <p>{user.username} is online</p>
-                  </div>
-                </div>
-              </li>
+                </li>
+                : null
             ))}
           </ul>
         </div>

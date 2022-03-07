@@ -1,6 +1,7 @@
 import {
   Avatar,
   Button,
+  Checkbox,
   FormGroup,
   List,
   ListItem,
@@ -36,11 +37,12 @@ export function CreateGroup({
 }: Prop) {
 
   const [groupName, setGroupName] = useState('');
-  /*   const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
-  const [ch, setCreationChannel] = useState<CreationChannelPkg>(); */
-
-  /*   const nameSubmit = (event: any) => {
+  const [invite, setInvite] = useState<User[]>([]);
+  const [privateGroup, setPrivateStatus ] = useState(false);
+  const [ch, setCreationChannel] = useState<CreationChannelPkg>();
+  const [groupPass, setGroupPass] = useState('');
+  const nameSubmit = (event: any) => {
     if (event.target.value) {
       event.preventDefault();
       (async () => {
@@ -61,7 +63,7 @@ export function CreateGroup({
     }
   };
 
-  function selectGroup(e: any, otherId: number) {
+  /* function selectGroup(e: any, otherId: number) {
     console.log(otherId);
     setCreationChannel({
       idUser: userId,
@@ -69,7 +71,20 @@ export function CreateGroup({
       pass: '',
       name: '',
     });
-  } */
+  }  */
+
+  function addUser(e: any, user: User)
+  {
+    const id = invite.findIndex((us) => us.id == user.id);
+    console.log("check", e.target.checked)
+    
+    if ( e.target.checked )
+      setInvite(pred => {return [...pred, user]})
+    else
+      setInvite(pred => {
+        pred.splice(id, 1)
+        return  [...pred]})
+  }
 
   /*   useEffect(() => {
     console.log(ch);
@@ -77,8 +92,8 @@ export function CreateGroup({
   }, [ch]); */
 
   useEffect(() => {
-
-  }, [groupName])
+    console.log("INVITED USER ", invite)
+  }, [invite])
 
   return (
     <div
@@ -90,7 +105,8 @@ export function CreateGroup({
     >
       <div className="group-create mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
-          <div className="input-group-prepend" style={{marginBottom: 10}}>
+          <div className="input-group-prepend" style={{marginBottom: 5}}>
+            
             <input
               type="text"
               placeholder="Insert a Group Name"
@@ -108,13 +124,31 @@ export function CreateGroup({
                 ></i>
               </span>
           </div>
+          <div className="input-group-prepend" style={{marginBottom: 5}}>
+          <span className='glow'>Pass</span>
+            <span>
+              <input
+                type="text"
+                placeholder="Insert a Group Name"
+                name=""
+                className="form-control search"
+                onChange={e => setGroupPass(e.target.value)}
+              />
+            </span>
+            <span className="search_btn">
+            <span className='glow'>Private </span>
+            <Checkbox 
+                    checked={privateGroup}
+                    onChange={(e) => setPrivateStatus(e.target.checked)}/>
+                    </span>
+          </div>
           <div className="input-group">
             <input
               type="text"
               placeholder="Add a User..."
               name=""
               className="form-control search"
-              //onChange={nameSubmit}
+              onChange={nameSubmit}
             />
             <div className="input-group-prepend">
               <span className="input-group-text search_btn">
@@ -123,14 +157,13 @@ export function CreateGroup({
             </div>
           </div>
         </div>
-        <div className="card-body contacts_body">
-        <div className='glow'>NAME: {groupName}</div>
-          <ul className="contacts scrollable-search">
-            {/* users.map((user: User) => (
+        <ul className="contacts scrollable-search">
+            {users.map((user: User) => (
+              user.id === userId ? null:
               <li key={user.id}>
                 <div
                   className="d-flex bd-highlight"
-                  onClick={(e) => selectUser(e, user.id)}
+                  /* onClick={(e) => addUser(e, user)} */
                   style={{ cursor: 'pointer' }}
                 >
                   <div className="img_cont">
@@ -150,12 +183,20 @@ export function CreateGroup({
                   </div>
                   <div className="user_info">
                     <span>{user.username}</span>
-                    <p>{user.username} is online</p>
                   </div>
+                  <Checkbox 
+                    checked={invite.findIndex((us) => us.id == user.id) === -1 ? 
+                      false : true}
+                    onChange={(e) => addUser(e, user)}/>
                 </div>
               </li>
-            )) */}
+            ))}
           </ul>
+        <div className="card-body contacts_body">
+        <div className='glow'>NAME: {groupName}</div>
+        <div className='glow'>Invite: {invite.map((inv : User) =>
+          <span key={inv.id}> {inv.username} </span>
+          )}</div>
         </div>
         <div className="card-footer"></div>
       </div>

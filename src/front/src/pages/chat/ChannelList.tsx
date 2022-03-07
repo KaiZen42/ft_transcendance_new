@@ -226,18 +226,18 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
         </div>
         <div className="card-footer"></div>
       </div>
-      <JoinGroup
+      {visibleJoin === "hidden" ? null : <JoinGroup
         socket={socket}
         userId={userId}
         isVisible={visibleJoin}
-        setVisibility={setVisibleJoin}
-      />
-      <CreateGroup
+        setVisibility={setVisibleJoin} 
+      />}
+      {visibleCreate === "hidden" ? null :<CreateGroup
         socket={socket}
         userId={userId}
         isVisible={visibleCreate}
         setVisibility={setVisibleCreate}
-      />
+      />}
     </div>
   );
 }

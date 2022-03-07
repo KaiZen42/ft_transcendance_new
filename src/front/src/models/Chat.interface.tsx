@@ -56,7 +56,7 @@ export interface CreationChannelPkg {
 
 export interface JoinChannelPkg {
   idUser: number;
-  username: string;
+  room: string;
   key: string;
 }
 

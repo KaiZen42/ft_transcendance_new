@@ -1,12 +1,8 @@
 import {  IsNotEmpty } from "class-validator";
 
 export class JoinRoomDto {
-	
 	@IsNotEmpty()
 	idUser: number ;
-
-	@IsNotEmpty()
-	username: string;
 
 	@IsNotEmpty()
 	room: string;
@@ -76,9 +72,6 @@ export class viewRoomDto {
 
 	@IsNotEmpty()
 	idUser: number;
-  
-/* 	@IsNotEmpty()
-	name: string; */
 	
 	@IsNotEmpty()
 	room : string;

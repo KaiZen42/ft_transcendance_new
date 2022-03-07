@@ -81,7 +81,7 @@ export class ChatGateway
 		if (chan.isPrivate && await this.channelService.getPrivateChanByUsersId(data.idUser, data.otherUser) !== undefined){
 			return //{event: "viewedRoom", data: "" + chan.id} ;
 		}
-		chan.id = (await this.channelService.create(chan, [data.idUser, data.otherUser])).id;
+		chan.id = (await this.channelService.create(chan, [data.idUser, chan.isPrivate? data.otherUser : null])).id;
 
 		socket.join("" + chan.id);
 		
@@ -94,12 +94,23 @@ export class ChatGateway
 	}
 
 	@SubscribeMessage('joinRoom')
-	joinRoom(client: Socket, data: JoinRoomDto) : WsResponse<boolean>
+	async joinRoom(client: Socket, data: JoinRoomDto) : Promise<WsResponse<boolean>>
 	{
 		
 		client.join(data.room);
-		this.logger.log(`JOIN ${data.idUser} in ${data.room}`);
-		return { event: 'joinRoom', data : true};
+		if (await this.partService.isPartecipant(+data.room, data.idUser))
+		{
+			this.server.to(client.id).emit("viewedRoom", data.room)
+			return { event: 'joinedStatus', data : true};
+		}
+		else if (await this.channelService.join(data)){
+			this.logger.log(`JOIN TO ${data.room} SUCCESS`)
+			this.server.to(client.id).emit("viewedRoom", data.room)
+			return { event: 'joinedStatus', data : true};
+		}
+		this.logger.log(`JOIN TO ${data.room} FAIL`)
+		return { event: 'joinedStatus', data : false};
+		
 	}
 	  
 	@SubscribeMessage('openRoom')

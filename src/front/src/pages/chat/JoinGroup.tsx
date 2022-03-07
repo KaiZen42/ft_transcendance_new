@@ -13,7 +13,7 @@ import { blue } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import React, { useState, useEffect, useRef } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
-import { CreationChannelPkg, ShortChannel } from '../../models/Chat.interface';
+import { CreationChannelPkg, OpenRoomPkg, ShortChannel } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
@@ -58,10 +58,22 @@ export function JoinGroup({
   };
 
   function selectChannel(e: any, chan: ShortChannel) {
-    console.log('clicked ', chan);
+    const viewRoom: OpenRoomPkg = {
+      idUser: userId,
+      room: '' + chan.id,
+    };
+    socket?.emit('joinRoom', viewRoom);
+    console.log('clicked and opened', chan);
+    setVisibility('hidden')
   }
 
   useEffect(() => {
+    socket?.on("joinedStatus", (status) => {
+        if (status)
+          console.log("join success");
+        else
+          console.log("Join Fail")
+    })
     console.log('RERENDER LIST');
   }, [channels]);
 

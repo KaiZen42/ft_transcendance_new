@@ -27,7 +27,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
   getCounter(); */
   useEffect(() => {
     
-  }, [])
+  }, [chatInfo])
 
   return (
     <div className="card-header msg_head">

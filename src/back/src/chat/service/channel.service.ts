@@ -9,7 +9,7 @@ import { channel } from 'diagnostics_channel';
 import { userInfo } from 'os';
 import { User } from 'src/user/models/user.entity';
   import { getConnection, getRepository, Like, Repository } from 'typeorm';
-import { ChannelInfoDto } from '../dto/chat.dto';
+import { ChannelInfoDto, JoinRoomDto } from '../dto/chat.dto';
 
 import { Channel } from '../models/channel.entity';
 import { Message } from '../models/message.entity';
@@ -156,6 +156,25 @@ export class ChannelService {
 		return this.msgService.getByChannel(id);
 	}
 
+	async join(data: JoinRoomDto): Promise<boolean>
+	{
+		const ch:Channel = await this.getById(+data.room);
+		if ( ch === undefined || ch.isPrivate )
+			return false;
+		if ( ch.mode === "PRO" && ch.pass !== data.key )
+			return false;
+
+		await this.partService.create(
+			{
+				id : 0,
+				userId: data.idUser,
+				channelId: ch.id,
+				muted: 0,
+				mod: "m",
+			});
+		return true;
+	}
+
 	async create(channel: Channel, userId: number[]): Promise<Channel> {
 		const ch: Channel = await this.channelDB.save({
 			id:	channel.id,
@@ -170,7 +189,7 @@ export class ChannelService {
 				userId: userId[0],
 				channelId: ch.id,
 				muted: 0,
-				mod: "m",
+				mod: (ch.isPrivate) ? "m" : "o",
 			});
 
 		if (ch.isPrivate)

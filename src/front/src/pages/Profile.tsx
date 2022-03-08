@@ -1,3 +1,4 @@
+import { Fab } from "@mui/material";
 import { height } from "@mui/system";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -6,12 +7,16 @@ import Wrapper from "../components/Wrapper";
 import { User } from "../models/User.interface";
 import { DisplayUser } from '../models/User.interface';
 import '../styles/Profile.css';
-
+import NavigationIcon from '@mui/icons-material/Navigation';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import { useNavigate } from "react-router-dom";
+import BasicSpeedDial from "../components/SpeedDeal";
 export default function Profile() {
 
 	const [user, setUser] = useState<User>();
 	const [visibility, setVisibility] = useState(false);
   	const [invisible, setInvisible] = useState(false);
+	  const navigate = useNavigate();
 	  
 	
     useEffect(() => {(
@@ -38,6 +43,8 @@ export default function Profile() {
 		setVisibility(false);
 	  };
 
+	  
+
 	return(
 		<Wrapper>
 			
@@ -49,15 +56,31 @@ export default function Profile() {
         		<div className="col-md-4 col-lg-4" >
 					<img className="img--profile" src={user?.avatar}/></div>
                     <h3 className="display-5" >{user?.username} </h3>
-					<i className="bi bi-gear popup--form--icon" style={{ fontSize: "1.5rem", }} onClick={() => setVisibility(true)}></i>
+					<Fab  onClick={() => navigate(-1)}>
+  						<ArrowBackRoundedIcon />
+					</Fab>
+					<i>
+						<BasicSpeedDial isVisible={setVisibility}/>
+					</i>
+					{/* <Fab color="secondary" aria-label="edit" onClick={() => setVisibility(true)}>
+					<i className="bi bi-gear" style={{ fontSize: "1.5rem", }}></i>
+  						
+					</Fab> */}
 					{/* <i className="bi bi-pencil popup--form--icon"></i> */}
-					<i className=""></i>
-					<i className=""></i>
-					<i className=""></i>
+					{/* <Fab  onClick={() => navigate(-1)}>
+  						<ArrowBackRoundedIcon />
+  						
+					</Fab> */}
+
+						
+					{/* <i className=""></i>
+					 */}
                 </div>
                 <div className="p-3 bg-black text-white">
-                    <h6>Test</h6>
+                    {/* <h6>Test</h6> */}
                 </div>
+					 
+					 
                 <div className="d-flex flex-row text-white" >
                     <div className="p-3 mx-2 bg-primary text-center info-block">
                         <h4>Wins</h4>

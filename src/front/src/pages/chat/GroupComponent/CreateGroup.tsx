@@ -14,11 +14,11 @@ import { blue } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import React, { useState, useEffect, useRef } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
-import { CreationChannelPkg } from '../../models/Chat.interface';
-import { User } from '../../models/User.interface';
+import { CreationChannelPkg } from '../../../models/Chat.interface';
+import { User } from '../../../models/User.interface';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import StyledBadge from '../../styles/StyleBage';
+import StyledBadge from '../../../styles/StyleBage';
 import zIndex from '@mui/material/styles/zIndex';
 import { Margin } from '@mui/icons-material';
 
@@ -42,6 +42,8 @@ export function CreateGroup({
   const [privateGroup, setPrivateStatus ] = useState(false);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();
   const [groupPass, setGroupPass] = useState('');
+  const [missingName , setMissingName] = useState(false);
+
   const nameSubmit = (event: any) => {
     if (event.target.value) {
       event.preventDefault();
@@ -63,16 +65,6 @@ export function CreateGroup({
     }
   };
 
-  /* function selectGroup(e: any, otherId: number) {
-    console.log(otherId);
-    setCreationChannel({
-      idUser: userId,
-      otherUser: otherId,
-      pass: '',
-      name: '',
-    });
-  }  */
-
   function addUser(e: any, user: User)
   {
     const id = invite.findIndex((us) => us.id == user.id);
@@ -86,10 +78,25 @@ export function CreateGroup({
         return  [...pred]})
   }
 
-  /*   useEffect(() => {
-    console.log(ch);
-    if (ch?.otherUser !== userId) socket?.emit('createRoom', ch);
-  }, [ch]); */
+  function createGroup()
+  {
+    if (groupName === "")
+    {
+      setMissingName(true);
+      return;
+    }
+    const roomBuilder : CreationChannelPkg ={
+      idUser : userId,
+      otherUser: undefined,
+      pass :  privateGroup? "" : groupPass,
+      name : groupName,
+      mode : privateGroup ? "PRI" : 
+            (groupPass === ""? "PUB" : "PRO"),
+    }
+    socket?.emit("createRoom", roomBuilder)
+    setVisibility("hidden")
+  }
+
 
   useEffect(() => {
     console.log("INVITED USER ", invite)
@@ -105,8 +112,9 @@ export function CreateGroup({
     >
       <div className="group-create mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
+          {/* TODO:do it red */}
+          <div className="glow" hidden={!missingName}> missing name</div>
           <div className="input-group-prepend" style={{marginBottom: 5}}>
-            
             <input
               type="text"
               placeholder="Insert a Group Name"
@@ -114,9 +122,7 @@ export function CreateGroup({
               className="form-control search"
               onChange={e => setGroupName(e.target.value)}
             />
-            <span className="input-group-text search_btn">
-              <i className="fas fa-check"></i>
-            </span>
+            <span className="input-group-text search_btn"/>
             <span className="input-group-text close_btn">
                 <i
                   className="fas fa-times fa-lg"
@@ -133,6 +139,8 @@ export function CreateGroup({
                 name=""
                 className="form-control search"
                 onChange={e => setGroupPass(e.target.value)}
+                value={privateGroup ? "🚫Disabled🚫" : groupPass}
+                disabled={privateGroup}
               />
             </span>
             <span className="search_btn">
@@ -199,6 +207,14 @@ export function CreateGroup({
           )}</div>
         </div>
         <div className="card-footer"></div>
+        <div className='right'>
+          <span className="input-group-text close_btn " >
+                <i
+                  className="fas fa-check"
+                  onClick={(e) => createGroup()}
+                ></i>
+          </span>
+        </div>
       </div>
     </div>
   );

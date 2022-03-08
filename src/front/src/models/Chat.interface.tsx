@@ -49,9 +49,10 @@ export interface ShortChannel {
 
 export interface CreationChannelPkg {
   idUser: number;
-  otherUser: number;
+  otherUser: number | undefined;
   pass: string;
   name: string;
+  mode: string;
 }
 
 export interface JoinChannelPkg {

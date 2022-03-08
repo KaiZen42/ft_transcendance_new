@@ -16,11 +16,13 @@ export class JoinRoomDto {
 	@IsNotEmpty()
 	idUser: number;
   
-	otherUser: number;
+	otherUser: number | undefined;
   
 	pass : string;
   
 	name : string;
+
+	mode : string
   }
   
   export class openRoomDto {

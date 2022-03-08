@@ -13,12 +13,14 @@ import { blue } from '@mui/material/colors';
 import { Box } from '@mui/system';
 import React, { useState, useEffect, useRef } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
-import { CreationChannelPkg, OpenRoomPkg, ShortChannel } from '../../models/Chat.interface';
-import { User } from '../../models/User.interface';
+import { CreationChannelPkg, JoinChannelPkg, OpenRoomPkg, ShortChannel } from '../../../models/Chat.interface';
+import { User } from '../../../models/User.interface';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
-import StyledBadge from '../../styles/StyleBage';
+import StyledBadge from '../../../styles/StyleBage';
 import zIndex from '@mui/material/styles/zIndex';
+import CheckPass from './CheckPass';
+import { Visibility } from '@mui/icons-material';
 
 interface Prop {
   socket: Socket | undefined;
@@ -34,6 +36,12 @@ export function JoinGroup({
   setVisibility,
 }: Prop) {
   const [channels, setChannels] = useState<ShortChannel[]>([]);
+  const [passVisibility, setPassVisibility]= useState("hidden")
+  const [errorVisibility, setErrorVisibility] = useState("hidden");
+  const [joinReq, setReq] = useState<JoinChannelPkg>({idUser: userId,
+                                                      room: '',
+                                                      key: "",
+                                                    })
 
   const nameSubmit = (event: any) => {
     if (event.target.value) {
@@ -54,22 +62,31 @@ export function JoinGroup({
   };
 
   function selectChannel(e: any, chan: ShortChannel) {
-    const viewRoom: OpenRoomPkg = {
-      idUser: userId,
-      room: '' + chan.id,
-    };
-    socket?.emit('joinRoom', viewRoom);
+    setReq(pred => {
+      pred.room = chan.id + "";
+      return pred})
+    if (chan.mode === "PRO")
+      return  setPassVisibility("visible");
+    socket?.emit('joinRoom', joinReq);
+    setPassVisibility("hidden");
     setVisibility('hidden')
   }
 
   useEffect(() => {
     socket?.on("joinedStatus", (status) => {
         if (status)
+        {
+          setPassVisibility("hidden");
+          setVisibility('hidden')
           console.log("join success");
+        }
         else
+        {
+          setErrorVisibility("visible")
           console.log("Join Fail")
+        }
     })
-  }, [channels]);
+  }, []);
 
   return (
     <div
@@ -77,8 +94,9 @@ export function JoinGroup({
         visibility: isVisible === 'hidden' ? 'hidden' : 'visible',
         opacity: '1',
       }}
-      className="overlay "
+      className="overlay container-fluid row justify-content-center"
     >
+      <div className="col-ms-10">
       <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
         <div className="card-header">
           <div className="input-group">
@@ -129,8 +147,19 @@ export function JoinGroup({
             );
           })}
         </div>
-        <div className="card-footer"></div>
-      </div>
+        </div>
+        </div>
+        <div className="col-sm-5">
+          {passVisibility === "hidden"? null :
+            <CheckPass  
+            isVisible={passVisibility} 
+            setVisibility={setPassVisibility} 
+            errorVisibility={errorVisibility}
+            socket={socket}
+            request={joinReq}
+            />
+          }
+        </div>
     </div>
   );
 }

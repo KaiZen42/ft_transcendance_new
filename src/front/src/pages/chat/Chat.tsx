@@ -19,7 +19,7 @@ import './testChat.css';
 import { ChannelList } from './ChannelList';
 import MessageHeader from './MessageHeader';
 import { ChatInfo } from '../../models/Chat.interface';
-import { JoinGroup } from './JoinGroup';
+import { JoinGroup } from './GroupComponent/JoinGroup';
 const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
 
 export function Chat(/* {user} : Prop */) {

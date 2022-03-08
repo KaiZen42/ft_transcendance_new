@@ -85,7 +85,7 @@ export class ChatGateway
 		chan.isPrivate = (data.otherUser !== undefined);
 		chan.name = chan.isPrivate ? `${data.idUser}`+ `${data.otherUser}` : data?.name;
 		chan.pass = data?.pass;
-		chan.mode = chan.isPrivate ? "PRI" : "PUB";
+		chan.mode = data.mode;
 		
 		chan.id = (await this.channelService.create(chan, [data.idUser, chan.isPrivate? data.otherUser : null])).id;
 
@@ -106,12 +106,12 @@ export class ChatGateway
 		client.join(data.room);
 		if (await this.partService.isPartecipant(+data.room, data.idUser))
 		{
-			this.server.to(client.id).emit("viewedRoom", data.room)
+			this.server.to(client.id).emit("createRoom", data.room)
 			return { event: 'joinedStatus', data : true};
 		}
 		else if (await this.channelService.join(data)){
 			this.logger.log(`JOIN TO ${data.room} SUCCESS`)
-			this.server.to(client.id).emit("viewedRoom", data.room)
+			this.server.to(client.id).emit("createRoom", data.room)
 			return { event: 'joinedStatus', data : true};
 		}
 		this.logger.log(`JOIN TO ${data.room} FAIL`)

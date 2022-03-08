@@ -11,8 +11,8 @@ import {
 import { User } from '../../models/User.interface';
 import StyledBadge from '../../styles/StyleBage';
 import InfoChat from './Chat';
-import { CreateGroup } from './CreateGroup';
-import { JoinGroup } from './JoinGroup';
+import { CreateGroup } from './GroupComponent/CreateGroup';
+import { JoinGroup } from './GroupComponent/JoinGroup';
 
 interface Prop {
   socket: Socket | undefined;

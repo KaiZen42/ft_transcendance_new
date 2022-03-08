@@ -55,6 +55,7 @@ export function UserList({ socket, userId }: Prop) {
       otherUser: otherId,
       pass: '',
       name: '',
+      mode: "PRI"
     });
   }
 

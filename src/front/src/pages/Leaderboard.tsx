@@ -7,7 +7,7 @@ import { DisplayUser } from '../models/User.interface';
 
 export default function Leaderboard() {
   const [users, setUsers] = useState<DisplayUser[]>([]);
-
+  
   useEffect(() => {
     async function getter() {
       let res = await fetch(
@@ -32,7 +32,7 @@ export default function Leaderboard() {
             <div className="leaderboard-col board-col-4">WINS-LOSSES</div>
           </li>
         </ul>
-        <ul className="my-responsive-table scrollable moz-scroller">
+        <ul className="my-responsive-table scrollable moz-scroller"  style={{cursor: "pointer"}}>
           {users.map((user: DisplayUser, pos: number) => (
             <LeaderboardRow key={user.id} user={user} pos={pos} />
           ))}

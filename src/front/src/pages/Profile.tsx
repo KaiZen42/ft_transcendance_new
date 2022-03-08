@@ -17,8 +17,7 @@ export default function Profile() {
 	const [visibility, setVisibility] = useState(false);
   	const [invisible, setInvisible] = useState(false);
 	  const navigate = useNavigate();
-	  
-	
+
     useEffect(() => {(
       async () => {
         const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {withCredentials: true});
@@ -56,12 +55,18 @@ export default function Profile() {
         		<div className="col-md-4 col-lg-4" >
 					<img className="img--profile" src={user?.avatar}/></div>
                     <h3 className="display-5" >{user?.username} </h3>
+					<i>
+
 					<Fab  onClick={() => navigate(-1)}>
   						<ArrowBackRoundedIcon />
 					</Fab>
+					</i>
+					
+
 					<i>
 						<BasicSpeedDial isVisible={setVisibility}/>
 					</i>
+					
 					{/* <Fab color="secondary" aria-label="edit" onClick={() => setVisibility(true)}>
 					<i className="bi bi-gear" style={{ fontSize: "1.5rem", }}></i>
   						
@@ -77,7 +82,7 @@ export default function Profile() {
 					 */}
                 </div>
                 <div className="p-3 bg-black text-white">
-                    {/* <h6>Test</h6> */}
+				<h3 className="display-5" >{user?.username} </h3>
                 </div>
 					 
 					 

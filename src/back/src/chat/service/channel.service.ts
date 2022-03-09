@@ -156,6 +156,35 @@ export class ChannelService {
 		return this.msgService.getByChannel(id);
 	}
 
+	async goOnline(userId: number)
+	{
+		
+		await this.partService.create(
+			{
+				id : 0,
+				userId: userId,
+				channelId: 1,
+				muted: -1,
+				mod: "m",
+			});
+	}
+
+	async goOffline(userId: number)
+	{
+		const part = (await this.partService.getPartecipantByUserAndChan(userId, 1));
+		console.log("FOUND: ", part)
+		await this.partService.delete(part.id);
+	}
+
+	async allOffline()
+	{
+		(await this.partService.getByChannel(1)).map(
+			(part: Partecipant) => {this.partService.delete(part.id)}
+		)
+	}
+
+	
+
 	async join(data: JoinRoomDto): Promise<boolean>
 	{
 		const ch:Channel = await this.getById(+data.room);
@@ -175,6 +204,7 @@ export class ChannelService {
 		return true;
 	}
 
+
 	async create(channel: Channel, userId: number[]): Promise<Channel> {
 		const ch: Channel = await this.channelDB.save({
 			id:	channel.id,
@@ -183,7 +213,8 @@ export class ChannelService {
 			pass : channel.pass,
 			isPrivate : channel.isPrivate,
 		});
-		await this.partService.create(
+		if (userId.length > 0)
+			await this.partService.create(
 			{
 				id : 0,
 				userId: userId[0],
@@ -204,5 +235,8 @@ export class ChannelService {
 		console.log(ch);
 		return ch;
 		}
-	
+
+		async delete(id: number) {
+			return this.channelDB.delete({ id });
+		}
 }

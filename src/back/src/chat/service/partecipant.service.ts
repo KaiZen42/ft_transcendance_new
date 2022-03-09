@@ -33,6 +33,12 @@ import { Partecipant } from '../models/partecipant.entity';
 		const ret = await this.partecipantDB.findOne({ where: { channelId, userId } });
 		return (ret !== undefined )
 	}
+
+	async getPartecipantByUserAndChan( userId: number, channelId: number): Promise<Partecipant> {
+		const ret = await this.partecipantDB.findOne({ where: { channelId, userId } });
+		console.log("daje un po", ret)
+		return ret;
+	}
   
 	async create(partecipant: Partecipant): Promise<Partecipant> {
 	  return this.partecipantDB.save({

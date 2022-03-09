@@ -10,17 +10,82 @@ import ProtectedRoute from './components/ProtectedRoutes';
 import Profile from './pages/Profile';
 import TwoFaAuth from './pages/TwoFaAuth';
 import Game from './pages/Game';
+import  { createContext, useEffect, useState } from 'react';
+import { io , Socket} from 'socket.io-client';
+import { wait } from '@testing-library/user-event/dist/utils';
+import e from 'express';
+
+const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
+
+export interface context
+{
+  socket: Socket | undefined; 
+  userId: number;
+}
+
+export const Context = createContext<context>({
+  socket: undefined,
+  userId: -1,
+});
 
 export default function App() {
+  
+  const [contextData, setcontextData] = useState<context>({
+  socket: undefined,
+  userId: -1,
+});
+
+  
+  function getUser(): void
+  {
+    console.log("getUser")
+    fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
+        credentials: 'include',
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          setcontextData({
+            socket: io(WS_SERVER), 
+            userId: result.id,
+          })
+          console.log("getted: ", contextData)
+        })
+        .catch((error) => console.log(error))
+        
+  }
+  function quit(event: any){
+    event.preventDefault();
+    console.log("APP DEST: " ,contextData)
+    if (contextData.socket === undefined)
+      return;
+    console.log("AO")
+    contextData.socket?.emit("offline", contextData.userId)
+  }
+
+  useEffect(() => {
+    console.log("RENDER: ", contextData)
+    if (contextData.socket === undefined)
+      getUser()
+    else
+      contextData.socket?.emit("online", contextData.userId)
+
+    window.onbeforeunload = quit
+    window.onclose = quit
+  },[contextData])
+
+
+  
   return (
     <div className="App">
+      
       <BrowserRouter>
+      <Context.Provider value={contextData}>
         <Routes>
           <Route
             path="/"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                  <Dashboard />
               </ProtectedRoute>
             }
           />
@@ -60,6 +125,7 @@ export default function App() {
           <Route path="/two_fa_auth" element={<TwoFaAuth />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
+        </Context.Provider>
       </BrowserRouter>
     </div>
   );

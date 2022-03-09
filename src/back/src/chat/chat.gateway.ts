@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, OnApplicationShutdown } from '@nestjs/common';
 import {
 	SubscribeMessage,
 	WebSocketGateway,
@@ -28,7 +28,34 @@ export class ChatGateway
 		private readonly messageService: MessageService,
 		private readonly channelService: ChannelService,
 		private readonly partService: PartecipantService)
-	{}
+	{
+		this.starting();
+	}
+
+	async starting()
+	{
+		console.log("normal log ", await this.channelService.getById(1))
+		if (await this.channelService.getById(1) === undefined)
+		{
+			let ch = new Channel();
+			ch.id = 0;
+			ch.isPrivate = false
+			ch.mode = "PRI"
+			ch.name = "online"
+			ch.pass = "guest"
+			ch = await this.channelService.create(ch, [])
+			if (ch.id === 1)
+				this.logger.log("Channel ONLINE created SUCCESFULLY")
+			else
+			{
+				this.logger.error("Channel ONLINE created whith ID: " + ch.id)
+				this.channelService.delete(ch.id)
+				this.logger.error("Channel ID "+ ch.id + " DELETED ")
+			}
+		}
+		else
+			await this.channelService.allOffline()
+	}
 
 	@WebSocketServer()
 	server: Server;
@@ -123,17 +150,15 @@ export class ChatGateway
 	openRoom(client: Socket, data: openRoomDto) : WsResponse<boolean>
 	{
 		client.join(data.room);
-		/* const msg : messageDto = {
-			idUser : data.idUser,
-			data : data.username + "JOINED ROOM",
-			room : data.room,
-			user : data.username,
-		}; */
-		//this.logger.log(`MSG ID ${msg.id}`);
-		//this.recieveChannelMessage(client, msg);
-		//TODO: Check if client can open room
 		this.logger.log(`OPEN ${data.idUser} in ${data.room}`);
 		return { event: 'openedRoom', data : true};
+	}
+
+	@SubscribeMessage('offline')
+	offline(client: Socket, data: number) 
+	{
+		this.logger.log(`OFFLINE REQEST ${data}`);
+		this.channelService.goOffline(data)
 	}
 
 	@SubscribeMessage('viewRoom')
@@ -142,6 +167,15 @@ export class ChatGateway
 		//client.join(data.room);
 		this.logger.log(`VIEWED REQEST ${data.idUser} in ${data.room}`);
 		return { event: 'viewedRoom', data : ""+data.room};
+	}
+
+	@SubscribeMessage('online')
+	async online(client: Socket, userId: number) 
+	{
+		//client.join(data.room);
+		if (!await this.partService.isPartecipant(1, userId))
+			await this.channelService.goOnline(userId)
+		//this.logger.log(`VIEWED REQEST ${data.idUser} in ${data.room}`);
 	}
 
 }

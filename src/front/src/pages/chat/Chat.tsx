@@ -53,17 +53,10 @@ export function Chat(/* {user} : Prop */) {
     const sock = io(WS_SERVER);
     setSocket(sock);
 
-/*     sock.on('connect', () => {
-      console.log('connected');
-    }); */
     sock.on('viewedRoom', (roomView: string) => {
       setRoom(roomView);
-      /* console.log('CURRENT ROOM: ', roomView); */
     });
     sock.on('createRoom', (newRoom: string) => {
-    /*   console.log('Created a room:');
-      console.log(newRoom);
-      console.log(pkg); */
       setRoom(newRoom);
     });
     return () => {

@@ -17,10 +17,12 @@ import { Channel } from './models/channel.entity';
 import { Message } from './models/message.entity';
 import { ChannelService } from './service/channel.service';
 import { MessageService } from './service/message.service';
+import { PartecipantService } from './service/partecipant.service';
 
 @Controller("chat")
 export class chatController {
 	constructor(private readonly msgService: MessageService,
+				private readonly partService: PartecipantService,
 				private readonly chService: ChannelService) { }
 
 
@@ -68,13 +70,13 @@ export class chatController {
 		return ms;
 	}
 
-	/* @Get("channels/:idUser")
-	async getChannels(@Param("idUser") userID: number) : Promise<ChannelInfoDto[]>
+	@Get("TEST/:id1/:id2")
+	async getChannels(@Param("id1") userId: number, @Param("id2") chanId: number) : Promise<any>
 	{
-		let someThings: ChannelInfoDto[] =  await this.chService.getChanByUser(userID)
+		let someThings: any =  await this.partService.getPartecipantByUserAndChan(userId,chanId)
 		console.log("QUALCOSA: ", someThings);
 		return someThings;
-	} */
+	}
 
 	@Get("ChannelsInfo/:idUser")
 	async getChannelsInfo(@Param("idUser") userID: number) : Promise<ChannelInfoDto[]>

@@ -2,6 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
+import { channel } from 'diagnostics_channel';
+import { ChannelService } from './chat/service/channel.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +15,7 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.enableCors({ origin: `http://${process.env.BASE_IP}:3000`, credentials: true });
-  
+
   await app.listen(3001);
 }
 bootstrap();

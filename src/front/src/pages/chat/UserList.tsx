@@ -34,7 +34,7 @@ export function UserList({ socket, userId }: Prop) {
       event.preventDefault();
       (async () => {
         const data = await fetch(
-          `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${event.target.value}`,
+          `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/likeusername/${event.target.value}`,
           { credentials: 'include' }
         );
         const result = data.json();
@@ -55,12 +55,13 @@ export function UserList({ socket, userId }: Prop) {
       otherUser: otherId,
       pass: '',
       name: '',
-      mode: "PRI"
+      mode: 'PRI',
     });
   }
 
   useEffect(() => {
-    if (ch !== undefined && ch?.otherUser !== userId ) socket?.emit('createRoom', ch);
+    if (ch !== undefined && ch?.otherUser !== userId)
+      socket?.emit('createRoom', ch);
   }, [ch]);
 
   // setClicked(false)
@@ -86,8 +87,8 @@ export function UserList({ socket, userId }: Prop) {
         </div>
         <div className="card-body contacts_body">
           <ul className="contacts scrollable-search">
-            {users.map((user: User) => (
-              user.id !== userId ?
+            {users.map((user: User) =>
+              user.id !== userId ? (
                 <li key={user.id}>
                   <div
                     className="d-flex bd-highlight"
@@ -115,8 +116,8 @@ export function UserList({ socket, userId }: Prop) {
                     </div>
                   </div>
                 </li>
-                : null
-            ))}
+              ) : null
+            )}
           </ul>
         </div>
         <div className="card-footer"></div>

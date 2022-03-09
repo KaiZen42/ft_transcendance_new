@@ -1,7 +1,14 @@
-import { Controller, Post } from "@nestjs/common";
+import { Controller, Get, Param, Res } from '@nestjs/common';
+import { MatchService } from './match.service';
+import { Match } from './models/match.entity';
 
-@Controller("match")
-export class MatchController{
+@Controller('matches')
+export class MatchController {
+  constructor(private readonly match: MatchService) {}
 
-	// TODO
+  @Get('player/:id')
+  async getByEmail(@Param('id') id: number): Promise<Match[]> {
+    const res = await this.match.getByPlayerId(id);
+    return res;
+  }
 }

@@ -1,37 +1,85 @@
-.img--profile {
-    width: 150px;
-	height: 150px;
-
-	border-radius: 50%;
-  	object-fit: cover;
-  	/* border: 3px solid black; */
+.profile-content {
+  height: 80%;
+  width: 100%;
+  display: flex;
+  display: flex;
+  padding: 3rem;
 }
 
-.bg-black {
-    background: #000
+.profile-box {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 20px;
 }
 
-.info-block {
-	border-radius: 5%;
-    width: 30%
+.profile-info {
+  flex: 4;
+  margin-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
-@media (min-width: 991px) and (max-width:1200px) {
-    .info-block {
-        padding: 32px !important
-    }
+.info-username-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@media (min-width: 1200px) {
-    .info-block {
-        padding: 56px !important
-    }
+.profile-info-img {
+  height: 170px;
+  width: 170px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  border: 3px solid white;
 }
 
-.info-header {
-	margin-top: 5rem;
+.profile-info-text {
+  font-family: Bebas Neue, sans-serif;
+  font-style: italic;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  color: white;
+  font-size: 2rem;
+}
+.profile-info-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* body {
-    background-color: #eeeeee
-} */
+.profile-info-text.username {
+  font-size: 3rem;
+  text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+.winslosses {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 70%;
+}
+
+.profile-info-submit {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.profile-info-submit .btn-home {
+  font-size: 1.2rem;
+}
+.profile-info-submit .btn-play {
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.last-games {
+  flex: 3;
+  margin-right: 1rem;
+  color: white;
+}
+.friend-list {
+  flex: 3;
+  color: white;
+}

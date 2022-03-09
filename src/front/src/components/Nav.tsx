@@ -1,23 +1,16 @@
-import React, { Component, useEffect, useState } from 'react';
-import { Navigate } from 'react-router';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { User } from '../models/User.interface';
 import { NavLink } from 'react-router-dom';
 import '../styles/Nav.css';
-import ProfilePopUp from './ProfilePopUp';
 import { Badge } from '@mui/material';
-import ScoreboardIcon from '@mui/icons-material/Scoreboard';
 
-export default function Nav() {
+export default function Nav({ noImage }: { noImage?: boolean }) {
   const [user, setUser] = useState<User>();
-  const [visibility, setVisibility] = useState(false);
   const [invisible, setInvisible] = useState(false);
   const navigate = useNavigate();
 
-  const handleBadgeVisibility = () => {
-    setInvisible(!invisible);
-  };
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
@@ -28,20 +21,6 @@ export default function Nav() {
     })();
   }, []);
 
-  const popupCloseHandler = () => {
-    setVisibility(false);
-  };
-
-  const updateUser = async (updatedUser: User) => {
-    const res = await axios.put(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${updatedUser.id}`,
-      {
-        ...updatedUser,
-      }
-    );
-    setUser(res.data);
-  };
-
   async function signOutUser() {
     await fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/logout`, {
       credentials: 'include',
@@ -51,9 +30,14 @@ export default function Nav() {
 
   return (
     <header className="header">
-      <a href="/">
-        <h2 className="header--title">TRASCENDANCE</h2>
-      </a>
+      <h2
+        className="header--title"
+        onClick={() => navigate('/')}
+        style={{ cursor: 'pointer' }}
+      >
+        TRASCENDANCE
+      </h2>
+
       <ul className="header--icon--list">
         <li>
           <NavLink to={'/'}>
@@ -78,22 +62,24 @@ export default function Nav() {
         </li>
       </ul>
       <div className="header--signout">
-        {/* <div className="header--photo_name" onClick={() => setVisibility(true)}> */}
-        <div className="header--photo_name" onClick={() => navigate("/profile")}>
-          <img alt="profile image" src={user?.avatar} className="nav--image" />
-          <div className="header--text">{user?.username}</div>
-        </div>
+        {!noImage && (
+          <div
+            className="header--photo_name"
+            onClick={() => navigate('/users/' + user?.username)}
+          >
+            <img
+              alt="profile image"
+              src={user?.avatar}
+              className="nav--image"
+            />
+            <div className="header--text">{user?.username}</div>
+          </div>
+        )}
         <i
           className="bi bi-box-arrow-right header--icon"
           onClick={signOutUser}
         ></i>
       </div>
-      {/* <ProfilePopUp
-        onClose={popupCloseHandler}
-        show={visibility}
-        user={user!}
-        updateState={updateUser}
-      /> */}
     </header>
   );
 }

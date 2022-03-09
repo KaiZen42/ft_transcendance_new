@@ -34,7 +34,11 @@ export class UserService {
     return this.userDB.findOne({ where: { id: id } });
   }
 
-  async getByUsername(username: string): Promise<User[]> {
+  async getByUsername(username: string): Promise<User> {
+    return this.userDB.findOne({ where: { username } });
+  }
+
+  async getLikeUsername(username: string): Promise<User[]> {
     return await this.userDB.find({
       where: { username: Like(`${username}%`) },
     });
@@ -79,7 +83,10 @@ export class UserService {
     });
   }
 
-  async updatePoints(id: number, userData:{points: number, wins: number, losses: number}): Promise<any> {
+  async updatePoints(
+    id: number,
+    userData: { points: number; wins: number; losses: number },
+  ): Promise<any> {
     return this.userDB.update(id, {
       ...userData,
     });

@@ -1,120 +1,62 @@
-import { Fab } from "@mui/material";
-import { height } from "@mui/system";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import ProfilePopUp1 from "../components/ProfilePopUp1";
-import Wrapper from "../components/Wrapper";
-import { User } from "../models/User.interface";
-import { DisplayUser } from '../models/User.interface';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import ProfileInfo from '../components/ProfileInfo';
+import Wrapper from '../components/Wrapper';
+import { User } from '../models/User.interface';
 import '../styles/Profile.css';
-import NavigationIcon from '@mui/icons-material/Navigation';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import { useNavigate } from "react-router-dom";
-import BasicSpeedDial from "../components/SpeedDeal";
+import Error404 from './404';
+
 export default function Profile() {
+  const { username } = useParams<'username'>();
+  const [me, setMe] = useState<User>();
+  const [myProfilePage, setMyProfilePage] = useState(false);
 
-	const [user, setUser] = useState<User>();
-	const [visibility, setVisibility] = useState(false);
-  	const [invisible, setInvisible] = useState(false);
-	  const navigate = useNavigate();
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/user`,
+        { withCredentials: true }
+      );
+      setMe(data);
+    })();
+  }, []);
 
-    useEffect(() => {(
-      async () => {
-        const {data} = await axios.get(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {withCredentials: true});
-		setUser(data);
-      }
-	  
-    )();
-	
-    }, []);
+  useEffect(() => {
+    if (!me) return;
+    (async () => {
+      const { data } = await axios.get(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/matches/player/${me?.id}`,
+        { withCredentials: true }
+      );
+    })();
+  }, [me]);
 
-	const updateUser = async (updatedUser: User) => {
-		const res = await axios.put(
-		  `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${updatedUser.id}`,
-		  {
-			...updatedUser,
-		  }
-		);
-		setUser(res.data);
-	  };
+  useEffect(() => {
+    if (!(me && username)) return;
+    if (me.username === username) setMyProfilePage(true);
+  }, [me, username]);
 
-	  const popupCloseHandler = () => {
-		setVisibility(false);
-	  };
-
-	  
-
-	return(
-		<Wrapper>
-			
-	<div className="container mt-5 mb-5">
-    <div className="row no-gutters">
-        <div className="col-md-8 col-lg-8">
-            <div className="d-flex flex-column">
-                <div className="info-header d-flex flex-row justify-content-between align-items-center p-5 bg-dark text-white">
-        		<div className="col-md-4 col-lg-4" >
-					<img className="img--profile" src={user?.avatar}/></div>
-                    <h3 className="display-5" >{user?.username} </h3>
-					<i>
-
-					<Fab  onClick={() => navigate(-1)}>
-  						<ArrowBackRoundedIcon />
-					</Fab>
-					</i>
-					
-
-					<i>
-						<BasicSpeedDial isVisible={setVisibility}/>
-					</i>
-					
-					{/* <Fab color="secondary" aria-label="edit" onClick={() => setVisibility(true)}>
-					<i className="bi bi-gear" style={{ fontSize: "1.5rem", }}></i>
-  						
-					</Fab> */}
-					{/* <i className="bi bi-pencil popup--form--icon"></i> */}
-					{/* <Fab  onClick={() => navigate(-1)}>
-  						<ArrowBackRoundedIcon />
-  						
-					</Fab> */}
-
-						
-					{/* <i className=""></i>
-					 */}
-                </div>
-                <div className="p-3 bg-black text-white">
-				<h3 className="display-5" >{user?.username} </h3>
-                </div>
-					 
-					 
-                <div className="d-flex flex-row text-white" >
-                    <div className="p-3 mx-2 bg-primary text-center info-block">
-                        <h4>Wins</h4>
-                        <h6>{user?.wins}</h6>
-                    </div>
-                    <div className="p-3 bg-success text-center info-block">
-                        <h4>Losses</h4>
-                        <h6>{user?.losses}</h6>
-                    </div>
-                    <div className="p-3 mx-2 bg-warning text-center info-block">
-                        <h4>Points</h4>
-                        <h6>{user?.points}</h6>
-                    </div>
-                    
-                </div>
-				
+  return (
+    <>
+      {username ? (
+        <Wrapper noImage={myProfilePage}>
+          <div className="profile-content">
+            <div className="profile-box profile-info">
+              <ProfileInfo username={username} myProfilePage={myProfilePage} />
             </div>
-			<div>
-
-					<ProfilePopUp1
-					onClose={popupCloseHandler}
-					show={visibility}
-					user={user!}
-					updateState={updateUser}
-					/>
-        </div>
-			</div>
-    </div>
-</div>
-		</Wrapper>
-	)
+            <div className="profile-box last-games">
+              {' '}
+              <h1>last games</h1>{' '}
+            </div>
+            <div className="profile-box friend-list">
+              <h1>friend list</h1>
+            </div>
+          </div>
+        </Wrapper>
+      ) : (
+        <Error404 />
+      )}
+    </>
+  );
 }

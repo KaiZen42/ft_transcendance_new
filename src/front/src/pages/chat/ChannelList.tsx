@@ -1,8 +1,9 @@
 import { RestorePageOutlined } from '@mui/icons-material';
 import { Avatar, Stack } from '@mui/material';
 import { channel } from 'diagnostics_channel';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import io, { Socket } from 'socket.io-client';
+import { Context } from '../../App';
 import {
   ChannelInfo,
   MessageInfoPkg,
@@ -15,13 +16,13 @@ import { CreateGroup } from './GroupComponent/CreateGroup';
 import { JoinGroup } from './GroupComponent/JoinGroup';
 
 interface Prop {
-  socket: Socket | undefined;
   userId: number;
   room: string;
   setChatInfo: Function;
 }
 
-export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
+export function ChannelList({  userId, room, setChatInfo }: Prop) {
+  const socket = useContext(Context).socket
   const [selected, setSelected] = useState(false);
   const [activeID, setActiveID] = useState(0);
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
@@ -170,6 +171,7 @@ export function ChannelList({ socket, userId, room, setChatInfo }: Prop) {
           </div>
         </div>
         <div className="card-body contacts_body">
+          
           <ul className="contacts">
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;

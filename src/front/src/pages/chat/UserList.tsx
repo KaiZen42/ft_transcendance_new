@@ -11,20 +11,21 @@ import {
 } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import { Box } from '@mui/system';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
 import { CreationChannelPkg } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import StyledBadge from '../../styles/StyleBage';
+import { Context } from '../../App';
 
 interface Prop {
-  socket: Socket | undefined;
   userId: number;
 }
 
-export function UserList({ socket, userId }: Prop) {
+export function UserList({ userId }: Prop) {
+  const socket = useContext(Context).socket
   const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();

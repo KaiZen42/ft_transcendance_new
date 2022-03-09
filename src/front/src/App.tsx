@@ -55,10 +55,9 @@ export default function App() {
   }
   function quit(event: any){
     event.preventDefault();
-    console.log("APP DEST: " ,contextData)
+    //console.log("APP DEST: " ,contextData)
     if (contextData.socket === undefined)
       return;
-    console.log("AO")
     contextData.socket?.emit("offline", contextData.userId)
   }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { Sender } from './Sender';
 import Wrapper from '../../components/Wrapper';
@@ -20,9 +20,13 @@ import { ChannelList } from './ChannelList';
 import MessageHeader from './MessageHeader';
 import { ChatInfo } from '../../models/Chat.interface';
 import { JoinGroup } from './GroupComponent/JoinGroup';
+import { context, Context } from '../../App';
 const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
 
+
+
 export function Chat(/* {user} : Prop */) {
+  const cont : context = useContext(Context);
   const [pkg, setPkg] = useState<MessagePkg>();
   const [socket, setSocket] = useState<Socket>();
   const [room, setRoom] = useState('');
@@ -50,30 +54,31 @@ export function Chat(/* {user} : Prop */) {
 
   useEffect(() => {
     if (pkg === undefined) getUser();
-    const sock = io(WS_SERVER);
-    setSocket(sock);
-
-    sock.on('viewedRoom', (roomView: string) => {
-      setRoom(roomView);
-    });
-    sock.on('createRoom', (newRoom: string) => {
-      setRoom(newRoom);
-    });
-    return () => {
-      if (sock.connected) sock.close();
-    };
-  }, [pkg]);
+    if (socket === undefined && cont.socket!== undefined)
+      setSocket(cont.socket);
+    else if (socket !== undefined)
+    {
+      socket.on('viewedRoom', (roomView: string) => {
+        setRoom(roomView);
+        console.log("active room ;" , room)
+      });
+      socket.on('createRoom', (newRoom: string) => {
+        setRoom(newRoom);
+        console.log("active room ;" , room)
+      });
+    }
+   
+  }, [pkg, socket]);
 
   return (
     <Wrapper>
       <div className="container--fluid">
         <div className="row h-100">
           {pkg === undefined ? null : (
-            <UserList socket={socket} userId={pkg.userId.id} />
+            <UserList userId={pkg.userId.id} />
           )}
           {pkg === undefined ? null : (
             <ChannelList
-              socket={socket}
               userId={pkg.userId.id}
               room={room}
               setChatInfo={setChatInfo}
@@ -86,7 +91,7 @@ export function Chat(/* {user} : Prop */) {
                   <MessageHeader chatInfo={chatInfo} />
                   {pkg === undefined ? null : (
                     <MessageBox
-                      socket={socket}
+                      
                       room={room}
                       userId={pkg.userId.id}
                     />
@@ -94,7 +99,7 @@ export function Chat(/* {user} : Prop */) {
                 </div>
               </div>
               {pkg === undefined ? null : (
-                <Sender socket={socket} room={room} packet={pkg} />
+                <Sender  room={room} packet={pkg} />
               )}
             </div>
           )}

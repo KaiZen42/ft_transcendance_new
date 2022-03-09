@@ -172,8 +172,9 @@ export class ChannelService {
 	async goOffline(userId: number)
 	{
 		const part = (await this.partService.getPartecipantByUserAndChan(userId, 1));
-		console.log("FOUND: ", part)
-		await this.partService.delete(part.id);
+		console.log("" + userId + " FOUND: ", part)
+		if (part !== undefined)
+			await this.partService.delete(part.id);
 	}
 
 	async allOffline()

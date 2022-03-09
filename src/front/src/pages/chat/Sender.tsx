@@ -1,19 +1,19 @@
 import e from "express";
-import React, { useState, useEffect, useRef  } from "react";
+import React, { useState, useEffect, useRef, useContext  } from "react";
 import socketIOClient, { io, Socket } from "socket.io-client";
+import { Context } from "../../App";
 import { MessagePkg } from "../../models/Chat.interface";
 
 interface Prop
 {
-	socket : Socket | undefined,
 	packet : MessagePkg,
 	room: string,
 }
 
-export function Sender({socket, packet, room} : Prop) {
+export function Sender({ packet, room} : Prop) {
 	const [msg, setMessage] = useState('');
 	
-	
+	const socket = useContext(Context).socket
 	function handleSubmit(event: any){
 		event.preventDefault();
 		console.log("MESASGE", msg);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { Sender } from './Sender';
 import Wrapper from '../../components/Wrapper';
@@ -6,15 +6,16 @@ import { MessagePkg } from '../../models/Chat.interface';
 import MessageHeader from './MessageHeader';
 import { maxHeaderSize } from 'http';
 import { emitKeypressEvents } from 'readline';
+import { Context } from '../../App';
 
 interface Prop {
-  socket: Socket | undefined;
   room: string;
   userId: number;
 }
 
 let key: number = 0;
-export default function MessageBox({ socket, room, userId }: Prop) {
+export default function MessageBox({ room, userId }: Prop) {
+  const socket = useContext(Context).socket
   const [chats, setChats] = useState<MessagePkg[]>([]);
   console.log('Render mex box');
 

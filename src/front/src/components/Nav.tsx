@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 import '../styles/Nav.css';
 import ProfilePopUp from './ProfilePopUp';
 import { Badge } from '@mui/material';
-import ScoreboardIcon from '@mui/icons-material/Scoreboard';
+
 
 export default function Nav() {
   const [user, setUser] = useState<User>();

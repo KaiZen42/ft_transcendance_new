@@ -10,11 +10,11 @@ import { Context } from '../../App';
 
 interface Prop {
   room: string;
-  userId: number;
 }
 
 let key: number = 0;
-export default function MessageBox({ room, userId }: Prop) {
+export default function MessageBox({ room }: Prop) {
+  const userId = useContext(Context).userId;
   const socket = useContext(Context).socket
   const [chats, setChats] = useState<MessagePkg[]>([]);
   console.log('Render mex box');

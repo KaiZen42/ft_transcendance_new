@@ -5,7 +5,8 @@ import {
 	Query
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
-  import { EntityRepository, getConnection, Repository } from 'typeorm';
+import { User } from 'src/user/models/user.entity';
+  import { EntityRepository, getConnection, getRepository, Repository } from 'typeorm';
 import { Channel } from '../models/channel.entity';
 import { Partecipant } from '../models/partecipant.entity';
   
@@ -23,7 +24,18 @@ import { Partecipant } from '../models/partecipant.entity';
 	  return this.partecipantDB.find({ where: { userId } });
 	}
   
-
+	async getUsersIdByChan(channelId: number) : Promise<any[]>
+	{
+		//const res = await this.partecipantDB.find({ select:["userId"] ,where: {channelId}})
+		const res: any[] = await getRepository(User)
+		.createQueryBuilder("users")
+		.leftJoin(Partecipant, "partecipant", "partecipant.userId = users.id")
+		.where("partecipant.channelId = :chId", {chId: channelId})
+		.select("users.id")
+		.getMany();
+		
+		return res.map(r => r.id);
+	}
 	
 	async getByChannel(channelId: number): Promise<Partecipant[]> {
 	  return this.partecipantDB.find({ where: { channelId } });

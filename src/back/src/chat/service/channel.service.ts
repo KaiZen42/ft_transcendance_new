@@ -109,6 +109,8 @@ export class ChannelService {
 		return res;
 	}
 
+	
+
 	async getOtherByChan(id: number , userId: number) : Promise<User>
 	{
 		const res = await getRepository(User)

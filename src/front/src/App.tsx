@@ -21,11 +21,13 @@ export interface context
 {
   socket: Socket | undefined; 
   userId: number;
+  online: number[]
 }
 
 export const Context = createContext<context>({
   socket: undefined,
   userId: -1,
+  online: []
 });
 
 export default function App() {
@@ -33,10 +35,24 @@ export default function App() {
   const [contextData, setcontextData] = useState<context>({
   socket: undefined,
   userId: -1,
+  online: []
 });
 
-  
-  function getUser(): void
+  function getOnline() 
+  {
+    fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/userOnline`,{credentials: "include"})
+    .then((response) => response.json())
+    .then((result) => {
+          setcontextData(pred => {
+            pred.online = result;
+            return pred;
+          })
+          console.log("onlines: ", contextData)
+        })
+        .catch((error) => console.log(error))
+  }
+
+  function getUser()
   {
     console.log("getUser")
     fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
@@ -47,6 +63,7 @@ export default function App() {
           setcontextData({
             socket: io(WS_SERVER), 
             userId: result.id,
+            online: []
           })
           console.log("getted: ", contextData)
         })
@@ -64,9 +81,21 @@ export default function App() {
   useEffect(() => {
     console.log("RENDER: ", contextData)
     if (contextData.socket === undefined)
-      getUser()
+      return getUser()
     else
       contextData.socket?.emit("online", contextData.userId)
+    contextData.socket.on("areNowOnline", (id: number)=>
+    {
+      if (contextData.online.length === 0)
+        getOnline();
+      else
+        setcontextData(pred => {
+          pred.online = [...pred.online, id];
+          return pred;
+        })
+    })
+    
+   
 
     window.onbeforeunload = quit
     window.onclose = quit

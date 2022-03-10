@@ -70,12 +70,19 @@ export class chatController {
 		return ms;
 	}
 
-	@Get("TEST/:id1/:id2")
-	async getChannels(@Param("id1") userId: number, @Param("id2") chanId: number) : Promise<any>
+	@Get("TEST/:id1")
+	async test(@Param("id1") chanId: number) : Promise<any>
 	{
-		let someThings: any =  await this.partService.getPartecipantByUserAndChan(userId,chanId)
+		let someThings: any =  await this.partService.getUsersIdByChan(chanId)
 		console.log("QUALCOSA: ", someThings);
 		return someThings;
+	}
+
+	@Get("userOnline")
+	async getUsersIdByChan() : Promise<number[]>
+	{
+		let ids: number[] =  await this.partService.getUsersIdByChan(1)
+		return ids;
 	}
 
 	@Get("ChannelsInfo/:idUser")

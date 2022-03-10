@@ -16,13 +16,13 @@ import { CreateGroup } from './GroupComponent/CreateGroup';
 import { JoinGroup } from './GroupComponent/JoinGroup';
 
 interface Prop {
-  userId: number;
   room: string;
   setChatInfo: Function;
 }
 
-export function ChannelList({  userId, room, setChatInfo }: Prop) {
-  const socket = useContext(Context).socket
+export function ChannelList({room, setChatInfo }: Prop) {
+  const userId = useContext(Context).userId;
+  const socket = useContext(Context).socket;
   const [selected, setSelected] = useState(false);
   const [activeID, setActiveID] = useState(0);
   const [channels, setChannel] = useState<ChannelInfo[]>([]);
@@ -229,14 +229,10 @@ export function ChannelList({  userId, room, setChatInfo }: Prop) {
         <div className="card-footer"></div>
       </div>
       {visibleJoin === "hidden" ? null : <JoinGroup
-        socket={socket}
-        userId={userId}
         isVisible={visibleJoin}
         setVisibility={setVisibleJoin} 
       />}
       {visibleCreate === "hidden" ? null :<CreateGroup
-        socket={socket}
-        userId={userId}
         isVisible={visibleCreate}
         setVisibility={setVisibleCreate}
       />}

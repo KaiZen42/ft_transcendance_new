@@ -20,12 +20,9 @@ import Badge from '@mui/material/Badge';
 import StyledBadge from '../../styles/StyleBage';
 import { Context } from '../../App';
 
-interface Prop {
-  userId: number;
-}
-
-export function UserList({ userId }: Prop) {
-  const socket = useContext(Context).socket
+export function UserList() {
+  const socket = useContext(Context).socket;
+  const userId = useContext(Context).userId;
   const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();

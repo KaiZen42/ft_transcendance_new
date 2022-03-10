@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import { Box } from '@mui/system';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
 import { CreationChannelPkg, JoinChannelPkg, OpenRoomPkg, ShortChannel } from '../../../models/Chat.interface';
 import { User } from '../../../models/User.interface';
@@ -21,20 +21,19 @@ import StyledBadge from '../../../styles/StyleBage';
 import zIndex from '@mui/material/styles/zIndex';
 import CheckPass from './CheckPass';
 import { Visibility } from '@mui/icons-material';
+import { Context } from '../../../App';
 
 interface Prop {
-  socket: Socket | undefined;
-  userId: number;
   isVisible: string;
   setVisibility: Function;
 }
 
 export function JoinGroup({
-  socket,
-  userId,
   isVisible = 'hidden',
   setVisibility,
 }: Prop) {
+  const userId = useContext(Context).userId;
+  const socket = useContext(Context).socket;
   const [channels, setChannels] = useState<ShortChannel[]>([]);
   const [passVisibility, setPassVisibility]= useState("hidden")
   const [errorVisibility, setErrorVisibility] = useState("hidden");
@@ -155,7 +154,6 @@ export function JoinGroup({
             isVisible={passVisibility} 
             setVisibility={setPassVisibility} 
             errorVisibility={errorVisibility}
-            socket={socket}
             request={joinReq}
             />
           }

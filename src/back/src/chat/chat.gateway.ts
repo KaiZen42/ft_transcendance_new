@@ -175,6 +175,8 @@ export class ChatGateway
 		//client.join(data.room);
 		if (!await this.partService.isPartecipant(1, userId))
 			await this.channelService.goOnline(userId)
+		this.server.emit("areNowOnline", userId)
+		//return { event: 'areNowOnline', data : userId};
 		//this.logger.log(`VIEWED REQEST ${data.idUser} in ${data.room}`);
 	}
 

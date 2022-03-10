@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import { Box } from '@mui/system';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
 import { CreationChannelPkg } from '../../../models/Chat.interface';
 import { User } from '../../../models/User.interface';
@@ -21,21 +21,19 @@ import Badge from '@mui/material/Badge';
 import StyledBadge from '../../../styles/StyleBage';
 import zIndex from '@mui/material/styles/zIndex';
 import { Margin } from '@mui/icons-material';
+import { Context } from '../../../App';
 
 interface Prop {
-  socket: Socket | undefined;
-  userId: number;
   isVisible: string;
   setVisibility: Function;
 }
 
 export function CreateGroup({
-  socket,
-  userId,
   isVisible = 'hidden',
   setVisibility,
 }: Prop) {
-
+  const socket = useContext(Context).socket;
+  const userId = useContext(Context).userId;
   const [groupName, setGroupName] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [invite, setInvite] = useState<User[]>([]);

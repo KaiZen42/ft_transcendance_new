@@ -1,5 +1,6 @@
-  import React, { useState, useEffect, useRef } from 'react';
+  import React, { useState, useEffect, useRef, useContext } from 'react';
   import socketIOClient, { Socket } from 'socket.io-client';
+import { Context } from '../../../App';
 import { JoinChannelPkg } from '../../../models/Chat.interface';
 
   	interface Prop
@@ -7,15 +8,14 @@ import { JoinChannelPkg } from '../../../models/Chat.interface';
 	setVisibility: Function
 	isVisible: string,
 	errorVisibility: string,
-	socket: Socket | undefined,
 	request: JoinChannelPkg
 
 }
 
-	export default function CheckPass({ isVisible, setVisibility, errorVisibility, socket, request} : Prop)
+	export default function CheckPass({ isVisible, setVisibility, errorVisibility, request} : Prop)
 	{
 		const [pass, setPass] = useState("");
-
+		const socket = useContext(Context).socket
 		function enterSubmit(e: any)
 		{
 			if(e.code === "Enter")

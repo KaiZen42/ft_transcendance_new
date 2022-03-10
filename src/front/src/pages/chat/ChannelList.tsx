@@ -1,5 +1,6 @@
 import { RestorePageOutlined } from '@mui/icons-material';
 import { Avatar, Stack } from '@mui/material';
+import { orange } from '@mui/material/colors';
 import { channel } from 'diagnostics_channel';
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import io, { Socket } from 'socket.io-client';
@@ -21,6 +22,7 @@ interface Prop {
 }
 
 export function ChannelList({room, setChatInfo }: Prop) {
+  const onlines = useContext(Context).online
   const userId = useContext(Context).userId;
   const socket = useContext(Context).socket;
   const [selected, setSelected] = useState(false);
@@ -135,7 +137,6 @@ export function ChannelList({room, setChatInfo }: Prop) {
   }, [socket, room]);
 
   function selectUser(info: ChannelInfo) {
-    if (info.partecipants.length < 2) return null;
     return info.partecipants[0].userId.id === userId
       ? info.partecipants[1].userId
       : info.partecipants[0].userId;
@@ -193,10 +194,15 @@ export function ChannelList({room, setChatInfo }: Prop) {
                         <div className="img_cont">
                           <Stack direction="row" spacing={2}>
                             <StyledBadge
-                            style={{zIndex: 0}}
+                              color={onlines.has(selectUser(chan).id) ?
+                                ( selectUser(chan).id > 0 ? "success" : "warning") 
+                                : "error"}
+                              style={{zIndex: 0}}
                               overlap="circular"
                               invisible={false}
+                              
                               anchorOrigin={{
+                                
                                 vertical: 'bottom',
                                 horizontal: 'right',
                               }}

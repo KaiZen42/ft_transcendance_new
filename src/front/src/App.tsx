@@ -21,13 +21,13 @@ export interface context
 {
   socket: Socket | undefined; 
   userId: number;
-  online: number[]
+  online: Set<number>
 }
 
 export const Context = createContext<context>({
   socket: undefined,
   userId: -1,
-  online: []
+  online: new Set<number>()
 });
 
 export default function App() {
@@ -35,7 +35,7 @@ export default function App() {
   const [contextData, setcontextData] = useState<context>({
   socket: undefined,
   userId: -1,
-  online: []
+  online: new Set<number>()
 });
 
   function getOnline() 
@@ -63,7 +63,7 @@ export default function App() {
           setcontextData({
             socket: io(WS_SERVER), 
             userId: result.id,
-            online: []
+            online: new Set<number>([])
           })
           console.log("getted: ", contextData)
         })
@@ -86,11 +86,13 @@ export default function App() {
       contextData.socket?.emit("online", contextData.userId)
     contextData.socket.on("areNowOnline", (id: number)=>
     {
-      if (contextData.online.length === 0)
+      if (contextData.online.size === 0)
         getOnline();
       else
         setcontextData(pred => {
-          pred.online = [...pred.online, id];
+          console.log("id: ", id, pred)
+          
+          pred.online = new Set([...Array.from(pred.online), id])
           return pred;
         })
     })

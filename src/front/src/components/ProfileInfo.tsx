@@ -8,9 +8,11 @@ import ProfilePopUp from './ProfilePopUp';
 export default function ProfileInfo({
   username,
   myProfilePage,
+  setUserId,
 }: {
   username: string;
   myProfilePage: boolean;
+  setUserId: (id: number) => void;
 }) {
   const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<User | null>();
@@ -27,7 +29,10 @@ export default function ProfileInfo({
     ).then((res) => {
       res.json().then((data) => {
         if (!data.id) setUser(null);
-        else setUser(data);
+        else {
+          setUser(data);
+          setUserId(data.id);
+        }
       });
     });
   }, [username]);

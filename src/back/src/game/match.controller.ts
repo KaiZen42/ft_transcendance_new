@@ -8,7 +8,6 @@ export class MatchController {
 
   @Get('player/:id')
   async getByEmail(@Param('id') id: number): Promise<Match[]> {
-    const res = await this.match.getByPlayerId(id);
-    return res;
+    return await this.match.getByPlayerId(id);
   }
 }

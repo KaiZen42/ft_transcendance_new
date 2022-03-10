@@ -35,6 +35,12 @@
   border: 3px solid white;
 }
 
+.profile-info-img.sm {
+  height: 60px;
+  width: 60px;
+  border: 2px solid white;
+}
+
 .profile-info-text {
   font-family: Bebas Neue, sans-serif;
   font-style: italic;
@@ -78,7 +84,51 @@
   flex: 3;
   margin-right: 1rem;
   color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+.match-item {
+  background: grey;
+  border-radius: 5px;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  padding: 0.6rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: Bebas Neue, sans-serif;
+  background-color: rgba(85, 198, 89, 0.4);
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  width: 95%;
+}
+
+.match-item > * {
+  margin-right: 1.3rem;
+}
+
+.image-username {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.image-username:hover {
+  opacity: 0.8;
+}
+
+.match-item p {
+  margin-bottom: 0;
+}
+
+.match-score {
+  display: flex;
+  align-items: center;
+  font-size: 2.3rem;
+}
+
 .friend-list {
   flex: 3;
   color: white;

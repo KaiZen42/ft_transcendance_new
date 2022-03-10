@@ -15,6 +15,7 @@ export default function Wrapper({ children, noImage }: Props) {
 
       <video autoPlay muted loop className="video">
         <source src="./movie2.webm" type="video/webm" />
+        <source src="../movie2.webm" type="video/webm" />
       </video>
     </>
   );

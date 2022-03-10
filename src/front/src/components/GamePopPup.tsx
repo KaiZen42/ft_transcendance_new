@@ -43,15 +43,19 @@ export default function GamePopUp({
   }, [users]);
 
   const calcPoints = (iWin: boolean) => {
+    let points, diff, winl: [number, number];
     if (iWin) {
-      SetUpdatedPoints(users[0]!.points + 30);
-      SetDiffPoints(30);
-      setWL([users[0]!.wins + 1, users[0]!.losses]);
+      points = users[0]!.points + 30;
+      diff = 30;
+      winl = [users[0]!.wins + 1, users[0]!.losses];
     } else {
-      SetUpdatedPoints(users[0]!.points - 30 < 0 ? 0 : users[0]!.points - 30);
-      SetDiffPoints(-(users[0]!.points - 30 < 0 ? users[0]!.points : 30));
-      setWL([users[0]!.wins, users[0]!.losses + 1]);
+      points = users[0]!.points - 30 < 0 ? 0 : users[0]!.points - 30;
+      diff = -(users[0]!.points - 30 < 0 ? users[0]!.points : 30);
+      winl = [users[0]!.wins, users[0]!.losses + 1];
     }
+    SetUpdatedPoints(points);
+    SetDiffPoints(diff);
+    setWL(winl);
   };
 
   // TODO aggiornare info quando clicco sull'immagine dell'avversario
@@ -102,7 +106,10 @@ export default function GamePopUp({
                   alt="profile image"
                   src={users[1]?.avatar}
                   className="game-popup-image"
-                  onClick={() => navigate('/users/' + users[1]?.username)}
+                  onClick={() => {
+                    updatePoints(updatedPoints, wl[0], wl[1]);
+                    navigate('/users/' + users[1]?.username);
+                  }}
                 />
                 <p className="game-popup-text nice-shadow">
                   {users[1]?.username}

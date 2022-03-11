@@ -29,10 +29,8 @@ export default function Profile() {
   const { username } = useParams<'username'>();
   const [me, setMe] = useState<User>();
   const [myProfilePage, setMyProfilePage] = useState(false);
-  const [matches, setMatches] = useState<MatchUser[]>([]);
-  const [userId, setUserId] = useState<number>();
 
-  const navigate = useNavigate();
+  const [userId, setUserId] = useState<number>();
 
   useEffect(() => {
     (async () => {
@@ -45,20 +43,9 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
-    if (!userId) return;
-    (async () => {
-      const { data } = await axios.get(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/matches/player/${userId}`,
-        { withCredentials: true }
-      );
-      console.log(data);
-      setMatches(data);
-    })();
-  }, [userId]);
-
-  useEffect(() => {
     if (!(me && username)) return;
     if (me.username === username) setMyProfilePage(true);
+    else setMyProfilePage(false);
   }, [me, username]);
 
   return (
@@ -74,39 +61,7 @@ export default function Profile() {
               />
             </div>
             <div className="profile-box last-games">
-              {' '}
-              <h1 className="profile-info-text username">last games</h1>
-              {matches.map((match) => (
-                <div className="match-item">
-                  <div
-                    className="image-username"
-                    onClick={() => navigate('/users/' + match.player1.username)}
-                  >
-                    <img
-                      alt="profile image"
-                      src={match.player1.avatar}
-                      className="profile-info-img sm"
-                    />
-                    <p>{match.player1.username}</p>
-                  </div>
-                  <div className="match-score">
-                    <p>{match.points1}</p>
-                    <p> - </p>
-                    <p>{match.points2}</p>
-                  </div>
-                  <div
-                    className="image-username"
-                    onClick={() => navigate('/users/' + match.player2.username)}
-                  >
-                    <img
-                      alt="profile image"
-                      src={match.player2.avatar}
-                      className="profile-info-img sm"
-                    />
-                    <p className="nice-border">{match.player2.username}</p>
-                  </div>
-                </div>
-              ))}
+              <MatchList userId={userId ? userId : 0} />
             </div>
             <div className="profile-box friend-list">
               <h1 className="profile-info-text username">friend list</h1>
@@ -116,6 +71,59 @@ export default function Profile() {
       ) : (
         <Error404 />
       )}
+    </>
+  );
+}
+
+function MatchList({ userId }: { userId: number }) {
+  const [matches, setMatches] = useState<MatchUser[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data } = await axios.get(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/matches/player/${userId}`,
+        { withCredentials: true }
+      );
+      setMatches(data);
+    })();
+  }, [userId]);
+
+  return (
+    <>
+      <h1 className="profile-info-text username">last games</h1>
+      {matches.map((match) => (
+        <div className="match-item">
+          <div
+            className="image-username"
+            onClick={() => navigate('/users/' + match.player1.username)}
+          >
+            <img
+              alt="profile image"
+              src={match.player1.avatar}
+              className="profile-info-img sm"
+            />
+            <p>{match.player1.username}</p>
+          </div>
+          <div className="match-score">
+            <p>{match.points1}</p>
+            <p> - </p>
+            <p>{match.points2}</p>
+          </div>
+          <div
+            className="image-username"
+            onClick={() => navigate('/users/' + match.player2.username)}
+          >
+            <img
+              alt="profile image"
+              src={match.player2.avatar}
+              className="profile-info-img sm"
+            />
+            <p className="nice-border">{match.player2.username}</p>
+          </div>
+        </div>
+      ))}
     </>
   );
 }

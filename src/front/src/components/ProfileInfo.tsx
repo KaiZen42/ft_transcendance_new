@@ -16,6 +16,7 @@ export default function ProfileInfo({
 }) {
   const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<User | null>();
+  const [me, setMe] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {

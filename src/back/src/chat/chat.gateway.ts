@@ -158,6 +158,7 @@ export class ChatGateway
 	offline(client: Socket, data: number) 
 	{
 		this.logger.log(`OFFLINE REQEST ${data}`);
+		this.server.emit("areNowOffline", data)
 		this.channelService.goOffline(data)
 	}
 
@@ -178,6 +179,25 @@ export class ChatGateway
 		this.server.emit("areNowOnline", userId)
 		//return { event: 'areNowOnline', data : userId};
 		//this.logger.log(`VIEWED REQEST ${data.idUser} in ${data.room}`);
+	}
+	
+	@SubscribeMessage('WhoInGame')
+	async WhoInGame(client: Socket) 
+	{
+		this.server.emit("WhoInGame")
+	}
+
+	//TODO: whith mattia make socket response when are in game
+	@SubscribeMessage('InGame')
+	async NowInGame(client: Socket, userId: number) 
+	{
+		this.server.emit("areNowInGame", userId)
+	}
+
+	@SubscribeMessage('NotInGame')
+	async NotInGame(client: Socket, userId: number) 
+	{
+		this.server.emit("areNotInGame", userId)
 	}
 
 }

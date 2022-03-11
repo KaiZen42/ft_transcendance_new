@@ -72,7 +72,7 @@ export class ChannelService {
 				.select(["channel.id"])
 				.from(Channel, "channel")
 				.leftJoin("channel.partecipants", "partecipant", "partecipant.channelId = channel.id")
-				.where("partecipant.userId = :userId", {userId: id})
+				.where("partecipant.userId = :userId AND channel.id != 1", {userId: id})
 				.getQuery();
 			return "channel.id IN " + subQuery;
 		})

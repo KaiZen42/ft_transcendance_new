@@ -1,26 +1,15 @@
 import {
   Avatar,
-  Button,
-  FormGroup,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
   Stack,
 } from '@mui/material';
-import { blue } from '@mui/material/colors';
-import { Box } from '@mui/system';
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import socketIOClient, { Socket } from 'socket.io-client';
+import { useState, useEffect, useContext } from 'react';
 import { CreationChannelPkg } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
-import { styled } from '@mui/material/styles';
-import Badge from '@mui/material/Badge';
 import StyledBadge from '../../styles/StyleBage';
 import { Context } from '../../App';
 
 export function UserList() {
+  const onlines = useContext(Context).online
   const socket = useContext(Context).socket;
   const userId = useContext(Context).userId;
   const [otherUser, setOtherUser] = useState(0);
@@ -84,7 +73,9 @@ export function UserList() {
         </div>
         <div className="card-body contacts_body">
           <ul className="contacts scrollable-search">
-            {users.map((user: User) => (
+            {users.map((user: User) => {
+              const on = onlines.find(el => user.id === el || user.id === -el)
+              return(
               user.id !== userId ?
                 <li key={user.id}>
                   <div
@@ -95,6 +86,9 @@ export function UserList() {
                     <div className="img_cont">
                       <Stack direction="row" spacing={2}>
                         <StyledBadge
+                          color={ on !== undefined ?
+                                (on > 0 ? "success" : "warning") 
+                                : "error"}
                           overlap="circular"
                           invisible={false}
                           anchorOrigin={{
@@ -114,7 +108,7 @@ export function UserList() {
                   </div>
                 </li>
                 : null
-            ))}
+            )})}
           </ul>
         </div>
         <div className="card-footer"></div>

@@ -1,6 +1,7 @@
 import { RestorePageOutlined, Room } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { Context } from '../../App';
 import { ChatInfo } from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
 
@@ -9,6 +10,8 @@ interface Prop {
 }
 
 export default function MessageHeader({ chatInfo }: Prop) {
+  const onlines = useContext(Context).online
+  const on = chatInfo?.userId !== undefined ? onlines.find(el => chatInfo.userId === el || chatInfo.userId === -el): undefined
   useEffect(() => {
     
   }, [chatInfo])
@@ -19,6 +22,9 @@ export default function MessageHeader({ chatInfo }: Prop) {
         <div className="img_cont">
           <StyledBadge
             overlap="circular"
+            color={ on !== undefined ?
+              (on > 0 ? "success" : "warning") 
+              : "error"}
             invisible={chatInfo?.avatar === undefined}
             anchorOrigin={{
               vertical: 'bottom',

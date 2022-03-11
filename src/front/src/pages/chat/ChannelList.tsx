@@ -1,18 +1,12 @@
-import { RestorePageOutlined } from '@mui/icons-material';
 import { Avatar, Stack } from '@mui/material';
-import { orange } from '@mui/material/colors';
-import { channel } from 'diagnostics_channel';
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import io, { Socket } from 'socket.io-client';
+import { useState, useEffect, useContext } from 'react';
 import { Context } from '../../App';
 import {
   ChannelInfo,
   MessageInfoPkg,
   OpenRoomPkg,
 } from '../../models/Chat.interface';
-import { User } from '../../models/User.interface';
 import StyledBadge from '../../styles/StyleBage';
-import InfoChat from './Chat';
 import { CreateGroup } from './GroupComponent/CreateGroup';
 import { JoinGroup } from './GroupComponent/JoinGroup';
 
@@ -38,12 +32,14 @@ export function ChannelList({room, setChatInfo }: Prop) {
   {
     if (current?.isPrivate) {
       setChatInfo({
+        id:  selectUser(current)?.id,
         username: selectUser(current)?.username,
         avatar: selectUser(current)?.avatar,
         roomId: room,
       });
     } else {
       setChatInfo({
+        id: undefined,
         username: current?.name,
         avatar: undefined,
         roomId: room,
@@ -177,6 +173,7 @@ export function ChannelList({room, setChatInfo }: Prop) {
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
               if (chan.notification === undefined) chan.notification = 0;
+              const on = chan.isPrivate ? onlines.find(el => selectUser(chan).id === el || selectUser(chan).id === -el): undefined
               return (
                 <li
                   className={selected && activeID === chan.id ? 'active' : ''}
@@ -194,8 +191,8 @@ export function ChannelList({room, setChatInfo }: Prop) {
                         <div className="img_cont">
                           <Stack direction="row" spacing={2}>
                             <StyledBadge
-                              color={onlines.has(selectUser(chan).id) ?
-                                ( selectUser(chan).id > 0 ? "success" : "warning") 
+                              color={ on !== undefined ?
+                                (on > 0 ? "success" : "warning") 
                                 : "error"}
                               style={{zIndex: 0}}
                               overlap="circular"

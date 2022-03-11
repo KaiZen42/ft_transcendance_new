@@ -1,26 +1,12 @@
 import {
   Avatar,
-  Button,
   Checkbox,
-  FormGroup,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
   Stack,
 } from '@mui/material';
-import { blue } from '@mui/material/colors';
-import { Box } from '@mui/system';
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import socketIOClient, { Socket } from 'socket.io-client';
+import { useState, useEffect, useContext } from 'react';
 import { CreationChannelPkg } from '../../../models/Chat.interface';
 import { User } from '../../../models/User.interface';
-import { styled } from '@mui/material/styles';
-import Badge from '@mui/material/Badge';
 import StyledBadge from '../../../styles/StyleBage';
-import zIndex from '@mui/material/styles/zIndex';
-import { Margin } from '@mui/icons-material';
 import { Context } from '../../../App';
 
 interface Prop {
@@ -32,6 +18,7 @@ export function CreateGroup({
   isVisible = 'hidden',
   setVisibility,
 }: Prop) {
+  const onlines = useContext(Context).online;
   const socket = useContext(Context).socket;
   const userId = useContext(Context).userId;
   const [groupName, setGroupName] = useState('');
@@ -164,7 +151,9 @@ export function CreateGroup({
           </div>
         </div>
         <ul className="contacts scrollable-search">
-            {users.map((user: User) => (
+            {users.map((user: User) => {
+              const on = onlines.find(el => user.id === el || user.id === -el)
+              return(
               user.id === userId ? null:
               <li key={user.id}>
                 <div
@@ -175,6 +164,9 @@ export function CreateGroup({
                   <div className="img_cont">
                     <Stack direction="row" spacing={2}>
                       <StyledBadge
+                        color={ on !== undefined ?
+                          (on > 0 ? "success" : "warning") 
+                          : "error"}
                         overlap="circular"
                         invisible={false}
                         anchorOrigin={{
@@ -196,7 +188,7 @@ export function CreateGroup({
                     onChange={(e) => addUser(e, user)}/>
                 </div>
               </li>
-            ))}
+            )})}
           </ul>
         <div className="card-body contacts_body">
         <div className='glow'>NAME: {groupName}</div>

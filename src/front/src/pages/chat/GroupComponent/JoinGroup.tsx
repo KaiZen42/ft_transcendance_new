@@ -1,26 +1,10 @@
 import {
   Avatar,
-  Button,
-  FormGroup,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
   Stack,
 } from '@mui/material';
-import { blue } from '@mui/material/colors';
-import { Box } from '@mui/system';
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import socketIOClient, { Socket } from 'socket.io-client';
-import { CreationChannelPkg, JoinChannelPkg, OpenRoomPkg, ShortChannel } from '../../../models/Chat.interface';
-import { User } from '../../../models/User.interface';
-import { styled } from '@mui/material/styles';
-import Badge from '@mui/material/Badge';
-import StyledBadge from '../../../styles/StyleBage';
-import zIndex from '@mui/material/styles/zIndex';
+import { useState, useEffect, useContext } from 'react';
+import { JoinChannelPkg, ShortChannel } from '../../../models/Chat.interface';
 import CheckPass from './CheckPass';
-import { Visibility } from '@mui/icons-material';
 import { Context } from '../../../App';
 
 interface Prop {

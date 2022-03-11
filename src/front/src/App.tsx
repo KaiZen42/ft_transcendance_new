@@ -21,13 +21,13 @@ export interface context
 {
   socket: Socket | undefined; 
   userId: number;
-  online: Set<number>
+  online: number[]
 }
 
 export const Context = createContext<context>({
   socket: undefined,
   userId: -1,
-  online: new Set<number>()
+  online: []
 });
 
 export default function App() {
@@ -35,7 +35,7 @@ export default function App() {
   const [contextData, setcontextData] = useState<context>({
   socket: undefined,
   userId: -1,
-  online: new Set<number>()
+  online: []
 });
 
   function getOnline() 
@@ -50,11 +50,12 @@ export default function App() {
           console.log("onlines: ", contextData)
         })
         .catch((error) => console.log(error))
+    contextData.socket?.emit("WhoInGame");
   }
 
   function getUser()
   {
-    console.log("getUser")
+    //console.log("getUser")
     fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
         credentials: 'include',
       })
@@ -63,9 +64,9 @@ export default function App() {
           setcontextData({
             socket: io(WS_SERVER), 
             userId: result.id,
-            online: new Set<number>([])
+            online: []
           })
-          console.log("getted: ", contextData)
+          //console.log("getted: ", contextData)
         })
         .catch((error) => console.log(error))
         
@@ -84,20 +85,59 @@ export default function App() {
       return getUser()
     else
       contextData.socket?.emit("online", contextData.userId)
+
     contextData.socket.on("areNowOnline", (id: number)=>
     {
-      if (contextData.online.size === 0)
+      if (contextData.online.length === 0)
         getOnline();
       else
         setcontextData(pred => {
-          console.log("id: ", id, pred)
+          console.log(" ON id: ", id, pred)
           
-          pred.online = new Set([...Array.from(pred.online), id])
+          pred.online = [...pred.online, id]
           return pred;
         })
     })
     
-   
+    contextData.socket.on("areNowOffline", (id : number) =>
+    {
+      if (contextData.online.length === 0)
+        return;
+      else
+        setcontextData(pred => {
+          console.log("OFF id: ", id, pred)
+          const index = pred.online.findIndex((el)=> el === id || el === -id)
+          if (index !== -1)
+            pred.online.splice(index, 1)
+          return pred;
+        })
+    })
+
+    contextData.socket.on("areNowInGame", (id : number) =>
+    {
+      if (contextData.online.length === 0)
+        return;
+      else
+        setcontextData(pred => {
+          console.log("IN GAME id: ", id, pred)
+          const index = pred.online.findIndex((el)=> el === id)
+          pred.online[index] = -pred.online[index]
+          return pred;
+        })
+    })
+  
+    contextData.socket.on("areNotInGame", (id : number) =>
+    {
+      if (contextData.online.length === 0)
+        return;
+      else
+        setcontextData(pred => {
+          console.log("NOT IN GAME id: ", id, pred)
+          const index = pred.online.findIndex((el)=> el === -id)
+          pred.online[index] = -pred.online[index]
+          return pred;
+        })
+    })
 
     window.onbeforeunload = quit
     window.onclose = quit

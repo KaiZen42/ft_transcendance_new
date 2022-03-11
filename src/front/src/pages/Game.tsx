@@ -11,6 +11,7 @@ import '../styles/Game.css';
 export default function Pong() {
 
   const contextSocket: Socket = useContext(Context).socket!;
+  const userId: number = useContext(Context).userId!;
   const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
 
   const [user, setUser] = useState<UserWL>()
@@ -180,7 +181,7 @@ export default function Pong() {
       ...prevOpponent!,
       score: scores[playerNumber ? 0 : 1]
     }))
-    contextSocket.emit("NotInGame", user?.id)
+    contextSocket.emit("NotInGame",userId)
   }
 
   const handleGameOver = (winner: number, scores: number[]) => {
@@ -195,7 +196,7 @@ export default function Pong() {
     else
       setOpponent({...players[1], score: 0})
 
-    contextSocket.emit("InGame", user?.id)
+    contextSocket.emit("InGame", userId)
     startCountdown()
   }
 
@@ -264,8 +265,8 @@ export default function Pong() {
     defaultCanva()
     initSocket()
     return () => {
-      if (socket)
-        contextSocket.emit("InGame", user?.id)
+      if (contextSocket)
+        contextSocket.emit("NotInGame", user)
         socket.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -32,14 +32,14 @@ export function ChannelList({room, setChatInfo }: Prop) {
   {
     if (current?.isPrivate) {
       setChatInfo({
-        id:  selectUser(current)?.id,
+        userId:  selectUser(current)?.id,
         username: selectUser(current)?.username,
         avatar: selectUser(current)?.avatar,
         roomId: room,
       });
     } else {
       setChatInfo({
-        id: undefined,
+        userId: undefined,
         username: current?.name,
         avatar: undefined,
         roomId: room,
@@ -173,7 +173,8 @@ export function ChannelList({room, setChatInfo }: Prop) {
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
               if (chan.notification === undefined) chan.notification = 0;
-              const on = chan.isPrivate ? onlines.find(el => selectUser(chan).id === el || selectUser(chan).id === -el): undefined
+              const on = chan.isPrivate ? onlines.find(el => (selectUser(chan).id === el || selectUser(chan).id === -el)): undefined
+              //console.log("is on" ,  selectUser(chan).id , " ? " + on, onlines )
               return (
                 <li
                   className={selected && activeID === chan.id ? 'active' : ''}

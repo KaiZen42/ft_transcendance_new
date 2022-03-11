@@ -11,10 +11,15 @@ interface Prop {
 
 export default function MessageHeader({ chatInfo }: Prop) {
   const onlines = useContext(Context).online
-  const on = chatInfo?.userId !== undefined ? onlines.find(el => chatInfo.userId === el || chatInfo.userId === -el): undefined
+  const [on, setOn] = useState<number>()
+  const [infoVisibility, setInfoVisibility] = useState(false)
+
   useEffect(() => {
-    
-  }, [chatInfo])
+    if (chatInfo?.userId !== undefined)
+      {console.log("TESST")
+      setOn(onlines.find(el => chatInfo.userId === el || chatInfo.userId === -el))}
+    console.log("RENDER HEADER: ",on, chatInfo,onlines)
+  }, [chatInfo ,  useContext(Context)])
 
   return (
     <div className="card-header msg_head">
@@ -42,19 +47,17 @@ export default function MessageHeader({ chatInfo }: Prop) {
           : null}</p>
         </div>
 
-        {/* <div className="video_cam">
-								<span>
-								<i className="fas fa-video"></i>
-								</span>
-								<span>
-								<i className="fas fa-phone"></i>
-								</span>
-							</div> */}
       </div>
+      {/*TODO: ROUTE TO PROFILE*/}
+      {
+       /*  visibleJoin ? null : <JoinGroup
+        isVisible={visibleJoin}
+        setVisibility={setVisibleJoin} 
+      /> */}
       {/* <span id="action_menu_btn">
 							<i className="fas fa-ellipsis-v"></i>
-						</span>  */}
-      {/* <div className="action_menu">
+						</span> 
+      <div className="action_menu">
 							<ul>
 								<li>
 								<i className="fas fa-user-circle"></i> View profile

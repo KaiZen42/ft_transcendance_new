@@ -1,5 +1,9 @@
 import {  IsNotEmpty } from "class-validator";
 
+export interface OnlineMap {
+	[id: number] : number
+}
+
 export class JoinRoomDto {
 	@IsNotEmpty()
 	idUser: number ;

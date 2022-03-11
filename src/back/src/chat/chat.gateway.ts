@@ -10,7 +10,7 @@ import {
   } from '@nestjs/websockets';
 import { time } from 'console';
 import { Socket, Server } from 'socket.io';
-import { creationDto, JoinRoomDto, messageDto, openRoomDto, viewRoomDto } from './dto/chat.dto';
+import { creationDto, JoinRoomDto, messageDto, OnlineMap, openRoomDto, viewRoomDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
 
 import { Message } from './models/message.entity';
@@ -23,38 +23,13 @@ import { PartecipantService } from './service/partecipant.service';
 export class ChatGateway 
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+	onlines : OnlineMap = {};
 
 	constructor(
 		private readonly messageService: MessageService,
 		private readonly channelService: ChannelService,
 		private readonly partService: PartecipantService)
 	{
-		this.starting();
-	}
-
-	async starting()
-	{
-		console.log("normal log ", await this.channelService.getById(1))
-		if (await this.channelService.getById(1) === undefined)
-		{
-			let ch = new Channel();
-			ch.id = 0;
-			ch.isPrivate = false
-			ch.mode = "PRI"
-			ch.name = "online"
-			ch.pass = "guest"
-			ch = await this.channelService.create(ch, [])
-			if (ch.id === 1)
-				this.logger.log("Channel ONLINE created SUCCESFULLY")
-			else
-			{
-				this.logger.error("Channel ONLINE created whith ID: " + ch.id)
-				this.channelService.delete(ch.id)
-				this.logger.error("Channel ID "+ ch.id + " DELETED ")
-			}
-		}
-		else
-			await this.channelService.allOffline()
 	}
 
 	@WebSocketServer()
@@ -154,14 +129,7 @@ export class ChatGateway
 		return { event: 'openedRoom', data : true};
 	}
 
-	@SubscribeMessage('offline')
-	offline(client: Socket, data: number) 
-	{
-		this.logger.log(`OFFLINE REQEST ${data}`);
-		this.server.emit("areNowOffline", data)
-		this.channelService.goOffline(data)
-	}
-
+	
 	@SubscribeMessage('viewRoom')
 	viewRoom(client: Socket, data: viewRoomDto) : WsResponse<string>
 	{
@@ -169,34 +137,41 @@ export class ChatGateway
 		this.logger.log(`VIEWED REQEST ${data.idUser} in ${data.room}`);
 		return { event: 'viewedRoom', data : ""+data.room};
 	}
+	
+	@SubscribeMessage('offline')
+	offline(client: Socket, id: number) 
+	{
+		this.logger.log(`OFFLINE REQEST ${id}`);
+		delete this.onlines[id] ;
+		this.server.emit("areNowOffline", id)
+	}
+
 
 	@SubscribeMessage('online')
-	async online(client: Socket, userId: number) 
+	 online(client: Socket, userId: number) 
 	{
-		//client.join(data.room);
-		if (!await this.partService.isPartecipant(1, userId))
-			await this.channelService.goOnline(userId)
+		this.onlines[userId] = userId;
 		this.server.emit("areNowOnline", userId)
-		//return { event: 'areNowOnline', data : userId};
-		//this.logger.log(`VIEWED REQEST ${data.idUser} in ${data.room}`);
 	}
 	
-	@SubscribeMessage('WhoInGame')
-	async WhoInGame(client: Socket) 
+	 @SubscribeMessage('m')
+	WhoOnline(client: Socket) : WsResponse<number[]> 
 	{
-		this.server.emit("WhoInGame")
-	}
+		return { event: 'areOnline', data :  Object.values(this.onlines)};
+	} 
 
 	//TODO: whith mattia make socket response when are in game
 	@SubscribeMessage('InGame')
-	async NowInGame(client: Socket, userId: number) 
+	 NowInGame(client: Socket, userId: number)
 	{
+		this.onlines[userId] = -userId;
 		this.server.emit("areNowInGame", userId)
 	}
 
 	@SubscribeMessage('NotInGame')
-	async NotInGame(client: Socket, userId: number) 
+	 NotInGame(client: Socket, userId: number) 
 	{
+		this.onlines[userId] = userId;
 		this.server.emit("areNotInGame", userId)
 	}
 

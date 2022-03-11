@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import socketIOClient, { Socket } from 'socket.io-client';
+import socketIOClient, { Socket, SocketOptions } from 'socket.io-client';
+import { Context } from '../App';
 import opponent_img from "../assets/opponent.jpeg"
 import GamePopUp from '../components/GamePopPup';
 import { GameState, Net, OPPONENT_COLOR, Player, User, UserWL, USER_COLOR } from '../models/Game.interfaces';
@@ -9,6 +10,7 @@ import '../styles/Game.css';
 
 export default function Pong() {
 
+  const contextSocket: Socket = useContext(Context).socket!;
   const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
 
   const [user, setUser] = useState<UserWL>()
@@ -178,6 +180,7 @@ export default function Pong() {
       ...prevOpponent!,
       score: scores[playerNumber ? 0 : 1]
     }))
+    contextSocket.emit("NotInGame", user?.id)
   }
 
   const handleGameOver = (winner: number, scores: number[]) => {
@@ -191,6 +194,8 @@ export default function Pong() {
       setOpponent({...players[0], score: 0})
     else
       setOpponent({...players[1], score: 0})
+
+    contextSocket.emit("InGame", user?.id)
     startCountdown()
   }
 
@@ -260,6 +265,7 @@ export default function Pong() {
     initSocket()
     return () => {
       if (socket)
+        contextSocket.emit("InGame", user?.id)
         socket.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

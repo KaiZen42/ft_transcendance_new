@@ -151,12 +151,14 @@ export class ChatGateway
 	 online(client: Socket, userId: number) 
 	{
 		this.onlines[userId] = userId;
-		this.server.emit("areNowOnline", userId)
+		client.broadcast.emit("areNowOnline", userId)
 	}
 	
-	 @SubscribeMessage('m')
-	WhoOnline(client: Socket) : WsResponse<number[]> 
+	 @SubscribeMessage('WhoOnline')
+	WhoOnline(client: Socket, userId : number) : WsResponse<number[]> 
 	{
+		this.online(client, userId)
+		console.log("onlines",  Object.values(this.onlines));
 		return { event: 'areOnline', data :  Object.values(this.onlines)};
 	} 
 

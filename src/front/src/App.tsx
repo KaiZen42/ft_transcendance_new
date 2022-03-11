@@ -73,8 +73,8 @@ export default function App() {
     console.log("RENDER: ", contextData)
     if (contextData.socket === undefined)
       return getUser()
-    if (contextData.online.length === 0 )
-     contextData.socket.emit("WhoOnline");
+    if (contextData.online.length < 1 )
+     contextData.socket.emit("WhoOnline", contextData.userId);
     
 
     
@@ -93,15 +93,7 @@ export default function App() {
           })
           console.log("are online: ", ons)
       })
-    
-    if (contextData.userId != -1
-      && !checkOnline)
-      {
-        setCk(true)
-        console.log("I "+ contextData.userId + " go online")
-        contextData.socket?.emit("online", contextData.userId)
-      }
-      
+
       contextData.socket.on("areNowOnline", (id: number)=>
       {
         

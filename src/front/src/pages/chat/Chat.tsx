@@ -23,10 +23,8 @@ import { JoinGroup } from './GroupComponent/JoinGroup';
 import { context, Context } from '../../App';
 const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
 
-
-
 export function Chat(/* {user} : Prop */) {
-  const cont : context = useContext(Context);
+  const cont: context = useContext(Context);
   const [pkg, setPkg] = useState<MessagePkg>();
   const [socket, setSocket] = useState<Socket>();
   const [room, setRoom] = useState('');
@@ -54,51 +52,37 @@ export function Chat(/* {user} : Prop */) {
 
   useEffect(() => {
     if (pkg === undefined) getUser();
-    if (socket === undefined && cont.socket!== undefined)
+    if (socket === undefined && cont.socket !== undefined)
       setSocket(cont.socket);
-    else if (socket !== undefined)
-    {
+    else if (socket !== undefined) {
       socket.on('viewedRoom', (roomView: string) => {
         setRoom(roomView);
-        console.log("active room ;" , room)
+        console.log('active room ;', room);
       });
       socket.on('createRoom', (newRoom: string) => {
         setRoom(newRoom);
-        console.log("active room ;" , room)
+        console.log('active room ;', room);
       });
     }
-   
   }, [pkg, socket]);
 
-  return (
-    cont.socket === undefined ? null :
+  return cont.socket === undefined ? null : (
     <Wrapper>
       <div className="container--fluid">
         <div className="row h-100">
+          {pkg === undefined ? null : <UserList />}
           {pkg === undefined ? null : (
-            <UserList/>
-          )}
-          {pkg === undefined ? null : (
-            <ChannelList
-              room={room}
-              setChatInfo={setChatInfo}
-            />
+            <ChannelList room={room} setChatInfo={setChatInfo} />
           )}
           {chatInfo === undefined ? null : (
             <div className="col-md-4 col-xl-6 chat">
               <div>
                 <div className="card">
                   <MessageHeader chatInfo={chatInfo} />
-                  {pkg === undefined ? null : (
-                    <MessageBox
-                      room={room}
-                    />
-                  )}
+                  {pkg === undefined ? null : <MessageBox room={room} />}
                 </div>
               </div>
-              {pkg === undefined ? null : (
-                <Sender  room={room} packet={pkg} />
-              )}
+              {pkg === undefined ? null : <Sender room={room} packet={pkg} />}
             </div>
           )}
         </div>

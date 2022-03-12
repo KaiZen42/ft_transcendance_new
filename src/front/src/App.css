@@ -1,20 +1,13 @@
-html, body {
-  /* get rid of default spacing on the edges */
+* {
   margin: 0;
   padding: 0;
-
-  /* get rid of that 2px window border in Internet Explorer 6 */
-  border: 0;
-
-  /* fill the height of the browser */
-  height: 100%;
-
-  /* no more scroll bar */
-  overflow: hidden;
+  box-sizing: border-box;
 }
 
-#root, .App {
-  height: 100%;
+body,
+#root {
+  height: 100vh;
+  overflow: hidden;
 }
 
 body {
@@ -44,23 +37,22 @@ body {
   align-items: center;
 }
 
-.flex-col.flex-center, .flex-row.flex-center{
-  justify-content: center
+.flex-col.flex-center,
+.flex-row.flex-center {
+  justify-content: center;
 }
 
-.flex-col.sp-even, .flex-row.sp-even{
-  justify-content: space-evenly
+.flex-col.sp-even,
+.flex-row.sp-even {
+  justify-content: space-evenly;
 }
 
-.flex-col.sp-bet, .flex-row.sp-bet{
-  justify-content: space-between
+.flex-col.sp-bet,
+.flex-row.sp-bet {
+  justify-content: space-between;
 }
 
-.flex-col.sp-around, .flex-row.sp-around{
-  justify-content: space-around
+.flex-col.sp-around,
+.flex-row.sp-around {
+  justify-content: space-around;
 }
-
-
-
-
-

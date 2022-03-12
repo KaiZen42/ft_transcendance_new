@@ -1,133 +1,115 @@
 .nav--image {
-	height: 100px;
-	width:100px;
-	border-radius: 50%;
-	object-fit: cover;
-	cursor: pointer;
-	
-	border: 3px solid white;
-	box-shadow:
-		0 0 7px #fff,
-		0 0 10px #fff,
-		0 0 21px rgb(85, 147, 126),
-		0 0 42px rgb(43, 109, 87)
-  }
-  
-  .header {
-	/* background-image: linear-gradient(147deg, #000000 0%, #166d3b 80%); */
-	/* margin-bottom: 0.5rem; */
-	/* background-color: rgb(34, 43, 62); */
-	display: flex;
-	padding: 25px;
-	align-items: center;
-	/* opacity: 70%; */
-	z-index: 1;
-  }
-  
-  .header--title {
-	font-family: Bebas Neue, sans-serif;
-	font-size: 50px;
-	font-style: italic;
-	animation: flicker 1.5s infinite alternate;
-	color: #fff;
-	position:relative; 
-	z-index:1;
-	margin-right: 75px;
-	margin-left: 20px;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+
+  border: 3px solid white;
+  box-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px rgb(85, 147, 126),
+    0 0 42px rgb(43, 109, 87);
+}
+
+.header {
+  /* background-image: linear-gradient(147deg, #000000 0%, #166d3b 80%); */
+  /* margin-bottom: 0.5rem; */
+  /* background-color: rgb(34, 43, 62); */
+  display: flex;
+  padding: 25px;
+  align-items: center;
+  /* opacity: 70%; */
+  z-index: 1;
+  height: 15%;
+}
+
+.header--title {
+  font-family: Bebas Neue, sans-serif;
+  font-size: 50px;
+  font-style: italic;
+  animation: flicker 1.5s infinite alternate;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  margin-right: 75px;
+  margin-left: 20px;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+.active {
+  color: #fff;
+  text-shadow: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #0fa,
+    0 0 82px #0fa, 0 0 92px #0fa, 0 0 102px #0fa, 0 0 151px #0fa;
+}
+.header--icon--list {
+  margin-right: auto;
+}
+
+.header--icon--list > li {
+  margin-right: 70px;
+  display: inline;
+}
+
+.header--icon {
+  font-size: 2.7rem;
+  color: white;
+  /* position:relative;  */
+  z-index: 0;
+  cursor: pointer;
+}
+
+.header--icon:hover {
+  color: #fff;
+  text-shadow: 0 0 14px #fff, 0 0 20px #fff, 0 0 42px #fff, 0 0 84px #0fa,
+    0 0 164px #0fa, 0 0 184px #0fa, 0 0 204px #0fa, 0 0 300px #0fa;
+}
+
+.header--photo_name {
+  position: relative;
+  display: flex;
+  margin-right: 25px;
+  justify-content: center;
+}
+
+.header--text {
+  font-family: Bebas Neue, sans-serif;
+  font-style: italic;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  position: absolute;
+  top: 90%;
+  font-size: 18px;
+  text-align: left;
+  color: white;
+  cursor: pointer;
+}
+
+.header--signout > li {
+  display: inline;
+}
+
+.header--signout {
+  display: flex;
+  align-items: center;
+}
+
+/* Flickering animation */
+@keyframes flicker {
+  0%,
+  18%,
+  22%,
+  25%,
+  53%,
+  57%,
+  100% {
+    text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff, 0 0 40px #0fa,
+      0 0 80px #0fa, 0 0 90px #0fa, 0 0 100px #0fa;
   }
 
-  a:link {
-	text-decoration: none;
+  20%,
+  24%,
+  55% {
+    text-shadow: none;
   }
-  
-  .active {
-	color: #fff;
-	text-shadow:
-		0 0 7px #fff,
-		0 0 10px #fff,
-		0 0 21px #fff,
-		0 0 42px #0fa,
-		0 0 82px #0fa,
-		0 0 92px #0fa,
-		0 0 102px #0fa,
-		0 0 151px #0fa;
-  }
-  .header--icon--list {
-	margin-right: auto;
-  }
-  
-  .header--icon--list > li {
-	  margin-right: 70px;
-	  display: inline;
-	  
-	}
-	
-	.header--icon {
-		
-	font-size: 2.7rem;
-	color: white;
-	/* position:relative;  */
-	z-index:0;
-	cursor: pointer;
-  }
-  
-  .header--icon:hover {
-	color: #fff;
-	text-shadow:
-		0 0 14px #fff,
-		0 0 20px #fff,
-		0 0 42px #fff,
-		0 0 84px #0fa,
-		0 0 164px #0fa,
-		0 0 184px #0fa,
-		0 0 204px #0fa,
-		0 0 300px #0fa; 
-  }
-  
-  .header--photo_name {
-	position: relative;
-	display: flex;
-	margin-right: 25px;
-	justify-content: center;
-  }
-  
-  .header--text {
-	font-family: Bebas Neue, sans-serif;
-	font-style: italic;
-	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-	position: absolute;
-	top: 90%;
-	font-size: 18px;
-	text-align: left;
-	color: white;
-	cursor: pointer;
-  }
-  
-  .header--signout > li {
-	display: inline;
-  }
-  
-  .header--signout {
-	display: flex;
-	align-items: center;
-  }
-  
-  /* Flickering animation */
-  @keyframes flicker {
-	  
-	0%, 18%, 22%, 25%, 53%, 57%, 100% {
-  
-		text-shadow:
-		0 0 4px #fff,
-		0 0 11px #fff,
-		0 0 19px #fff,
-		0 0 40px #0fa,
-		0 0 80px #0fa,
-		0 0 90px #0fa,
-		0 0 100px #0fa
-	}
-	
-	20%, 24%, 55% {        
-		text-shadow: none;
-	}    
-  }
+}

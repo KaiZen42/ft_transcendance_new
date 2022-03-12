@@ -1,7 +1,4 @@
-import {
-  Avatar,
-  Stack,
-} from '@mui/material';
+import { Avatar, Stack } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
 import { CreationChannelPkg } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
@@ -9,7 +6,7 @@ import StyledBadge from '../../styles/StyleBage';
 import { Context } from '../../App';
 
 export function UserList() {
-  const onlines = useContext(Context).online
+  const onlines = useContext(Context).online;
   const socket = useContext(Context).socket;
   const userId = useContext(Context).userId;
   const [otherUser, setOtherUser] = useState(0);
@@ -21,7 +18,7 @@ export function UserList() {
       event.preventDefault();
       (async () => {
         const data = await fetch(
-          `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${event.target.value}`,
+          `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/likeusername/${event.target.value}`,
           { credentials: 'include' }
         );
         const result = data.json();
@@ -42,12 +39,13 @@ export function UserList() {
       otherUser: otherId,
       pass: '',
       name: '',
-      mode: "PRI"
+      mode: 'PRI',
     });
   }
 
   useEffect(() => {
-    if (ch !== undefined && ch?.otherUser !== userId ) socket?.emit('createRoom', ch);
+    if (ch !== undefined && ch?.otherUser !== userId)
+      socket?.emit('createRoom', ch);
   }, [ch]);
 
   // setClicked(false)
@@ -74,9 +72,10 @@ export function UserList() {
         <div className="card-body contacts_body">
           <ul className="contacts scrollable-search">
             {users.map((user: User) => {
-              const on = onlines.find(el => user.id === el || user.id === -el)
-              return(
-              user.id !== userId ?
+              const on = onlines.find(
+                (el) => user.id === el || user.id === -el
+              );
+              return user.id !== userId ? (
                 <li key={user.id}>
                   <div
                     className="d-flex bd-highlight"
@@ -86,9 +85,13 @@ export function UserList() {
                     <div className="img_cont">
                       <Stack direction="row" spacing={2}>
                         <StyledBadge
-                          color={ on !== undefined ?
-                                (on > 0 ? "success" : "warning") 
-                                : "error"}
+                          color={
+                            on !== undefined
+                              ? on > 0
+                                ? 'success'
+                                : 'warning'
+                              : 'error'
+                          }
                           overlap="circular"
                           invisible={false}
                           anchorOrigin={{
@@ -107,8 +110,8 @@ export function UserList() {
                     </div>
                   </div>
                 </li>
-                : null
-            )})}
+              ) : null;
+            })}
           </ul>
         </div>
         <div className="card-footer"></div>

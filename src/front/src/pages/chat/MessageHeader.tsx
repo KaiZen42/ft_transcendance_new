@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { Context } from '../../App';
 import { ChatInfo } from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
+import GroupInfo from './GroupComponent/GroupInfo';
 
 interface Prop {
   chatInfo: ChatInfo | undefined;
@@ -66,7 +67,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
           {click === true ? (
             <div className="action_menu" style={{ zIndex: 1 }}>
                 <ul>
-                  <li>
+                  <li onClick={e => setInfoVisibility(true)}>
                     <i className="fas fa-info"></i> Group Info
                   </li>
                   <li>
@@ -78,6 +79,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
           <p>{chatInfo?.avatar === undefined ? 'Gente' : null}</p>
         </div>
       </div>
+      {infoVisibility === false ? null : (<GroupInfo isVisible={infoVisibility} setVisibility={setInfoVisibility} chatInfo={chatInfo}/>)}
       {/*TODO: ROUTE TO PROFILE*/}
       {/*  visibleJoin ? null : <JoinGroup
         isVisible={visibleJoin}

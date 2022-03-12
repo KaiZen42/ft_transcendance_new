@@ -443,3 +443,19 @@ input[type='password']:hover {
 .login-help {
   font-size: 12px;
 }
+
+.group-info-box
+{
+  background-color: rgba(0, 0, 0, 0.281);
+  border-radius: 20px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.group-info-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+

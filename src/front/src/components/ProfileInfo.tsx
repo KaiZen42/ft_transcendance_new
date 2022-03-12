@@ -56,7 +56,7 @@ export default function ProfileInfo({
         <>
           <div className="info-username-image">
             <img
-              alt="profile image"
+              alt="profile"
               src={user?.avatar}
               className="profile-info-img"
             />

@@ -71,7 +71,7 @@ export function Chat(/* {user} : Prop */) {
       <div className="container-fluid">
         <div
           className="row h-50"
-          style={{ marginLeft: '15%', marginRight: 'auto', width: '80%' }}
+          style={{ marginLeft: '17%', marginRight: 'auto', width: '80%' }}
         >
           {pkg === undefined ? null : <UserList />}
           {pkg === undefined ? null : (

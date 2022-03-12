@@ -88,3 +88,7 @@
 .form-check-input {
   cursor: pointer;
 }
+
+.form-control {
+  border-radius: 0.25rem !important;
+}

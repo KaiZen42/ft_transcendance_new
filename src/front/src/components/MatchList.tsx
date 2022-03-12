@@ -37,7 +37,15 @@ export default function MatchList({ userId }: { userId: number }) {
 
   return (
     <>
-      <h1 className="profile-info-text username">last games</h1>
+      <div className="last-games-title">
+        <h1
+          className="profile-info-text username"
+          style={{ marginBottom: '0' }}
+        >
+          last games
+        </h1>
+      </div>
+
       {matches.length !== 0 ? (
         <div className="match-list">
           {matches.map((match) => (

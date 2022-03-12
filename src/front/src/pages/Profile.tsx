@@ -39,6 +39,12 @@ export default function Profile() {
             <div className="profile-box profile-info">
               <ProfileInfo
                 username={username}
+                setUsername={(newName: string) =>
+                  setMe((prevMe) => ({
+                    ...prevMe!,
+                    username: newName,
+                  }))
+                }
                 myProfilePage={myProfilePage}
                 setUserId={(id: number) => setUserId(id)}
               />

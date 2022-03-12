@@ -1,6 +1,7 @@
 import { RestorePageOutlined, Room } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { Context } from '../../App';
 import { ChatInfo } from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
@@ -10,26 +11,31 @@ interface Prop {
 }
 
 export default function MessageHeader({ chatInfo }: Prop) {
-  const onlines = useContext(Context).online
-  const [on, setOn] = useState<number>()
-  const [infoVisibility, setInfoVisibility] = useState(false)
+  const onlines = useContext(Context).online;
+  const [on, setOn] = useState<number>();
+  const [infoVisibility, setInfoVisibility] = useState(false);
+  const [click, setClick] = useState(false);
 
   useEffect(() => {
-    if (chatInfo?.userId !== undefined)
-      {console.log("TESST")
-      setOn(onlines.find(el => chatInfo.userId === el || chatInfo.userId === -el))}
-    console.log("RENDER HEADER: ",on, chatInfo,onlines)
-  }, [chatInfo ,  useContext(Context)])
+    if (chatInfo?.userId !== undefined) {
+      console.log('TESST');
+      setOn(
+        onlines.find((el) => chatInfo.userId === el || chatInfo.userId === -el)
+      );
+    }
+    console.log('RENDER HEADER: ', on, chatInfo, onlines);
+  }, [chatInfo, useContext(Context)]);
 
   return (
     <div className="card-header msg_head">
       <div className="d-flex bd-highlight">
         <div className="img_cont">
+        <NavLink to={'/users/' + chatInfo?.username}>
           <StyledBadge
             overlap="circular"
-            color={ on !== undefined ?
-              (on > 0 ? "success" : "warning") 
-              : "error"}
+            color={
+              on !== undefined ? (on > 0 ? 'success' : 'warning') : 'error'
+            }
             invisible={chatInfo?.avatar === undefined}
             anchorOrigin={{
               vertical: 'bottom',
@@ -37,20 +43,43 @@ export default function MessageHeader({ chatInfo }: Prop) {
             }}
             variant="dot"
           >
-            <Avatar alt="Img" src={chatInfo?.avatar === undefined ? "./group_icon.png" : chatInfo?.avatar} />
+            <Avatar
+              alt="Img"
+              src={
+                chatInfo?.avatar === undefined
+                  ? './group_icon.png'
+                  : chatInfo?.avatar
+              }
+            />
           </StyledBadge>
+          </NavLink>
         </div>
         <div className="user_info">
           <span>{chatInfo?.username}</span>
-          <p>{chatInfo?.avatar === undefined ? 
-          "Gente"
-          : null}</p>
+          {chatInfo?.avatar === undefined ? <span
+            id="action_menu_btn"
+            style={{ zIndex: 0 }}
+            onClick={(e) => setClick(!click)}
+          >
+            <i className="fas fa-ellipsis-v"></i>
+          </span> : null}
+          {click === true ? (
+            <div className="action_menu" style={{ zIndex: 1 }}>
+                <ul>
+                  <li>
+                    <i className="fas fa-info"></i> Group Info
+                  </li>
+                  <li>
+                    <i className="fas fa-cog"></i> Settings
+                  </li>
+                </ul>
+            </div>
+          ) : null}
+          <p>{chatInfo?.avatar === undefined ? 'Gente' : null}</p>
         </div>
-
       </div>
       {/*TODO: ROUTE TO PROFILE*/}
-      {
-       /*  visibleJoin ? null : <JoinGroup
+      {/*  visibleJoin ? null : <JoinGroup
         isVisible={visibleJoin}
         setVisibility={setVisibleJoin} 
       /> */}

@@ -68,14 +68,17 @@ export function Chat(/* {user} : Prop */) {
 
   return cont.socket === undefined ? null : (
     <Wrapper>
-      <div className="container--fluid">
-        <div className="row h-100">
+      <div className="container-fluid">
+        <div
+          className="row h-50"
+          style={{ marginLeft: '15%', marginRight: 'auto', width: '80%' }}
+        >
           {pkg === undefined ? null : <UserList />}
           {pkg === undefined ? null : (
             <ChannelList room={room} setChatInfo={setChatInfo} />
           )}
           {chatInfo === undefined ? null : (
-            <div className="col-md-4 col-xl-6 chat">
+            <div className="col-md-4 col-xl-5 chat">
               <div>
                 <div className="card">
                   <MessageHeader chatInfo={chatInfo} />

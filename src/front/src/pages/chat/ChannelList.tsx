@@ -15,8 +15,8 @@ interface Prop {
   setChatInfo: Function;
 }
 
-export function ChannelList({room, setChatInfo }: Prop) {
-  const onlines = useContext(Context).online
+export function ChannelList({ room, setChatInfo }: Prop) {
+  const onlines = useContext(Context).online;
   const userId = useContext(Context).userId;
   const socket = useContext(Context).socket;
   const [selected, setSelected] = useState(false);
@@ -28,11 +28,10 @@ export function ChannelList({room, setChatInfo }: Prop) {
 
   //const [openRoomPkg, setOpenPkg] = useState();
 
-  function chatInfo(current: ChannelInfo | undefined)
-  {
+  function chatInfo(current: ChannelInfo | undefined) {
     if (current?.isPrivate) {
       setChatInfo({
-        userId:  selectUser(current)?.id,
+        userId: selectUser(current)?.id,
         username: selectUser(current)?.username,
         avatar: selectUser(current)?.avatar,
         roomId: room,
@@ -91,7 +90,7 @@ export function ChannelList({room, setChatInfo }: Prop) {
         setChannel((prevChan) => {
           return [...prevChan, result];
         });
-        chatInfo(result)
+        chatInfo(result);
       });
   }
 
@@ -107,8 +106,8 @@ export function ChannelList({room, setChatInfo }: Prop) {
       getRoom(room);
     }
     //---------CONDITION 3 LOAD EXIST ROOM----------
-    else if (room !== undefined && room !== '') 
-        chatInfo(channels.find((ch) => ch.id.toString() == room))
+    else if (room !== undefined && room !== '')
+      chatInfo(channels.find((ch) => ch.id.toString() == room));
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
         let ch = channels.find((chan) => {
@@ -118,7 +117,6 @@ export function ChannelList({room, setChatInfo }: Prop) {
       }
     });
     socket?.on('createdPrivateRoom', (prvRoom: OpenRoomPkg) => {
-
       // setRoom(prvRoom.room);
       if (
         userId === prvRoom.idUser &&
@@ -138,23 +136,26 @@ export function ChannelList({room, setChatInfo }: Prop) {
       : info.partecipants[0].userId;
   }
 
-  useEffect(() => {
-  }, [click]);
+  useEffect(() => {}, [click]);
 
   return (
     <div
-      className="col-md-3 col-xl-2 chat"
+      className="col-md-2 col-xl-2 chat"
       onClick={(e) => (click ? setClick(false) : null)}
     >
       <div className="card mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
           <div className="user_info">
             <span>Open Chats</span>
-            <span id="action_menu_btn" style={{zIndex: 0}} onClick={(e) => setClick(!click)}>
+            <span
+              id="action_menu_btn"
+              style={{ zIndex: 0 }}
+              onClick={(e) => setClick(!click)}
+            >
               <i className="fas fa-ellipsis-v"></i>
             </span>
             {click === true ? (
-              <div className="action_menu" style={{zIndex: 1}}>
+              <div className="action_menu" style={{ zIndex: 1 }}>
                 <ul>
                   <li onClick={(e) => setVisibleJoin('visible')}>
                     <i className="fas fa-users"></i> Join Group
@@ -168,12 +169,16 @@ export function ChannelList({room, setChatInfo }: Prop) {
           </div>
         </div>
         <div className="card-body contacts_body">
-          
           <ul className="contacts">
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
               if (chan.notification === undefined) chan.notification = 0;
-              const on = chan.isPrivate ? onlines.find(el => (selectUser(chan).id === el || selectUser(chan).id === -el)): undefined
+              const on = chan.isPrivate
+                ? onlines.find(
+                    (el) =>
+                      selectUser(chan).id === el || selectUser(chan).id === -el
+                  )
+                : undefined;
               //console.log("is on" ,  selectUser(chan).id , " ? " + on, onlines )
               return (
                 <li
@@ -192,15 +197,17 @@ export function ChannelList({room, setChatInfo }: Prop) {
                         <div className="img_cont">
                           <Stack direction="row" spacing={2}>
                             <StyledBadge
-                              color={ on !== undefined ?
-                                (on > 0 ? "success" : "warning") 
-                                : "error"}
-                              style={{zIndex: 0}}
+                              color={
+                                on !== undefined
+                                  ? on > 0
+                                    ? 'success'
+                                    : 'warning'
+                                  : 'error'
+                              }
+                              style={{ zIndex: 0 }}
                               overlap="circular"
                               invisible={false}
-                              
                               anchorOrigin={{
-                                
                                 vertical: 'bottom',
                                 horizontal: 'right',
                               }}
@@ -232,14 +239,15 @@ export function ChannelList({room, setChatInfo }: Prop) {
         </div>
         <div className="card-footer"></div>
       </div>
-      {visibleJoin === "hidden" ? null : <JoinGroup
-        isVisible={visibleJoin}
-        setVisibility={setVisibleJoin} 
-      />}
-      {visibleCreate === "hidden" ? null :<CreateGroup
-        isVisible={visibleCreate}
-        setVisibility={setVisibleCreate}
-      />}
+      {visibleJoin === 'hidden' ? null : (
+        <JoinGroup isVisible={visibleJoin} setVisibility={setVisibleJoin} />
+      )}
+      {visibleCreate === 'hidden' ? null : (
+        <CreateGroup
+          isVisible={visibleCreate}
+          setVisibility={setVisibleCreate}
+        />
+      )}
     </div>
   );
 }

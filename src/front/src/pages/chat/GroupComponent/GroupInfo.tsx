@@ -10,11 +10,18 @@ import { Context } from '../../../App';
 import { User } from '../../../models/User.interface';
 import { PropaneSharp } from '@mui/icons-material';
 import StyledBadge from '../../../styles/StyleBage';
+import { stringify } from 'querystring';
 
 interface Prop {
   isVisible: boolean;
   setVisibility: Function;
   chatInfo: ChatInfo | undefined;
+}
+
+interface UpdateGroup {
+  name: string;
+  mode: string;
+  pass: string;
 }
 
 export default function GroupInfo(Prop: Prop) {
@@ -23,6 +30,14 @@ export default function GroupInfo(Prop: Prop) {
   const onlines = useContext(Context).online;
 
   const [partecipants, setPartecipants] = useState<User[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [editUsername, setEditUsername] = useState(false);
+  const [updatedGroup, setUpdatedGroup] = useState<UpdateGroup>({
+    name: '',
+    mode: '',
+    pass: '',
+  });
+  4;
 
   async function getUsersInChan() {
     await fetch(
@@ -33,8 +48,13 @@ export default function GroupInfo(Prop: Prop) {
       .then((result) => setPartecipants(result));
   }
 
+  async function checkAdmin(userId) {
+   /*  TODO:API request to get current user role */
+  }
+
   useEffect(() => {}, []);
 
+  checkAdmin(userId);
   getUsersInChan();
 
   return (
@@ -64,7 +84,33 @@ export default function GroupInfo(Prop: Prop) {
                     style={{ marginTop: '10px' }}
                   />
                   <p className="profile-info-text username">
-                    {Prop.chatInfo?.username}
+                    {isAdmin === false ? (
+                      Prop.chatInfo?.username
+                    ) : (
+                      <div className="row justify-content-center">
+                        <div className="col-4">
+                          <label
+                            htmlFor="username"
+                            className="text-right form-label"
+                          >
+                            username
+                          </label>
+                        </div>
+                        <>
+                          <div className="col-auto">
+                            <span className="form-text">
+                              {updatedGroup?.name}
+                            </span>
+                          </div>
+                          <div className="col-2">
+                            <i
+                              className="bi bi-pencil popup--form--icon"
+                              onClick={() => setEditUsername(true)}
+                            />
+                          </div>
+                        </>
+                      </div>
+                    )}
                   </p>
                   <p className="profile-info-text">Group Type: </p>
                   <p className="profile-info-text">Group Type: </p>

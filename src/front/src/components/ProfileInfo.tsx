@@ -7,16 +7,18 @@ import ProfilePopUp from './ProfilePopUp';
 
 export default function ProfileInfo({
   username,
+  setUsername,
   myProfilePage,
   setUserId,
 }: {
   username: string;
+  setUsername: (newName: string) => void;
   myProfilePage: boolean;
   setUserId: (id: number) => void;
 }) {
   const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<User | null>();
-  const [me, setMe] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,6 +45,7 @@ export default function ProfileInfo({
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${updatedUser.id}`,
       { ...updatedUser }
     );
+    setUsername(updatedUser.username);
     setUser((prevUser) => ({
       ...prevUser,
       ...updatedUser,

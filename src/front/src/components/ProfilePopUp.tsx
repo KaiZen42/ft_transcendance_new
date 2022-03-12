@@ -98,10 +98,10 @@ export default function ProfilePopUp({
   async function validateInput(): Promise<boolean> {
     let res;
     if (updatedUser.username != user.username) {
-      res = await axios.get(
+      const { data } = await axios.get(
         `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${updatedUser.username}`
       );
-      if (res.data) {
+      if (data.id) {
         setValid((prevValid) => ({
           ...prevValid,
           username: false,
@@ -224,7 +224,7 @@ export default function ProfilePopUp({
                   username
                 </label>
               </div>
-              {editUsername && (
+              {editUsername ? (
                 <>
                   <div className="col-4">
                     <div className="input-group has-validation">
@@ -232,9 +232,10 @@ export default function ProfilePopUp({
                         id="username"
                         name="username"
                         type="text"
-                        className={`col-12 form-control ${
+                        className={`form-control ${
                           !valid.username ? 'is-invalid' : ''
                         }`}
+                        style={{}}
                         onChange={(e) => inputChecker(e)}
                         value={updatedUser?.username}
                         required
@@ -258,8 +259,7 @@ export default function ProfilePopUp({
                       )}
                   </div>
                 </>
-              )}
-              {!editUsername && (
+              ) : (
                 <>
                   <div className="col-auto">
                     <span className="form-text">{updatedUser?.username}</span>

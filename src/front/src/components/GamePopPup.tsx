@@ -40,10 +40,12 @@ export default function GamePopUp({
       setWin(false);
       calcPoints(false);
     }
-  }, [users]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [winner]);
 
   const calcPoints = (iWin: boolean) => {
-    let points, diff, winl: [number, number];
+    console.log('AA');
+    let points: number, diff, winl: [number, number];
     if (iWin) {
       points = users[0]!.points + 30;
       diff = 30;
@@ -56,9 +58,10 @@ export default function GamePopUp({
     SetUpdatedPoints(points);
     SetDiffPoints(diff);
     setWL(winl);
+    setTimeout(() => {
+      updatePoints(points, winl[0], winl[1]);
+    }, 200);
   };
-
-  // TODO aggiornare info quando clicco sull'immagine dell'avversario
 
   return (
     <div
@@ -106,10 +109,7 @@ export default function GamePopUp({
                   alt="profile image"
                   src={users[1]?.avatar}
                   className="game-popup-image"
-                  onClick={() => {
-                    updatePoints(updatedPoints, wl[0], wl[1]);
-                    navigate('/users/' + users[1]?.username);
-                  }}
+                  onClick={() => navigate('/users/' + users[1]?.username)}
                 />
                 <p className="game-popup-text nice-shadow">
                   {users[1]?.username}
@@ -165,21 +165,12 @@ export default function GamePopUp({
               </div>
             </div>
             <div className="flex-col sp-even" style={{ height: '100px' }}>
-              <button
-                className="game-popup-btn btn-play"
-                onClick={() => {
-                  updatePoints(updatedPoints, wl[0], wl[1]);
-                  playAgain();
-                }}
-              >
+              <button className="game-popup-btn btn-play" onClick={playAgain}>
                 PLAY AGAIN
               </button>
               <button
                 className="game-popup-btn btn-home"
-                onClick={() => {
-                  updatePoints(updatedPoints, wl[0], wl[1]);
-                  navigate('/');
-                }}
+                onClick={() => navigate('/')}
               >
                 BACK TO HOME
               </button>

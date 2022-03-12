@@ -18,6 +18,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
+  overflow: auto;
 }
 
 .info-username-image {
@@ -58,6 +59,7 @@
 .profile-info-text.username {
   font-size: 3rem;
   text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+  height: 10%;
 }
 .winslosses {
   display: flex;
@@ -88,8 +90,12 @@
   flex-direction: column;
   align-items: center;
 }
+.match-list {
+  width: 100%;
+  height: 90%;
+  overflow: auto;
+}
 .match-item {
-  background: grey;
   border-radius: 5px;
   margin-top: 1rem;
   display: flex;
@@ -98,9 +104,15 @@
   font-size: 1.2rem;
   font-weight: 700;
   font-family: Bebas Neue, sans-serif;
-  background-color: rgba(85, 198, 89, 0.4);
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
   width: 95%;
+}
+
+.match-item.match-win {
+  background-color: rgba(85, 198, 89, 0.4);
+}
+.match-item.match-loss {
+  background-color: rgba(155, 13, 13, 0.4);
 }
 
 .match-item > * {

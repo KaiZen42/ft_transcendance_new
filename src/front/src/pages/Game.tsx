@@ -174,7 +174,6 @@ export default function Pong() {
   };
 
   const endGame = (winner: number, scores: number[]) => {
-    setWinner(winner);
     setUser((prevUser) => ({
       ...prevUser!,
       score: scores[playerNumber],
@@ -183,6 +182,7 @@ export default function Pong() {
       ...prevOpponent!,
       score: scores[playerNumber ? 0 : 1],
     }));
+    setWinner(winner);
   };
 
   const handleGameOver = (winner: number, scores: number[]) => {

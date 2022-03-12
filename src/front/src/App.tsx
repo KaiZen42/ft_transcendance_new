@@ -124,56 +124,54 @@ export default function App() {
   }, [contextData.socket]);
 
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Context.Provider value={contextData}>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/leaderboard"
-              element={
-                <ProtectedRoute>
-                  <Leaderboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/chat"
-              element={
-                <ProtectedRoute>
-                  <Chat />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/users/:username"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/game"
-              element={
-                <ProtectedRoute>
-                  <Game />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/two_fa_auth" element={<TwoFaAuth />} />
-            <Route path="*" element={<Error404 />} />
-          </Routes>
-        </Context.Provider>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Context.Provider value={contextData}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/leaderboard"
+            element={
+              <ProtectedRoute>
+                <Leaderboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users/:username"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/game"
+            element={
+              <ProtectedRoute>
+                <Game />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/two_fa_auth" element={<TwoFaAuth />} />
+          <Route path="*" element={<Error404 />} />
+        </Routes>
+      </Context.Provider>
+    </BrowserRouter>
   );
 }

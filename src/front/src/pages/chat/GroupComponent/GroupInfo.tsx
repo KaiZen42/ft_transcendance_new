@@ -33,7 +33,7 @@ export default function GroupInfo(Prop: Prop) {
       .then((result) => setPartecipants(result));
   }
 
-  useEffect(() => {}, [partecipants]);
+  useEffect(() => {}, []);
 
   getUsersInChan();
 

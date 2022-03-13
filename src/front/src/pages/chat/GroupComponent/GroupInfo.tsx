@@ -33,14 +33,14 @@ export default function GroupInfo(Prop: Prop) {
 
   const [partecipants, setPartecipants] = useState<User[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>()
+  const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>();
   const [editUsername, setEditUsername] = useState(false);
+  const [msgCounter, setMsgCounter] = useState(0);
   const [updatedGroup, setUpdatedGroup] = useState<UpdateGroup>({
     name: '',
     mode: '',
     pass: '',
   });
-
 
   async function getUsersInChan() {
     await fetch(
@@ -52,18 +52,32 @@ export default function GroupInfo(Prop: Prop) {
   }
 
   async function getPartecipantInfo() {
-	  await fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
-      { credentials: 'include' })
-	  .then((response) => response.json())
-	  .then((result) => {setPartecipantInfo(result)})
+    await fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
+      { credentials: 'include' }
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        setPartecipantInfo(result);
+      });
   }
 
-  
-  useEffect(() => {
-	  	getPartecipantInfo();
-  		getUsersInChan();
-  }, []);
+  async function getMessageNumber() {
+    await fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetMessageCounter/${Prop.chatInfo?.roomId}`,
+      { credentials: 'include' }
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        setMsgCounter(result);
+      });
+  }
 
+  useEffect(() => {
+    getPartecipantInfo();
+    getUsersInChan();
+    getMessageNumber();
+  }, []);
 
   return (
     <div
@@ -92,7 +106,8 @@ export default function GroupInfo(Prop: Prop) {
                     style={{ marginTop: '10px' }}
                   />
                   <p className="profile-info-text username">
-                    {partecipantInfo?.mod === "m" ||  partecipantInfo?.mod === "o" ? (
+                    {partecipantInfo?.mod === 'm' ||
+                    partecipantInfo?.mod === 'o' ? (
                       Prop.chatInfo?.username
                     ) : (
                       <div className="row justify-content-center">
@@ -120,8 +135,15 @@ export default function GroupInfo(Prop: Prop) {
                       </div>
                     )}
                   </p>
-                  <p className="profile-info-text">Group Type: {Prop.chatInfo?.mode}</p>
-                  <p className="profile-info-text">Group Type: </p>
+                  <p className="profile-info-text">
+                    MODE:{' '}
+                    {Prop.chatInfo?.mode === 'PUB'
+                      ? ' Public Group'
+                      : ' Protected Group'}
+                  </p>
+                  <p className="profile-info-text">
+                    Messages: {msgCounter + ' messages'}
+                  </p>
                   <p className="profile-info-text">Group Type: </p>
                   <p className="profile-info-text">Group Type: </p>
                 </div>
@@ -143,26 +165,26 @@ export default function GroupInfo(Prop: Prop) {
                             >
                               <div className="img_cont">
                                 <Stack direction="row" spacing={2}>
-								<NavLink to={'/users/' + user.username}>
-                                  <StyledBadge
-                                    color={
-                                      on !== undefined
-                                        ? on > 0
-                                          ? 'success'
-                                          : 'warning'
-                                        : 'error'
-                                    }
-                                    overlap="circular"
-                                    invisible={false}
-                                    anchorOrigin={{
-                                      vertical: 'bottom',
-                                      horizontal: 'right',
-                                    }}
-                                    variant="dot"
-                                  >
-                                    <Avatar alt="Img" src={user.avatar} />
-                                  </StyledBadge>
-								  </NavLink>
+                                  <NavLink to={'/users/' + user.username}>
+                                    <StyledBadge
+                                      color={
+                                        on !== undefined
+                                          ? on > 0
+                                            ? 'success'
+                                            : 'warning'
+                                          : 'error'
+                                      }
+                                      overlap="circular"
+                                      invisible={false}
+                                      anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                      }}
+                                      variant="dot"
+                                    >
+                                      <Avatar alt="Img" src={user.avatar} />
+                                    </StyledBadge>
+                                  </NavLink>
                                 </Stack>
                               </div>
                               <div className="user_info">

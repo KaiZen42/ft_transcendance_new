@@ -36,7 +36,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
             res.sort((a: User, b: User) => a.username.localeCompare(b.username))
           );
         });
-      })();
+      });
     } else {
       setUsers([]);
     }

@@ -15,6 +15,7 @@ import {
 import { ChannelInfoDto, messageDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
 import { Message } from './models/message.entity';
+import { Partecipant } from './models/partecipant.entity';
 import { ChannelService } from './service/channel.service';
 import { MessageService } from './service/message.service';
 import { PartecipantService } from './service/partecipant.service';
@@ -105,6 +106,13 @@ export class chatController {
 	async GetMessageCounter(@Param("idChan") chanId: number) : Promise<number>
 	{
 		let someThings: number =  await this.msgService.getCounterByChannel(chanId)
+		return someThings;
+	}
+
+	@Get("GetPartecipantByUserAndChan/:idChan/:idUser")
+	async GetPartecipantByUserAndChan(@Param("idChan") chanId: number, @Param("idUser") userId:number)
+	{
+		let someThings: Partecipant = await this.partService.getPartecipantByUserAndChan(userId, chanId);
 		return someThings;
 	}
 

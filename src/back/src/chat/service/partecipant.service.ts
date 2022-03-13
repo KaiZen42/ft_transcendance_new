@@ -23,7 +23,7 @@ import { Partecipant } from '../models/partecipant.entity';
 	async getByUser(userId: number): Promise<Partecipant[]> {
 	  return this.partecipantDB.find({ where: { userId } });
 	}
-  
+
 	async getUsersIdByChan(channelId: number) : Promise<any[]>
 	{
 		//const res = await this.partecipantDB.find({ select:["userId"] ,where: {channelId}})

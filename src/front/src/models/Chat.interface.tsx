@@ -74,3 +74,8 @@ export interface ChatInfo {
   avatar: string;
   roomId: string;
 }
+
+export interface Partecipant {
+	muted: number;
+	mod: string;
+}

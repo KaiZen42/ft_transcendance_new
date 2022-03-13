@@ -12,6 +12,7 @@ import { PropaneSharp } from '@mui/icons-material';
 import StyledBadge from '../../../styles/StyleBage';
 import { stringify } from 'querystring';
 import { NavLink } from 'react-router-dom';
+import { Partecipant } from '../../../models/Chat.interface';
 
 interface Prop {
   isVisible: boolean;
@@ -32,13 +33,14 @@ export default function GroupInfo(Prop: Prop) {
 
   const [partecipants, setPartecipants] = useState<User[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>()
   const [editUsername, setEditUsername] = useState(false);
   const [updatedGroup, setUpdatedGroup] = useState<UpdateGroup>({
     name: '',
     mode: '',
     pass: '',
   });
-  4;
+
 
   async function getUsersInChan() {
     await fetch(
@@ -49,14 +51,19 @@ export default function GroupInfo(Prop: Prop) {
       .then((result) => setPartecipants(result));
   }
 
-  async function checkAdmin(userId) {
-   /*  TODO:API request to get current user's role */
+  async function getPartecipantInfo() {
+	  await fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
+      { credentials: 'include' })
+	  .then((response) => response.json())
+	  .then((result) => {setPartecipantInfo(result)})
   }
 
-  useEffect(() => {}, []);
+  
+  useEffect(() => {
+	  	getPartecipantInfo();
+  		getUsersInChan();
+  }, []);
 
-  checkAdmin(userId);
-  getUsersInChan();
 
   return (
     <div

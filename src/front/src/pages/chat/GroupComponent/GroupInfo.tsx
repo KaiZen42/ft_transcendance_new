@@ -11,6 +11,7 @@ import { User } from '../../../models/User.interface';
 import { PropaneSharp } from '@mui/icons-material';
 import StyledBadge from '../../../styles/StyleBage';
 import { stringify } from 'querystring';
+import { NavLink } from 'react-router-dom';
 
 interface Prop {
   isVisible: boolean;
@@ -49,7 +50,7 @@ export default function GroupInfo(Prop: Prop) {
   }
 
   async function checkAdmin(userId) {
-   /*  TODO:API request to get current user role */
+   /*  TODO:API request to get current user's role */
   }
 
   useEffect(() => {}, []);
@@ -131,11 +132,11 @@ export default function GroupInfo(Prop: Prop) {
                           <li key={user.id}>
                             <div
                               className="d-flex bd-highlight"
-                              /* onClick={(e) => selectUser(e, user.id)} */
                               style={{ cursor: 'pointer' }}
                             >
                               <div className="img_cont">
                                 <Stack direction="row" spacing={2}>
+								<NavLink to={'/users/' + user.username}>
                                   <StyledBadge
                                     color={
                                       on !== undefined
@@ -154,6 +155,7 @@ export default function GroupInfo(Prop: Prop) {
                                   >
                                     <Avatar alt="Img" src={user.avatar} />
                                   </StyledBadge>
+								  </NavLink>
                                 </Stack>
                               </div>
                               <div className="user_info">

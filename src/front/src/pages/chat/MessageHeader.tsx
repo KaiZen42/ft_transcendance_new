@@ -31,7 +31,9 @@ export default function MessageHeader({ chatInfo }: Prop) {
     <div className="card-header msg_head">
       <div className="d-flex bd-highlight">
         <div className="img_cont">
-        <NavLink to={'/users/' + chatInfo?.username}>
+		
+        <NavLink to={chatInfo?.avatar === undefined ? '' :
+'/users/' + chatInfo?.username}>
           <StyledBadge
             overlap="circular"
             color={

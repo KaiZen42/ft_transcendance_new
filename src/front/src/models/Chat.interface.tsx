@@ -40,6 +40,7 @@ export interface ChannelInfo {
       avatar: string;
     };
   }[];
+  mode: string;
   notification: number;
 }
 
@@ -73,6 +74,7 @@ export interface ChatInfo {
   username: string;
   avatar: string;
   roomId: string;
+  mode: string;
 }
 
 export interface Partecipant {

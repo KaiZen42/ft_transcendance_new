@@ -35,6 +35,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
         username: selectUser(current)?.username,
         avatar: selectUser(current)?.avatar,
         roomId: room,
+		mode: 'PRI',
       });
     } else {
       setChatInfo({
@@ -42,6 +43,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
         username: current?.name,
         avatar: undefined,
         roomId: room,
+		mode: current?.mode,
       });
     }
   }

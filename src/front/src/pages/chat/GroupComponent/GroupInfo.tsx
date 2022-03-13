@@ -92,7 +92,7 @@ export default function GroupInfo(Prop: Prop) {
                     style={{ marginTop: '10px' }}
                   />
                   <p className="profile-info-text username">
-                    {isAdmin === false ? (
+                    {partecipantInfo?.mod === "m" ||  partecipantInfo?.mod === "o" ? (
                       Prop.chatInfo?.username
                     ) : (
                       <div className="row justify-content-center">
@@ -120,7 +120,7 @@ export default function GroupInfo(Prop: Prop) {
                       </div>
                     )}
                   </p>
-                  <p className="profile-info-text">Group Type: </p>
+                  <p className="profile-info-text">Group Type: {Prop.chatInfo?.mode}</p>
                   <p className="profile-info-text">Group Type: </p>
                   <p className="profile-info-text">Group Type: </p>
                   <p className="profile-info-text">Group Type: </p>

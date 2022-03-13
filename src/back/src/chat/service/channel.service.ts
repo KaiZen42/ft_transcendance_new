@@ -76,7 +76,7 @@ export class ChannelService {
 				.getQuery();
 			return "channel.id IN " + subQuery;
 		})
-		.select(['channel.id', "channel.name", "channel.isPrivate",  "partecipant.id", "users.id", "users.username", "users.avatar"  ])
+		.select(['channel.id', "channel.name", "channel.isPrivate", "channel.mode", "partecipant.id", "users.id", "users.username", "users.avatar"  ])
 		.leftJoin("channel.partecipants", "partecipant")
 		.leftJoin("partecipant.userId", "users" )
 		.orderBy("channel.id", "ASC")

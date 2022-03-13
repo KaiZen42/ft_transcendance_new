@@ -72,6 +72,10 @@ export class messageDto {
 		}
 	}[]
 
+	@IsNotEmpty()
+	mode: string
+
+
 }
 
 export class viewRoomDto {

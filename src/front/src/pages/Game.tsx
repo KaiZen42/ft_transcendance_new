@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import socketIOClient, { Socket, SocketOptions } from 'socket.io-client';
+import socketIOClient, { Socket } from 'socket.io-client';
 import { Context } from '../App';
 import opponent_img from '../assets/opponent.jpeg';
 import GamePopUp from '../components/GamePopPup';

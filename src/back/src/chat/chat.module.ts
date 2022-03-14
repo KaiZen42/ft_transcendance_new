@@ -9,11 +9,14 @@ import { PartecipantService } from './service/partecipant.service';
 import { ChannelService } from './service/channel.service';
 import { Partecipant } from './models/partecipant.entity';
 import { Channel } from './models/channel.entity';
+import { RelationModule } from 'src/relation/relation.module';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([Message, Partecipant, Channel])],
-  controllers: [chatController], 
-  providers: [ChatGateway, MessageService, PartecipantService, ChannelService]
+  imports: [
+    UserModule,
+    TypeOrmModule.forFeature([Message, Partecipant, Channel]),
+  ],
+  controllers: [chatController],
+  providers: [ChatGateway, MessageService, PartecipantService, ChannelService],
 })
 export class ChatModule {}
-

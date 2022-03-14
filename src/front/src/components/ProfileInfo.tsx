@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { Context } from '../App';
 import { User } from '../models/User.interface';
-import Error404 from '../pages/404';
 import ProfilePopUp from './ProfilePopUp';
 
 export default function ProfileInfo({
@@ -16,6 +16,7 @@ export default function ProfileInfo({
   myProfilePage: boolean;
   setUserId: (id: number) => void;
 }) {
+  const myId: number = useContext(Context).userId!;
   const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<User | null>();
 
@@ -51,6 +52,17 @@ export default function ProfileInfo({
       ...updatedUser,
     }));
     navigate('/users/' + updatedUser.username);
+  };
+
+  const sendFriendRequest = () => {
+    const data = {
+      requesting: myId,
+      receiving: user?.id,
+    };
+    axios.post(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/friendRequest`,
+      data
+    );
   };
 
   return (
@@ -96,7 +108,10 @@ export default function ProfileInfo({
               </button>
             ) : (
               <>
-                <button className="game-popup-btn btn-home">
+                <button
+                  className="game-popup-btn btn-home"
+                  onClick={sendFriendRequest}
+                >
                   FRIEND
                   <br />
                   REQUEST

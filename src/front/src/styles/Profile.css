@@ -153,4 +153,52 @@
 .friend-list {
   flex: 3;
   color: white;
+  font-family: Bebas Neue, sans-serif;
+}
+
+.friends-items {
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-requests {
+  max-height: 50%;
+  overflow: auto;
+  padding-left: 1rem;
+}
+
+.friends-accepted {
+  flex: 1;
+  overflow: auto;
+  background: red;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: rgba(119, 107, 97, 0.4);
+  padding: 0.5rem 0;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+.friend-item > div {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.friend-item > div:nth-child(1) {
+  justify-content: start;
+}
+
+.friend-item > div:nth-child(2) {
+  justify-content: space-evenly;
+}
+
+.friend-item p {
+  margin-bottom: 0;
+  font-size: 1.5rem;
 }

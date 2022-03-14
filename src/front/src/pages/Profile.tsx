@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import FriendList from '../components/FriendList';
 import MatchList from '../components/MatchList';
 import ProfileInfo from '../components/ProfileInfo';
 import Wrapper from '../components/Wrapper';
@@ -53,7 +54,7 @@ export default function Profile() {
               <MatchList userId={userId ? userId : 0} />
             </div>
             <div className="profile-box friend-list">
-              <h1 className="profile-info-text username">friend list</h1>
+              <FriendList userId={userId ? userId : 0} />
             </div>
           </div>
         </Wrapper>

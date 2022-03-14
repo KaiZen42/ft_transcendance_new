@@ -12,9 +12,16 @@ import { PongModule } from './game/pong.module';
 import { Channel } from './chat/models/channel.entity';
 import { Partecipant } from './chat/models/partecipant.entity';
 import { Match } from './game/models/match.entity';
+import { Relation } from './relation/models/relation.entity';
+import { RelationModule } from './relation/relation.module';
 
 @Module({
-  imports: [UserModule, AuthModule, ChatModule, PongModule,
+  imports: [
+    UserModule,
+    AuthModule,
+    ChatModule,
+    PongModule,
+    RelationModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'db',
@@ -22,17 +29,12 @@ import { Match } from './game/models/match.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User, Message, Channel, Partecipant, Match],
+      entities: [User, Message, Channel, Partecipant, Match, Relation],
       autoLoadEntities: true,
       synchronize: true,
-    })],
+    }),
+  ],
   controllers: [],
   providers: [],
 })
 export class AppModule {}
-
-
-
-
-
-

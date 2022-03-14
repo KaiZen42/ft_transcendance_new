@@ -139,12 +139,17 @@ export default function GroupInfo(Prop: Prop) {
                     MODE:{' '}
                     {Prop.chatInfo?.mode === 'PUB'
                       ? ' Public Group'
+                      : Prop.chatInfo?.mode === 'PRI'
+                      ? ' Private Group'
                       : ' Protected Group'}
                   </p>
                   <p className="profile-info-text">
                     Messages: {msgCounter + ' messages'}
                   </p>
-                  <p className="profile-info-text">Group Type: </p>
+                  <p className="profile-info-text">
+                    Partecipants: {partecipants.length}{' '}
+                    {partecipants.length === 1 ? ' User' : ' Users'}
+                  </p>
                   <p className="profile-info-text">Group Type: </p>
                 </div>
               </div>
@@ -153,7 +158,7 @@ export default function GroupInfo(Prop: Prop) {
                   <p className="profile-info-text username">Partecipants</p>
                   <div className="card-body contacts_body">
                     <ul className="contacts scrollable-search">
-                      {partecipants.map((user: User) => {
+                      {partecipants.map((user: User, p: number) => {
                         const on = onlines.find(
                           (el) => user.id === el || user.id === -el
                         );

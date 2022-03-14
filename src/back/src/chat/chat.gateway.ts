@@ -189,4 +189,12 @@ export class ChatGateway
     this.onlines[userId] = userId;
     this.server.emit('areNotInGame', userId);
   }
+
+  @SubscribeMessage('ban')
+  ban(client: Socket, req: channelRequestDto) {
+    //controlli
+    //attuare richiesta
+    //comunicazione ai membri
+    this.server.to(req.channelId.toString()).emit('memberUpdate');
+  }
 }

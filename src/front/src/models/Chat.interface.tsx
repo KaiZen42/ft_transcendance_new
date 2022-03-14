@@ -5,6 +5,8 @@
 	data: string;
   } */
 
+import { User } from "./User.interface";
+
 
 
 export interface MessagePkg {
@@ -77,7 +79,33 @@ export interface ChatInfo {
   mode: string;
 }
 
+export interface FullPartecipant {
+
+	muted: number;
+	mod: string;
+  channelId: number;
+  userId : User;
+}
+
 export interface Partecipant {
+
 	muted: number;
 	mod: string;
 }
+
+export interface channelRequestPkj
+{
+  sender: number,
+  reciver: number,
+  channelId: number,
+  type : string,
+  reciverName: string,
+}
+
+export interface channelResponsePkj
+{
+  sender: number,
+  reciver: number,
+	type : string
+}
+

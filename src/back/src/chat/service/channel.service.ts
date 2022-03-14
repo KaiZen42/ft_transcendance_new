@@ -9,7 +9,7 @@ import { channel } from 'diagnostics_channel';
 import { userInfo } from 'os';
 import { User } from 'src/user/models/user.entity';
   import { getConnection, getRepository, Like, Repository } from 'typeorm';
-import { ChannelInfoDto, JoinRoomDto } from '../dto/chat.dto';
+import { ChannelInfoDto, JoinRoomDto, updateChannelDto } from '../dto/chat.dto';
 
 import { Channel } from '../models/channel.entity';
 import { Message } from '../models/message.entity';
@@ -106,6 +106,7 @@ export class ChannelService {
 			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId = users.id")
 			.where("partecipant.channelId = :chId", {chId: id})
 			.getMany();
+		console.log("user by chan", res)
 		return res;
 	}
 
@@ -179,12 +180,12 @@ export class ChannelService {
 			await this.partService.delete(part.id);
 	}
 
-	async allOffline()
+/* 	async allOffline()
 	{
 		(await this.partService.getByChannel(1)).map(
 			(part: Partecipant) => {this.partService.delete(part.id)}
 		)
-	}
+	} */
 
 	
 
@@ -241,5 +242,16 @@ export class ChannelService {
 
 		async delete(id: number) {
 			return this.channelDB.delete({ id });
+		}
+
+		async updateChannel(toUpdate: updateChannelDto)
+		{
+			await this.channelDB
+			.createQueryBuilder()
+			.update(Channel)
+			.set({name: toUpdate.name, mode: toUpdate.mode, pass: toUpdate.pass})
+			.where("Channel.id = :uId", {uId: toUpdate.id})
+			.execute()
+			console.log(toUpdate);
 		}
 }

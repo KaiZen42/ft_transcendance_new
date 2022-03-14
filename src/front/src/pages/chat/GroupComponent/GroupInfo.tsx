@@ -1,7 +1,9 @@
 import { Avatar, Stack } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
 import {
+  channelRequestPkj,
   ChatInfo,
+  FullPartecipant,
   JoinChannelPkg,
   ShortChannel,
 } from '../../../models/Chat.interface';
@@ -13,6 +15,8 @@ import StyledBadge from '../../../styles/StyleBage';
 import { stringify } from 'querystring';
 import { NavLink } from 'react-router-dom';
 import { Partecipant } from '../../../models/Chat.interface';
+import UserGroup from './UserGroup';
+import ConfirmRequest from './ConfirmRequest';
 
 interface Prop {
   isVisible: boolean;
@@ -31,7 +35,8 @@ export default function GroupInfo(Prop: Prop) {
   const socket = useContext(Context).socket;
   const onlines = useContext(Context).online;
 
-  const [partecipants, setPartecipants] = useState<User[]>([]);
+  const [request, setRequest] = useState<channelRequestPkj | undefined>(undefined)
+  const [partecipants, setPartecipants] = useState<FullPartecipant[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>();
   const [editUsername, setEditUsername] = useState(false);
@@ -44,7 +49,7 @@ export default function GroupInfo(Prop: Prop) {
 
   async function getUsersInChan() {
     await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/UserInChannel/${Prop.chatInfo?.roomId}`,
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/getFullPartInfoNyChan/${Prop.chatInfo?.roomId}`,
       { credentials: 'include' }
     )
       .then((response) => response.json())
@@ -77,7 +82,7 @@ export default function GroupInfo(Prop: Prop) {
     getPartecipantInfo();
     getUsersInChan();
     getMessageNumber();
-  }, []);
+  }, [Prop, request]);
 
   return (
     <div
@@ -105,7 +110,7 @@ export default function GroupInfo(Prop: Prop) {
                     className="profile-info-img"
                     style={{ marginTop: '10px' }}
                   />
-                  <p className="profile-info-text username">
+                  <div className="profile-info-text username">
                     {partecipantInfo?.mod === 'm' ||
                     partecipantInfo?.mod === 'o' ? (
                       Prop.chatInfo?.username
@@ -134,7 +139,7 @@ export default function GroupInfo(Prop: Prop) {
                         </>
                       </div>
                     )}
-                  </p>
+                  </div>
                   <p className="profile-info-text">
                     MODE:{' '}
                     {Prop.chatInfo?.mode === 'PUB'
@@ -158,48 +163,21 @@ export default function GroupInfo(Prop: Prop) {
                   <p className="profile-info-text username">Partecipants</p>
                   <div className="card-body contacts_body">
                     <ul className="contacts scrollable-search">
-                      {partecipants.map((user: User, p: number) => {
-                        const on = onlines.find(
-                          (el) => user.id === el || user.id === -el
-                        );
-                        return (
-                          <li key={user.id}>
-                            <div
-                              className="d-flex bd-highlight"
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <div className="img_cont">
-                                <Stack direction="row" spacing={2}>
-                                  <NavLink to={'/users/' + user.username}>
-                                    <StyledBadge
-                                      color={
-                                        on !== undefined
-                                          ? on > 0
-                                            ? 'success'
-                                            : 'warning'
-                                          : 'error'
-                                      }
-                                      overlap="circular"
-                                      invisible={false}
-                                      anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'right',
-                                      }}
-                                      variant="dot"
-                                    >
-                                      <Avatar alt="Img" src={user.avatar} />
-                                    </StyledBadge>
-                                  </NavLink>
-                                </Stack>
-                              </div>
-                              <div className="user_info">
-                                <span>{user.username}</span>
-                                <p>{user.username} is online</p>
-                              </div>
-                            </div>
-                          </li>
-                        );
-                      })}
+                      {
+                        partecipants === undefined || partecipantInfo === undefined ? null : 
+                        partecipants.map((part: FullPartecipant) => 
+                        {
+                          const on = onlines.find
+                          (
+                            (el) => part.userId.id === el || part.userId.id === -el
+                          );
+                          return(
+                          partecipantInfo === undefined ? null:(
+                          <li key={ part.userId.id}>
+                            <UserGroup part={part} on={on} myInfo={partecipantInfo!} setRequest={setRequest} ></UserGroup>)
+                          </li>)
+                        )})
+                      }
                     </ul>
                   </div>
                 </div>
@@ -233,6 +211,9 @@ export default function GroupInfo(Prop: Prop) {
           </div>
         </div>
       </div>
+      {request !== undefined ? null :
+       <ConfirmRequest req={request} setReq={setRequest}/>}
+     
     </div>
   );
 }

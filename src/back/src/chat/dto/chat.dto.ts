@@ -86,4 +86,31 @@ export class viewRoomDto {
 	@IsNotEmpty()
 	room : string;
   }
+
+  
+export class channelRequestDto
+{
+	@IsNotEmpty()
+  sender: number;
+  @IsNotEmpty()
+  reciver: number;
+  @IsNotEmpty()
+  channelId: number;
+}
+
+export class channelResponseDto
+{
+	@IsNotEmpty()
+	sender: number;
+	@IsNotEmpty()
+	reciver: number;
+	@IsNotEmpty()
+	type : string;
+}
+  export class updateChannelDto {
+	  id: number;
+	name: string;
+	mode: string;
+	pass: string;
+  }
   

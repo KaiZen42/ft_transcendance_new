@@ -11,6 +11,7 @@ import {
 	Query,
 	ValidationPipe,
 	Redirect,
+	Put,
   } from '@nestjs/common';
 import { ChannelInfoDto, messageDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
@@ -74,8 +75,16 @@ export class chatController {
 	@Get("TEST/:id1")
 	async test(@Param("id1") chanId: number) : Promise<any>
 	{
-		let someThings: any =  await this.partService.getUsersIdByChan(chanId)
+		let someThings: any =  await this.partService.getCompletePartecipantByChannel(chanId)
 		console.log("QUALCOSA: ", someThings);
+		return someThings;
+	}
+
+	@Get("getFullPartInfoNyChan/:id1")
+	async getFullPartInfoNyChan(@Param("id1") chanId: number) : Promise<any>
+	{
+		let someThings: any =  await this.partService.getCompletePartecipantByChannel(chanId)
+		//console.log("QUALCOSA: ", someThings);
 		return someThings;
 	}
 
@@ -114,6 +123,12 @@ export class chatController {
 	{
 		let someThings: Partecipant = await this.partService.getPartecipantByUserAndChan(userId, chanId);
 		return someThings;
+	}
+
+	@Put("UpdateGroup")
+	async UpdateGroup(@Body() toUpdate: { name: string; mode: string; pass: string; id: number })
+	{
+		await this.chService.updateChannel(toUpdate);
 	}
 
 }

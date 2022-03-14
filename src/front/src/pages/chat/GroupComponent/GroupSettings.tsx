@@ -165,7 +165,7 @@ export default function GroupSettings(Prop: Prop) {
                   >
                     <input
                       id="grouppass"
-                      name="ChangeGroupPass"
+                      name="Change Group Pass"
                       type="text"
                       className="form-control"
                       onChange={(e) =>
@@ -176,7 +176,7 @@ export default function GroupSettings(Prop: Prop) {
                         })
                       }
                       value={
-                        !privateChan ? 'Change/Add Password' : '🚫Disabled🚫'
+                        !privateChan ? updatedGroup.pass : '🚫Disabled🚫'
                       }
                       disabled={privateChan}
                     />

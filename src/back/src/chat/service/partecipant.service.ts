@@ -36,10 +36,22 @@ import { Partecipant } from '../models/partecipant.entity';
 		
 		return res.map(r => r.id);
 	}
+
 	
 	async getByChannel(channelId: number): Promise<Partecipant[]> {
 	  return this.partecipantDB.find({ where: { channelId } });
 	}
+
+	async getCompletePartecipantByChannel(channelId: number): Promise<any[]> {
+		const res: any[] = await this.partecipantDB
+		.createQueryBuilder("partecipant")
+		.select(["partecipant", "users"])
+		.leftJoinAndSelect("partecipant.userId", "users", "users.id = partecipant.userId")
+		.where("partecipant.channelId = :chId AND partecipant.mod != 'b'", {chId: channelId})
+		.getMany();
+		console.log("ret:",res)
+		return res;
+	  }
 
 	async isPartecipant(channelId: number, userId: number): Promise<boolean> {
 		const ret = await this.partecipantDB.findOne({ where: { channelId, userId } });

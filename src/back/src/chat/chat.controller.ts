@@ -74,8 +74,16 @@ export class chatController {
 	@Get("TEST/:id1")
 	async test(@Param("id1") chanId: number) : Promise<any>
 	{
-		let someThings: any =  await this.partService.getUsersIdByChan(chanId)
+		let someThings: any =  await this.partService.getCompletePartecipantByChannel(chanId)
 		console.log("QUALCOSA: ", someThings);
+		return someThings;
+	}
+
+	@Get("getFullPartInfoNyChan/:id1")
+	async getFullPartInfoNyChan(@Param("id1") chanId: number) : Promise<any>
+	{
+		let someThings: any =  await this.partService.getCompletePartecipantByChannel(chanId)
+		//console.log("QUALCOSA: ", someThings);
 		return someThings;
 	}
 

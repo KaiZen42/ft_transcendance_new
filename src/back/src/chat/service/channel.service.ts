@@ -106,6 +106,7 @@ export class ChannelService {
 			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId = users.id")
 			.where("partecipant.channelId = :chId", {chId: id})
 			.getMany();
+		console.log("user by chan", res)
 		return res;
 	}
 
@@ -179,12 +180,12 @@ export class ChannelService {
 			await this.partService.delete(part.id);
 	}
 
-	async allOffline()
+/* 	async allOffline()
 	{
 		(await this.partService.getByChannel(1)).map(
 			(part: Partecipant) => {this.partService.delete(part.id)}
 		)
-	}
+	} */
 
 	
 

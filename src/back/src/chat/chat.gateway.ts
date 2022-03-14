@@ -10,7 +10,7 @@ import {
   } from '@nestjs/websockets';
 import { time } from 'console';
 import { Socket, Server } from 'socket.io';
-import { creationDto, JoinRoomDto, messageDto, OnlineMap, openRoomDto, viewRoomDto } from './dto/chat.dto';
+import { channelRequestDto, creationDto, JoinRoomDto, messageDto, OnlineMap, openRoomDto, viewRoomDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
 
 import { Message } from './models/message.entity';
@@ -162,7 +162,6 @@ export class ChatGateway
 		return { event: 'areOnline', data :  Object.values(this.onlines)};
 	} 
 
-	//TODO: whith mattia make socket response when are in game
 	@SubscribeMessage('InGame')
 	 NowInGame(client: Socket, userId: number)
 	{
@@ -177,4 +176,13 @@ export class ChatGateway
 		this.server.emit("areNotInGame", userId)
 	}
 
+	
+	@SubscribeMessage('ban')
+	 ban(client: Socket, req: channelRequestDto) 
+	{
+		//controlli
+		//attuare richiesta
+		//comunicazione ai membri
+		this.server.to(req.channelId.toString()).emit("memberUpdate", )
+	}
 }

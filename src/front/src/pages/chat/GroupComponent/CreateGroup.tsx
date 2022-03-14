@@ -22,10 +22,9 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const [groupPass, setGroupPass] = useState('');
   const [missingName, setMissingName] = useState(false);
 
-  const nameSubmit = (event: any) => {
+  const nameSubmit = async (event: any) => {
     if (event.target.value) {
       event.preventDefault();
-      (async () => {
         const data = await fetch(
           `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/likeusername/${event.target.value}`,
           { credentials: 'include' }
@@ -36,7 +35,6 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
             res.sort((a: User, b: User) => a.username.localeCompare(b.username))
           );
         });
-      });
     } else {
       setUsers([]);
     }

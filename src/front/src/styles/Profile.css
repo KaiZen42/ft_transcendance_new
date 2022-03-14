@@ -171,7 +171,6 @@
 .friends-accepted {
   flex: 1;
   overflow: auto;
-  background: red;
 }
 
 .friend-item {

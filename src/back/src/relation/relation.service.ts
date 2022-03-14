@@ -35,12 +35,36 @@ export class RelationService {
   }
 
   async acceptRequest(id: number) {
-    const res = this.relationDB.save({ id, status: Status.FRIENDS });
-    console.log(res);
+    await this.relationDB.save({ id, status: Status.FRIENDS });
   }
 
   async unfriend(id: number) {
-    const res = this.relationDB.delete({ id });
-    console.log(res);
+    await this.relationDB.delete({ id });
+  }
+
+  async getFriends(id: number) {
+    return this.relationDB
+      .createQueryBuilder('relation')
+      .leftJoinAndSelect(
+        'relation.requesting',
+        'users1',
+        'relation.requesting = users1.id',
+      )
+      .leftJoinAndSelect(
+        'relation.receiving',
+        'users2',
+        'relation.receiving = users2.id',
+      )
+      .select([
+        'relation',
+        'users2.id',
+        'users2.username',
+        'users2.avatar',
+        'users1.id',
+        'users1.username',
+        'users1.avatar',
+      ])
+      .where('users1.id = :userId OR users2.id = :userId', { userId: id })
+      .getMany();
   }
 }

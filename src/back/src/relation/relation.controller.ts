@@ -24,6 +24,11 @@ export class RelationController {
     return await this.relation.findRequests(id);
   }
 
+  @Get('getFriends/:id')
+  async getFriends(@Param('id') id: number) {
+    return await this.relation.getFriends(id);
+  }
+
   @Put('acceptRequest')
   async acceptRequest(@Body() data: { id: number }) {
     await this.relation.acceptRequest(data.id);

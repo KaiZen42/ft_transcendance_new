@@ -13,6 +13,7 @@ import {
 
 import { Socket, Server } from 'socket.io';
 import {
+  channelRequestDto,
   creationDto,
   JoinRoomDto,
   messageDto,

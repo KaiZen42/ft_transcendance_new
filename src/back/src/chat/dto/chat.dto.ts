@@ -107,4 +107,10 @@ export class channelResponseDto
 	@IsNotEmpty()
 	type : string;
 }
+  export class updateChannelDto {
+	  id: number;
+	name: string;
+	mode: string;
+	pass: string;
+  }
   

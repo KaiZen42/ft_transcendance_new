@@ -3,9 +3,10 @@ import { Avatar } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Context } from '../../App';
-import { ChatInfo } from '../../models/Chat.interface';
+import { ChatInfo, Partecipant } from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
 import GroupInfo from './GroupComponent/GroupInfo';
+import GroupSettings from './GroupComponent/GroupSettings';
 
 interface Prop {
   chatInfo: ChatInfo | undefined;
@@ -13,9 +14,23 @@ interface Prop {
 
 export default function MessageHeader({ chatInfo }: Prop) {
   const onlines = useContext(Context).online;
+  const userId = useContext(Context).userId;
   const [on, setOn] = useState<number>();
   const [infoVisibility, setInfoVisibility] = useState(false);
+  const [settingsVisibility, setSettingsVisibility] = useState(false);
   const [click, setClick] = useState(false);
+  const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>();
+
+  async function getPartecipantInfo() {
+    await fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${chatInfo?.roomId}/${userId}`,
+      { credentials: 'include' }
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        setPartecipantInfo(result);
+      });
+  }
 
   useEffect(() => {
     if (chatInfo?.userId !== undefined) {
@@ -25,63 +40,87 @@ export default function MessageHeader({ chatInfo }: Prop) {
       );
     }
     console.log('RENDER HEADER: ', on, chatInfo, onlines);
+    getPartecipantInfo();
   }, [chatInfo, useContext(Context)]);
 
   return (
     <div className="card-header msg_head">
       <div className="d-flex bd-highlight">
         <div className="img_cont">
-		
-        <NavLink to={chatInfo?.avatar === undefined ? '' :
-'/users/' + chatInfo?.username}>
-          <StyledBadge
-            overlap="circular"
-            color={
-              on !== undefined ? (on > 0 ? 'success' : 'warning') : 'error'
+          <NavLink
+            to={
+              chatInfo?.avatar === undefined
+                ? ''
+                : '/users/' + chatInfo?.username
             }
-            invisible={chatInfo?.avatar === undefined}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            variant="dot"
           >
-            <Avatar
-              alt="Img"
-              src={
-                chatInfo?.avatar === undefined
-                  ? './group_icon.png'
-                  : chatInfo?.avatar
+            <StyledBadge
+              overlap="circular"
+              color={
+                on !== undefined ? (on > 0 ? 'success' : 'warning') : 'error'
               }
-            />
-          </StyledBadge>
+              invisible={chatInfo?.avatar === undefined}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              variant="dot"
+            >
+              <Avatar
+                alt="Img"
+                src={
+                  chatInfo?.avatar === undefined
+                    ? './group_icon.png'
+                    : chatInfo?.avatar
+                }
+              />
+            </StyledBadge>
           </NavLink>
         </div>
         <div className="user_info">
           <span>{chatInfo?.username}</span>
-          {chatInfo?.avatar === undefined ? <span
-            id="action_menu_btn"
-            style={{ zIndex: 0 }}
-            onClick={(e) => setClick(!click)}
-          >
-            <i className="fas fa-ellipsis-v"></i>
-          </span> : null}
+          {chatInfo?.avatar === undefined ? (
+            <span
+              id="action_menu_btn"
+              style={{ zIndex: 0 }}
+              onClick={(e) => setClick(!click)}
+            >
+              <i className="fas fa-ellipsis-v"></i>
+            </span>
+          ) : null}
           {click === true ? (
             <div className="action_menu" style={{ zIndex: 1 }}>
-                <ul>
-                  <li onClick={e => setInfoVisibility(true)}>
-                    <i className="fas fa-info"></i> Group Info
-                  </li>
-                  <li>
+              <ul>
+                <li onClick={(e) => setInfoVisibility(true)}>
+                  <i className="fas fa-info"></i> Group Info
+                </li>
+                {partecipantInfo?.mod === 'o' ||
+                partecipantInfo?.mod === 'a' ? (
+                  <li onClick={(e) => setSettingsVisibility(true)}>
                     <i className="fas fa-cog"></i> Settings
                   </li>
-                </ul>
+                ) : null}
+              </ul>
             </div>
           ) : null}
           <p>{chatInfo?.avatar === undefined ? 'Gente' : null}</p>
         </div>
       </div>
-      {infoVisibility === false ? null : (<GroupInfo isVisible={infoVisibility} setVisibility={setInfoVisibility} chatInfo={chatInfo}/>)}
+      {infoVisibility === false ? null : (
+        <GroupInfo
+          isVisible={infoVisibility}
+          setVisibility={setInfoVisibility}
+          chatInfo={chatInfo}
+        />
+      )}
+      {settingsVisibility === false &&
+      (partecipantInfo?.mod === 'o' || partecipantInfo?.mod === 'a') ? null : (
+        <GroupSettings
+          isVisible={settingsVisibility}
+          setVisibility={setSettingsVisibility}
+          chatInfo={chatInfo}
+        />
+      )}
       {/*TODO: ROUTE TO PROFILE*/}
       {/*  visibleJoin ? null : <JoinGroup
         isVisible={visibleJoin}

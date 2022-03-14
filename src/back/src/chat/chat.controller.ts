@@ -11,6 +11,7 @@ import {
 	Query,
 	ValidationPipe,
 	Redirect,
+	Put,
   } from '@nestjs/common';
 import { ChannelInfoDto, messageDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
@@ -122,6 +123,12 @@ export class chatController {
 	{
 		let someThings: Partecipant = await this.partService.getPartecipantByUserAndChan(userId, chanId);
 		return someThings;
+	}
+
+	@Put("UpdateGroup")
+	async UpdateGroup(@Body() toUpdate: { name: string; mode: string; pass: string; id: number })
+	{
+		await this.chService.updateChannel(toUpdate);
 	}
 
 }

@@ -107,7 +107,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
             </span>
           </div>
           <div className="input-group-prepend" style={{ marginBottom: 5 }}>
-            <span className="glow">Pass</span>
+            <span>Pass</span>
             <span>
               <input
                 type="text"

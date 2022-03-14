@@ -86,4 +86,11 @@ export class viewRoomDto {
 	@IsNotEmpty()
 	room : string;
   }
+
+  export class updateChannelDto {
+	  id: number;
+	name: string;
+	mode: string;
+	pass: string;
+  }
   

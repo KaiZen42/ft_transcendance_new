@@ -22,6 +22,7 @@ interface Prop {
 }
 
 interface UpdateGroup {
+  id: string | undefined;
   name: string | undefined;
   mode: string | undefined;
   pass: string;
@@ -38,6 +39,7 @@ export default function GroupSettings(Prop: Prop) {
   const [editUsername, setEditUsername] = useState(false);
   const [msgCounter, setMsgCounter] = useState(0);
   const [updatedGroup, setUpdatedGroup] = useState<UpdateGroup>({
+    id: Prop.chatInfo?.roomId,
     name: Prop.chatInfo?.username,
     mode: Prop.chatInfo?.mode,
     pass: '',
@@ -74,7 +76,26 @@ export default function GroupSettings(Prop: Prop) {
     );
   };
 
-  async function submitChanges() {}
+  async function submitChanges() {
+    const requestOptions = {
+      method: 'PUT',
+      /* credentials: 'include', */
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: updatedGroup.name,
+        mode: updatedGroup.mode,
+        pass: updatedGroup.pass,
+        id: updatedGroup.id,
+      }),
+    };
+
+    await fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/UpdateGroup`,
+      requestOptions
+    );
+
+    Prop.setVisibility(false);
+  }
 
   useEffect(() => {
     getPartecipantInfo();

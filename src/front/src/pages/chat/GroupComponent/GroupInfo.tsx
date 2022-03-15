@@ -211,9 +211,8 @@ export default function GroupInfo(Prop: Prop) {
           </div>
         </div>
       </div>
-      {request !== undefined ? null :
+      {request === undefined ? null :
        <ConfirmRequest req={request} setReq={setRequest}/>}
-     
     </div>
   );
 }

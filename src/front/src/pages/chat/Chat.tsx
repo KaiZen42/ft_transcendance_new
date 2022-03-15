@@ -21,6 +21,7 @@ import MessageHeader from './MessageHeader';
 import { ChatInfo } from '../../models/Chat.interface';
 import { JoinGroup } from './GroupComponent/JoinGroup';
 import { context, Context } from '../../App';
+import { channel } from 'diagnostics_channel';
 const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
 
 export function Chat(/* {user} : Prop */) {
@@ -82,7 +83,9 @@ export function Chat(/* {user} : Prop */) {
             <div className="col-md-4 col-xl-5 chat">
               <div>
                 <div className="card">
-                  <MessageHeader chatInfo={chatInfo} />
+                  {chatInfo === undefined || chatInfo.roomId === "" ? null: 
+                    <MessageHeader chatInfo={chatInfo} />
+                    }
                   {pkg === undefined ? null : <MessageBox room={room} />}
                 </div>
               </div>

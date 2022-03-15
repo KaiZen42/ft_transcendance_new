@@ -45,23 +45,43 @@ export default function ConfirmRequest({req, setReq}: Prop)
 					cont.socket?.emit("mute", req)
 				break;
 		}
+		setReq(undefined);
 		
 	}
 
 	function decline()
 	{
-
+		setReq(undefined);
 	}
 
 	return(
 		<div
 		className="card-footer"
 		style={{
-			visibility: 'visible',
 			opacity: '1',
 		}}>
-			<div className="group-search mb-sm-3 mb-md-0 contacts_card " >
-			</div>
+			<div className="group-search mb-sm-3 mb-md-0 contacts_card "
+				onKeyDown={confirm}>
+					<div className="card-header">
+						<div className='glow'>Confirm to {req?.type} {req?.reciverName}</div>
+						<div className="input-group">
+							<div className="input-group-prepend">
+								<span className="input-group-text decline_btn ">
+									<i className="fas fa-times" onClick={(e) => decline()}></i>
+								</span>
+								<span className="input-group-text accept_btn " >
+									<i className="fas fa-check" onClick={(e) => confirm()}></i>
+								</span>
+								{/* <span className="input-group-text close_btn">
+									<i
+									className="fas fa-times fa-lg"
+									onClick={(e) => setVisibility('hidden')}
+									></i>
+								</span> */}
+							</div>
+						</div>
+					</div>
+				</div>	
 		</div>
 	);
 }

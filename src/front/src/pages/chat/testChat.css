@@ -154,6 +154,20 @@
   color: white !important;
   cursor: pointer;
 }
+.accept_btn {
+  border-radius: 0 15px 15px 0 !important;
+  background-color: rgba(69, 248, 53, 0.678) !important;
+  border: 0 !important;
+  color: white !important;
+  cursor: pointer;
+}
+.decline_btn {
+  border-radius: 15px 0 0 15px !important;
+  background-color: rgba(219, 23, 23, 0.548) !important;
+  border: 0 !important;
+  color: white !important;
+  cursor: pointer;
+}
 
 .close_btn {
   background-color: transparent !important;

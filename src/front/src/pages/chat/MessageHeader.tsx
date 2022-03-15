@@ -106,15 +106,17 @@ export default function MessageHeader({ chatInfo }: Prop) {
           <p>{chatInfo?.avatar === undefined ? 'Gente' : null}</p>
         </div>
       </div>
-      {infoVisibility === false ? null : (
+      {infoVisibility === false || chatInfo === undefined || chatInfo.roomId === ""?
+       null : (
         <GroupInfo
           isVisible={infoVisibility}
           setVisibility={setInfoVisibility}
           chatInfo={chatInfo}
         />
       )}
-      {settingsVisibility === false &&
+      {settingsVisibility === false && 
       (partecipantInfo?.mod === 'o' || partecipantInfo?.mod === 'a') ? null : (
+        chatInfo === undefined || chatInfo.roomId === "" ? null : 
         <GroupSettings
           isVisible={settingsVisibility}
           setVisibility={setSettingsVisibility}

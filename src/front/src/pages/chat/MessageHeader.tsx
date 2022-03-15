@@ -87,7 +87,6 @@ export default function MessageHeader({ chatInfo }: Prop) {
         </div>
         <div className="user_info">
           <span>{chatInfo?.username}</span>
-          {chatInfo?.avatar === undefined ? (
             <span
               id="action_menu_btn"
               style={{ zIndex: 0 }}
@@ -95,8 +94,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
             >
               <i className="fas fa-ellipsis-v"></i>
             </span>
-          ) : null}
-          {click ? (
+          {chatInfo?.avatar === undefined && click === true ? (
             <div className="action_menu" style={{ zIndex: 1 }}>
               <ul>
                 <li onClickCapture={(e) => setInfoVisibility(true)}>
@@ -110,7 +108,15 @@ export default function MessageHeader({ chatInfo }: Prop) {
                 ) : null}
               </ul>
             </div>
-          ) : null}
+          ) : click === true ? (<div className="action_menu" style={{ zIndex: 1 }}><ul>
+                <li onClickCapture={(e) => setInfoVisibility(true)}>
+                  <i className="fas fa-info"></i> User Profile
+                </li>
+				<li onClickCapture={(e) => setInfoVisibility(true)}>
+                  <i className="fas fa-info"></i> Block
+                </li>
+				</ul>
+				</div>): null}
           <p>{chatInfo?.avatar === undefined ? 'Gente' : null}</p>
         </div>
       </div>

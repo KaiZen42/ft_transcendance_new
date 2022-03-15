@@ -25,16 +25,16 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const nameSubmit = async (event: any) => {
     if (event.target.value) {
       event.preventDefault();
-        const data = await fetch(
-          `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/likeusername/${event.target.value}`,
-          { credentials: 'include' }
+      const data = await fetch(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/likeusername/${event.target.value}`,
+        { credentials: 'include' }
+      );
+      data.json().then((res) => {
+        console.log(res);
+        setUsers(
+          res.sort((a: User, b: User) => a.username.localeCompare(b.username))
         );
-        data.json().then((res) => {
-          console.log(res);
-          setUsers(
-            res.sort((a: User, b: User) => a.username.localeCompare(b.username))
-          );
-        });
+      });
     } else {
       setUsers([]);
     }
@@ -71,6 +71,10 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
     setVisibility('hidden');
   }
 
+  function handleClose() {
+    setVisibility('hidden');
+  }
+
   useEffect(() => {
     console.log('INVITED USER ', invite);
   }, [invite]);
@@ -78,136 +82,162 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   return (
     <div
       style={{
-        visibility: isVisible === 'hidden' ? 'hidden' : 'visible',
+        visibility: isVisible === 'visible' ? 'visible' : 'hidden',
         opacity: '1',
       }}
-      className="overlay"
+      className="overlay container-fluid row justify-content-center"
     >
-      <div className="group-create mb-sm-3 mb-md-0 contacts_card">
-        <div className="card-header">
-          {/* TODO:do it red */}
-          <div className="glow" hidden={!missingName}>
-            {' '}
-            missing name
-          </div>
-          <div className="input-group-prepend" style={{ marginBottom: 5 }}>
-            <input
-              type="text"
-              placeholder="Insert a Group Name"
-              name=""
-              className="form-control search"
-              onChange={(e) => setGroupName(e.target.value)}
-            />
-            <span className="input-group-text search_btn" />
-            <span className="input-group-text close_btn">
+      <div className="col-ms-10">
+        <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
+          <div className="card-header scrollable">
+            <span className="close_btn">
               <i
                 className="fas fa-times fa-lg"
                 onClick={(e) => setVisibility('hidden')}
               ></i>
             </span>
-          </div>
-          <div className="input-group-prepend" style={{ marginBottom: 5 }}>
-            <span>Pass</span>
-            <span>
-              <input
-                type="text"
-                placeholder="Insert a Group Name"
-                name=""
-                className="form-control search"
-                onChange={(e) => setGroupPass(e.target.value)}
-                value={privateGroup ? '🚫Disabled🚫' : groupPass}
-                disabled={privateGroup}
-              />
-            </span>
-            <span className="search_btn">
-              <span className="glow">Private </span>
-              <Checkbox
-                checked={privateGroup}
-                onChange={(e) => setPrivateStatus(e.target.checked)}
-              />
-            </span>
-          </div>
-          <div className="input-group">
-            <input
-              type="text"
-              placeholder="Add a User..."
-              name=""
-              className="form-control search"
-              onChange={nameSubmit}
-            />
-            <div className="input-group-prepend">
-              <span className="input-group-text search_btn">
-                <i className="fas fa-search"></i>
-              </span>
+            <div className="card-body contacts_body row">
+              <div className="group-info-box">
+                <div className="info-username-image">
+                  <div className="profile-info-text justify-content-center">
+                    Group Name:
+                  </div>
+                  <input
+                    id="groupname"
+                    name="Change Group Name"
+                    type="text"
+                    className="form-control"
+                    onChange={(e) => setGroupName(e.target.value)}
+                    value={groupName}
+                  />
+                  <div
+                    className="profile-info-text"
+                    style={{ display: 'flex', marginTop: '20px' }}
+                  >
+                    Password:
+                    <input
+                      id="grouppass"
+                      style={{ marginLeft: '10px' }}
+                      name="Change Group Pass"
+                      type="text"
+                      className="form-control"
+                      onChange={(e) => setGroupPass(e.target.value)}
+                      value={!privateGroup ? groupPass : '🚫Disabled🚫'}
+                      disabled={privateGroup}
+                    />
+                    <Checkbox
+                      checked={privateGroup}
+                      onChange={(e) => setPrivateStatus(e.target.checked)}
+                    />{' '}
+                    Private
+                  </div>
+                </div>
+                <div className="glow profile-info-text">
+                  Added Users:{' '}
+                  {invite.map((inv: User) => (
+                    <span key={inv.id}> {inv.username} </span>
+                  ))}
+                </div>
+              </div>
+              <div className="group-info-box" style={{ height: '28rem' }}>
+                <div
+                  className="profile-info-text justify-content-center"
+                  style={{ display: 'flex' }}
+                >
+                  Add a User:
+                </div>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    placeholder="Add a User..."
+                    name=""
+                    className="form-control search"
+                    onChange={nameSubmit}
+                  />
+                  <div className="input-group-prepend">
+                    <span className="input-group-text search_btn">
+                      <i className="fas fa-search"></i>
+                    </span>
+                  </div>
+                </div>
+                <ul className="contacts scrollable-search">
+                  {users.map((user: User) => {
+                    const on = onlines.find(
+                      (el) => user.id === el || user.id === -el
+                    );
+                    return user.id === userId ? null : (
+                      <li key={user.id}>
+                        <div
+                          className="d-flex bd-highlight"
+                          /* onClick={(e) => addUser(e, user)} */
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <div className="img_cont">
+                            <Stack direction="row" spacing={2}>
+                              <StyledBadge
+                                color={
+                                  on !== undefined
+                                    ? on > 0
+                                      ? 'success'
+                                      : 'warning'
+                                    : 'error'
+                                }
+                                overlap="circular"
+                                invisible={false}
+                                anchorOrigin={{
+                                  vertical: 'bottom',
+                                  horizontal: 'right',
+                                }}
+                                variant="dot"
+                              >
+                                <Avatar alt="Img" src={user.avatar} />
+                              </StyledBadge>
+                            </Stack>
+                          </div>
+                          <div className="user_info">
+                            <span>{user.username}</span>
+                          </div>
+                          <Checkbox
+                            checked={
+                              invite.findIndex((us) => us.id == user.id) === -1
+                                ? false
+                                : true
+                            }
+                            onChange={(e) => addUser(e, user)}
+                          />
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div
+                className="row"
+                style={{ textAlign: 'center', marginTop: '20px' }}
+              >
+                <div className="col">
+                  <button
+                    className="btn btn-outline-success"
+                    /* disabled={isChanged()} */
+                    onClick={(e) => createGroup()}
+                  >
+                    Create
+                  </button>
+                </div>
+                <div className="col">
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger"
+                    onClick={handleClose}
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <ul className="contacts scrollable-search">
-          {users.map((user: User) => {
-            const on = onlines.find((el) => user.id === el || user.id === -el);
-            return user.id === userId ? null : (
-              <li key={user.id}>
-                <div
-                  className="d-flex bd-highlight"
-                  /* onClick={(e) => addUser(e, user)} */
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className="img_cont">
-                    <Stack direction="row" spacing={2}>
-                      <StyledBadge
-                        color={
-                          on !== undefined
-                            ? on > 0
-                              ? 'success'
-                              : 'warning'
-                            : 'error'
-                        }
-                        overlap="circular"
-                        invisible={false}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'right',
-                        }}
-                        variant="dot"
-                      >
-                        <Avatar alt="Img" src={user.avatar} />
-                      </StyledBadge>
-                    </Stack>
-                  </div>
-                  <div className="user_info">
-                    <span>{user.username}</span>
-                  </div>
-                  <Checkbox
-                    checked={
-                      invite.findIndex((us) => us.id == user.id) === -1
-                        ? false
-                        : true
-                    }
-                    onChange={(e) => addUser(e, user)}
-                  />
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="card-body contacts_body">
-          <div className="glow">NAME: {groupName}</div>
-          <div className="glow">
-            Invite:{' '}
-            {invite.map((inv: User) => (
-              <span key={inv.id}> {inv.username} </span>
-            ))}
-          </div>
-        </div>
-        <div className="card-footer"></div>
-        <div className="right">
-          <span className="input-group-text close_btn ">
-            <i className="fas fa-check" onClick={(e) => createGroup()}></i>
-          </span>
         </div>
       </div>
     </div>
   );
 }
-
-

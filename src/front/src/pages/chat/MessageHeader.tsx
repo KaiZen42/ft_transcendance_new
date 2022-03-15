@@ -32,8 +32,6 @@ export default function MessageHeader({ chatInfo }: Prop) {
       });
   }
 
-  
-
   useEffect(() => {
     if (chatInfo?.userId !== undefined) {
       console.log('TESST');
@@ -44,11 +42,10 @@ export default function MessageHeader({ chatInfo }: Prop) {
     console.log('RENDER HEADER: ', on, chatInfo, onlines);
     getPartecipantInfo();
     document.getElementById('parent')?.addEventListener('click', (e) => {
-    if (e.target !== e.currentTarget) setClick(false);
-    else
-      return
-    console.log(e.target, e.currentTarget);
-  });
+      if (e.target !== e.currentTarget) setClick(false);
+      else return;
+      console.log(e.target, e.currentTarget);
+    });
   }, [chatInfo, useContext(Context)]);
 
   return (
@@ -87,13 +84,13 @@ export default function MessageHeader({ chatInfo }: Prop) {
         </div>
         <div className="user_info">
           <span>{chatInfo?.username}</span>
-            <span
-              id="action_menu_btn"
-              style={{ zIndex: 0 }}
-              onClick={(e) => setClick(!click)}
-            >
-              <i className="fas fa-ellipsis-v"></i>
-            </span>
+          <span
+            id="action_menu_btn"
+            style={{ zIndex: 0 }}
+            onClick={(e) => setClick(!click)}
+          >
+            <i className="fas fa-ellipsis-v"></i>
+          </span>
           {chatInfo?.avatar === undefined && click === true ? (
             <div className="action_menu" style={{ zIndex: 1 }}>
               <ul>
@@ -108,15 +105,29 @@ export default function MessageHeader({ chatInfo }: Prop) {
                 ) : null}
               </ul>
             </div>
-          ) : click === true ? (<div className="action_menu" style={{ zIndex: 1 }}><ul>
-                <li onClickCapture={(e) => setInfoVisibility(true)}>
-                  <i className="fas fa-info"></i> User Profile
-                </li>
+          ) : click === true ? (
+            <div className="action_menu" style={{ zIndex: 1 }}>
+              <ul>
+                <NavLink
+                  to={
+                    chatInfo?.avatar === undefined
+                      ? ''
+                      : '/users/' + chatInfo?.username
+                  }
+                >
+                  <li>
+                    <i className="fas fa-user"></i> User Profile
+                  </li>
+                </NavLink>
 				<li onClickCapture={(e) => setInfoVisibility(true)}>
-                  <i className="fas fa-info"></i> Block
+                    <i className="fas fa-eraser"></i> Delete Chat
+                  </li>
+                <li onClickCapture={(e) => setInfoVisibility(true)}>
+                  <i className="fas fa-ban"></i> Block
                 </li>
-				</ul>
-				</div>): null}
+              </ul>
+            </div>
+          ) : null}
           <p>{chatInfo?.avatar === undefined ? 'Gente' : null}</p>
         </div>
       </div>

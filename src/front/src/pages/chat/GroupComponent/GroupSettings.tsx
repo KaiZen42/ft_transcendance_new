@@ -115,6 +115,17 @@ export default function GroupSettings(Prop: Prop) {
     window.location.reload(); /* ????? Si può fare? */
   }
 
+  function handleKeyDown(e: any) {
+    if (partecipantInfo?.mod === 'a' || partecipantInfo?.mod === 'o') {
+      if (e.key === 'Enter' && isChanged()) {
+        submitChanges();
+      }
+      if (e.key === 'Escape') {
+        Prop.setVisibility(false);
+      }
+    }
+  }
+
   useEffect(() => {
     getPartecipantInfo();
   }, []);
@@ -125,6 +136,8 @@ export default function GroupSettings(Prop: Prop) {
         visibility: Prop.isVisible === true ? 'visible' : 'hidden',
         opacity: '1',
       }}
+      tabIndex={1}
+      onKeyDown={(e) => handleKeyDown(e)}
       className="overlay container-fluid row justify-content-center"
     >
       <div className="col-ms-10">

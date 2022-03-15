@@ -32,6 +32,8 @@ export default function MessageHeader({ chatInfo }: Prop) {
       });
   }
 
+  
+
   useEffect(() => {
     if (chatInfo?.userId !== undefined) {
       console.log('TESST');
@@ -41,6 +43,12 @@ export default function MessageHeader({ chatInfo }: Prop) {
     }
     console.log('RENDER HEADER: ', on, chatInfo, onlines);
     getPartecipantInfo();
+    document.getElementById('parent')?.addEventListener('click', (e) => {
+    if (e.target !== e.currentTarget) setClick(false);
+    else
+      return
+    console.log(e.target, e.currentTarget);
+  });
   }, [chatInfo, useContext(Context)]);
 
   return (
@@ -88,15 +96,15 @@ export default function MessageHeader({ chatInfo }: Prop) {
               <i className="fas fa-ellipsis-v"></i>
             </span>
           ) : null}
-          {click === true ? (
+          {click ? (
             <div className="action_menu" style={{ zIndex: 1 }}>
               <ul>
-                <li onClick={(e) => setInfoVisibility(true)}>
+                <li onClickCapture={(e) => setInfoVisibility(true)}>
                   <i className="fas fa-info"></i> Group Info
                 </li>
                 {partecipantInfo?.mod === 'o' ||
                 partecipantInfo?.mod === 'a' ? (
-                  <li onClick={(e) => setSettingsVisibility(true)}>
+                  <li onClickCapture={(e) => setSettingsVisibility(true)}>
                     <i className="fas fa-cog"></i> Settings
                   </li>
                 ) : null}
@@ -106,17 +114,19 @@ export default function MessageHeader({ chatInfo }: Prop) {
           <p>{chatInfo?.avatar === undefined ? 'Gente' : null}</p>
         </div>
       </div>
-      {infoVisibility === false || chatInfo === undefined || chatInfo.roomId === ""?
-       null : (
+      {infoVisibility === false ||
+      chatInfo === undefined ||
+      chatInfo.roomId === '' ? null : (
         <GroupInfo
           isVisible={infoVisibility}
           setVisibility={setInfoVisibility}
           chatInfo={chatInfo}
         />
       )}
-      {settingsVisibility === false && 
-      (partecipantInfo?.mod !== 'o' && partecipantInfo?.mod !== 'a') ? null : (
-        chatInfo === undefined || chatInfo.roomId === "" ? null : 
+      {settingsVisibility === false &&
+      partecipantInfo?.mod !== 'o' &&
+      partecipantInfo?.mod !== 'a' ? null : chatInfo === undefined ||
+        chatInfo.roomId === '' ? null : (
         <GroupSettings
           isVisible={settingsVisibility}
           setVisibility={setSettingsVisibility}

@@ -36,7 +36,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
         username: selectUser(current)?.username,
         avatar: selectUser(current)?.avatar,
         roomId: room,
-		mode: 'PRI',
+        mode: 'PRI',
       });
     } else {
       setChatInfo({
@@ -44,7 +44,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
         username: current?.name,
         avatar: undefined,
         roomId: room,
-		mode: current?.mode,
+        mode: current?.mode,
       });
     }
   }
@@ -136,6 +136,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
 
     //remove ROOM
     socket?.on('QuitRoom', (roomId: number) => {
+
       const idx = channels.findIndex( ch => ch.id === roomId)
       console.log("QUITTING ", idx ,"  ", roomId, " ch ", channels)
       if (idx !== -1)
@@ -173,13 +174,16 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       : info.partecipants[0].userId;
   }
 
-  useEffect(() => {}, [click]);
+  useEffect(() => {
+    document.getElementById('parent')?.addEventListener('click', (e) => {
+      if (e.target !== e.currentTarget) setClick(false);
+      else return;
+      console.log('ECCOMI', click);
+    });
+  }, []);
 
   return (
-    <div
-      className="col-md-2 col-xl-2 chat"
-      onClick={(e) => (click ? setClick(false) : null)}
-    >
+    <div className="col-md-2 col-xl-2 chat">
       <div className="card mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
           <div className="user_info">
@@ -194,10 +198,10 @@ export function ChannelList({ room, setChatInfo }: Prop) {
             {click === true ? (
               <div className="action_menu" style={{ zIndex: 1 }}>
                 <ul>
-                  <li onClick={(e) => setVisibleJoin('visible')}>
+                  <li onClickCapture={(e) => setVisibleJoin('visible')}>
                     <i className="fas fa-users"></i> Join Group
                   </li>
-                  <li onClick={(e) => setVisibleCreate('visible')}>
+                  <li onClickCapture={(e) => setVisibleCreate('visible')}>
                     <i className="fas fa-plus"></i> Create Group
                   </li>
                 </ul>

@@ -19,8 +19,16 @@ export default function ProfileInfo({
   const myId: number = useContext(Context).userId!;
   const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<User | null>();
+  const [friendStatus, setFriendStatus] = useState('');
+  const onlines = useContext(Context).online;
 
   const navigate = useNavigate();
+
+  const checkOnline = (id: number) => {
+    if (onlines.findIndex((online) => online === id) !== -1) return 'online';
+    if (onlines.findIndex((online) => online === -id) !== -1) return 'ingame';
+    return 'offline';
+  };
 
   useEffect(() => {
     fetch(
@@ -41,8 +49,23 @@ export default function ProfileInfo({
     });
   }, [username]);
 
+  useEffect(() => {
+    if (!user || myProfilePage || !myId) return;
+    fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getFriendStatus/` +
+        myId +
+        '?other=' +
+        user.id
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.status) setFriendStatus(data.status);
+      });
+  }, [user, myProfilePage, myId, username]);
+
   const updateUser = async (updatedUser: User) => {
-    const res = await axios.put(
+    await axios.put(
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${updatedUser.id}`,
       { ...updatedUser }
     );
@@ -63,6 +86,7 @@ export default function ProfileInfo({
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/friendRequest`,
       data
     );
+    setFriendStatus('REQUESTED');
   };
 
   return (
@@ -76,6 +100,9 @@ export default function ProfileInfo({
               className="profile-info-img"
             />
             <p className="profile-info-text username">{user.username}</p>
+            {!myProfilePage && (
+              <div className={`my-dot ${checkOnline(user.id)}`} />
+            )}
           </div>
           <div className="profile-info-stats">
             <p className="profile-info-text">
@@ -108,15 +135,45 @@ export default function ProfileInfo({
               </button>
             ) : (
               <>
-                <button
-                  className="game-popup-btn btn-home"
-                  onClick={sendFriendRequest}
-                >
-                  FRIEND
-                  <br />
-                  REQUEST
-                </button>
-                <button className="game-popup-btn btn-play">BLOCK</button>
+                {!friendStatus ? (
+                  <button
+                    className="game-popup-btn btn-home"
+                    onClick={sendFriendRequest}
+                  >
+                    <>
+                      FRIEND
+                      <br />
+                      REQUEST
+                    </>
+                  </button>
+                ) : friendStatus === 'REQUESTED' ? (
+                  <button className="game-popup-btn btn-home" disabled>
+                    REQUESTED
+                  </button>
+                ) : checkOnline(user.id) === 'ingame' ? (
+                  <button
+                    className="game-popup-btn btn-home"
+                    onClick={() => {}}
+                  >
+                    <>
+                      WATCH
+                      <br />
+                      GAME
+                    </>
+                  </button>
+                ) : (
+                  <button
+                    className="game-popup-btn btn-home"
+                    onClick={() => {}}
+                    disabled={checkOnline(user.id) === 'offline'}
+                  >
+                    <>
+                      FRIENDLY
+                      <br />
+                      MATCH
+                    </>
+                  </button>
+                )}
               </>
             )}
           </div>

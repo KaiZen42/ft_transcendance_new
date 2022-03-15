@@ -56,3 +56,21 @@ body {
 .flex-row.sp-around {
   justify-content: space-around;
 }
+
+.my-dot {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  border: 1px solid white;
+  position: absolute;
+}
+
+.my-dot.online {
+  background-color: #2e7d32;
+}
+.my-dot.offline {
+  background-color: #d32f2f;
+}
+.my-dot.ingame {
+  background-color: #ed6c02;
+}

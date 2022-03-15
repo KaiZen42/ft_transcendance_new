@@ -54,6 +54,12 @@ export function JoinGroup({
     setPassVisibility("hidden");
   }
 
+  function handleKeyDown(e: any) {
+    if (e.key === 'Escape') {
+      setVisibility('hidden');
+    }
+  }
+
   useEffect(() => {
     socket?.on("joinedStatus", (status) => {
         if (status)
@@ -79,6 +85,8 @@ export function JoinGroup({
         visibility: isVisible === 'hidden' ? 'hidden' : 'visible',
         opacity: '1',
       }}
+      tabIndex={1}
+      onKeyDown={(e) => handleKeyDown(e)}
       className="overlay container-fluid row justify-content-center"
       /* onClick={(e)=> { if (errorVisibility === "internal") setErrorVisibility("hidden") } } */>
       <div className="col-ms-10">

@@ -1,9 +1,12 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Context } from '../App';
 
 interface FriendRequest {
   id: number;
   requesting: {
+    id: number;
     avatar: string;
     username: string;
   };
@@ -23,21 +26,30 @@ interface FriendAccepted {
   };
 }
 
-export default function FriendList({ userId }: { userId: number }) {
+export default function FriendList({
+  userId,
+  friendRequests,
+}: {
+  userId: number;
+  friendRequests: boolean;
+}) {
   const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [friends, setFriends] = useState<FriendRequest[]>([]);
   const [updated, setUpdated] = useState(false);
+  const onlines = useContext(Context).online;
 
-  useEffect(() => {
-    if (!updated) return;
-    setUpdated(false);
-    fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getRequests/${userId}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setRequests(data);
-      });
+  const navigate = useNavigate();
+
+  const fetchData = () => {
+    if (friendRequests) {
+      fetch(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getRequests/${userId}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setRequests(data);
+        });
+    }
     fetch(
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getFriends/${userId}`
     )
@@ -51,7 +63,17 @@ export default function FriendList({ userId }: { userId: number }) {
           })
         );
       });
+  };
+
+  useEffect(() => {
+    if (!updated) return;
+    setUpdated(false);
+    fetchData();
   }, [updated]);
+
+  useEffect(() => {
+    fetchData();
+  }, [friendRequests]);
 
   useEffect(() => {
     setUpdated(true);
@@ -77,6 +99,12 @@ export default function FriendList({ userId }: { userId: number }) {
       .then(() => setUpdated(true));
   };
 
+  const checkOnline = (id: number) => {
+    if (onlines.findIndex((online) => online === id) !== -1) return 'online';
+    if (onlines.findIndex((online) => online === -id) !== -1) return 'ingame';
+    return 'offline';
+  };
+
   return (
     <>
       <div className="last-games-title">
@@ -89,12 +117,16 @@ export default function FriendList({ userId }: { userId: number }) {
       </div>
       <div className="friends-items">
         <div className="friend-requests">
-          {requests.length ? (
+          {friendRequests && requests.length ? (
             <>
               <h3>requests</h3>
               {requests.map((req) => (
                 <div className="friend-item">
-                  <div style={{ paddingLeft: '1rem' }}>
+                  <div
+                    onClick={() =>
+                      navigate('/users/' + req.requesting.username)
+                    }
+                  >
                     <img
                       src={req.requesting.avatar}
                       alt=""
@@ -102,6 +134,9 @@ export default function FriendList({ userId }: { userId: number }) {
                       style={{ marginRight: '1rem' }}
                     />
                     <p>{req.requesting.username}</p>
+                    <div
+                      className={`my-dot ${checkOnline(req.requesting.id)}`}
+                    />
                   </div>
                   <div>
                     <button
@@ -126,27 +161,46 @@ export default function FriendList({ userId }: { userId: number }) {
           )}
         </div>
         <div className="friends-accepted">
-          {friends.map((friend) => (
-            <div className="friend-item">
-              <div style={{ paddingLeft: '1rem' }}>
-                <img
-                  src={friend.requesting.avatar}
-                  alt=""
-                  className="profile-info-img sm"
-                  style={{ marginRight: '1rem' }}
-                />
-                <p>{friend.requesting.username}</p>
-              </div>
-              <div>
-                <button
-                  className="game-popup-btn btn-home"
-                  onClick={() => declineFriend(friend.id)}
-                >
-                  unfriend
-                </button>
-              </div>
+          {friends.length ? (
+            <>
+              {friends.map((friend) => (
+                <div className="friend-item">
+                  <div
+                    onClick={() =>
+                      navigate('/users/' + friend.requesting.username)
+                    }
+                  >
+                    <img
+                      src={friend.requesting.avatar}
+                      alt=""
+                      className="profile-info-img sm"
+                      style={{ marginRight: '1rem' }}
+                    />
+                    <p>{friend.requesting.username}</p>
+                    <div
+                      className={`my-dot ${checkOnline(friend.requesting.id)}`}
+                    ></div>
+                  </div>
+                  <div>
+                    {friendRequests && (
+                      <button
+                        className="game-popup-btn btn-home"
+                        onClick={() => declineFriend(friend.id)}
+                      >
+                        unfriend
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <div
+              style={{ height: '100%', display: 'grid', placeItems: 'center' }}
+            >
+              no friends yet
             </div>
-          ))}
+          )}
         </div>
       </div>
     </>

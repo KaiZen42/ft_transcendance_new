@@ -1,17 +1,20 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Context } from '../App';
 import { User } from '../models/User.interface';
 
 interface MatchUser {
   id: number;
 
   player1: {
+    id: number;
     username: string;
     avatar: string;
   };
 
   player2: {
+    id: number;
     username: string;
     avatar: string;
   };
@@ -57,7 +60,14 @@ export default function MatchList({ userId }: { userId: number }) {
           ))}
         </div>
       ) : (
-        <div style={{ height: '90%', display: 'grid', placeItems: 'center' }}>
+        <div
+          style={{
+            height: '90%',
+            display: 'grid',
+            placeItems: 'center',
+            fontFamily: 'Bebas Neue, sans-serif',
+          }}
+        >
           no matches yet
         </div>
       )}
@@ -73,15 +83,18 @@ function MatchItem({
   myUsername: string;
 }) {
   const [me, setMe] = useState<{
+    id: number;
     username: string;
     avatar: string;
     points: number;
   }>();
   const [opponent, setOpponent] = useState<{
+    id: number;
     username: string;
     avatar: string;
     points: number;
   }>();
+  const onlines = useContext(Context).online;
 
   const navigate = useNavigate();
 
@@ -94,6 +107,12 @@ function MatchItem({
       setOpponent({ ...match.player1, points: match.points1 });
     }
   }, [match, myUsername]);
+
+  const checkOnline = (id: number) => {
+    if (onlines.findIndex((online) => online === id) !== -1) return 'online';
+    if (onlines.findIndex((online) => online === -id) !== -1) return 'ingame';
+    return 'offline';
+  };
 
   return (
     <>
@@ -126,6 +145,7 @@ function MatchItem({
               className="profile-info-img sm"
             />
             <p className="nice-border">{opponent.username}</p>
+            <div className={`my-dot ${checkOnline(opponent.id)}`} />
           </div>
         </div>
       )}

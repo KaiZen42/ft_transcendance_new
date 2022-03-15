@@ -58,9 +58,7 @@ export default function GamePopUp({
     SetUpdatedPoints(points);
     SetDiffPoints(diff);
     setWL(winl);
-    setTimeout(() => {
-      updatePoints(points, winl[0], winl[1]);
-    }, 200);
+    updatePoints(points, winl[0], winl[1]);
   };
 
   return (

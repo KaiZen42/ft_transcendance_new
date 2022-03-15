@@ -60,7 +60,6 @@ import { Partecipant } from '../models/partecipant.entity';
 
 	async getPartecipantByUserAndChan( userId: number, channelId: number): Promise<Partecipant> {
 		const ret = await this.partecipantDB.findOne({ where: { channelId, userId } });
-		console.log("daje un po", ret)
 		return ret;
 	}
   
@@ -75,6 +74,16 @@ import { Partecipant } from '../models/partecipant.entity';
 
 	async delete(id: number) {
 	  return this.partecipantDB.delete({ id });
+	}
+
+	async deleteAll(chanId: number)
+	{
+		return await this.partecipantDB
+		.createQueryBuilder()
+		.delete()
+		.from(Partecipant)
+		.where("channelId = :chId", { chId: chanId })
+		.execute();
 	}
 
 	async update(id: number, data: any) {

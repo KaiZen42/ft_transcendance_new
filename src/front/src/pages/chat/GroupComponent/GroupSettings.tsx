@@ -14,6 +14,7 @@ import { stringify } from 'querystring';
 import { NavLink } from 'react-router-dom';
 import { Partecipant } from '../../../models/Chat.interface';
 import GroupInfo from './GroupInfo';
+import { userInfo } from 'os';
 
 interface Prop {
   isVisible: boolean;
@@ -97,6 +98,24 @@ export default function GroupSettings(Prop: Prop) {
     Prop.setVisibility(false);
   }
 
+  async function deleteGroup() {
+    if(partecipantInfo?.mod === 'o')
+    {
+    await fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveAllPartecipants/${Prop.chatInfo?.roomId}`,
+      { credentials: 'include', method: 'DELETE' }
+    );
+
+    await fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveGroup/${Prop.chatInfo?.roomId}`,
+      { credentials: 'include', method: 'DELETE' }
+    );
+    }
+    else
+      console.log("You do not have the appropiate privileges");
+    Prop.setVisibility(false);
+  }
+
   useEffect(() => {
     getPartecipantInfo();
   }, []);
@@ -175,9 +194,7 @@ export default function GroupSettings(Prop: Prop) {
                           mode: 'PRO',
                         })
                       }
-                      value={
-                        !privateChan ? updatedGroup.pass : '🚫Disabled🚫'
-                      }
+                      value={!privateChan ? updatedGroup.pass : '🚫Disabled🚫'}
                       disabled={privateChan}
                     />
                     <Checkbox
@@ -208,6 +225,18 @@ export default function GroupSettings(Prop: Prop) {
                         Cancel
                       </button>
                     </div>
+                  </div>
+                  <div
+                    className="col"
+                    style={{ textAlign: 'center', marginTop: '-5px' }}
+                  >
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger"
+                      onClick={deleteGroup}
+                    >
+                      Delete Group 🚫
+                    </button>
                   </div>
                 </form>
               </div>

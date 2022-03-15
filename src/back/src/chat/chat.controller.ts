@@ -12,6 +12,7 @@ import {
 	ValidationPipe,
 	Redirect,
 	Put,
+	Delete,
   } from '@nestjs/common';
 import { ChannelInfoDto, messageDto } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
@@ -130,5 +131,19 @@ export class chatController {
 	{
 		await this.chService.updateChannel(toUpdate);
 	}
+
+	@Delete("RemoveGroup/:chanId")
+	async DeleteGroup(@Param("chanId") chanId: number)
+	{
+		await this.chService.delete(chanId)
+	}
+
+	@Delete("RemoveAllPartecipants/:chanId")
+	async RemoveAllPartecipants(@Param("chanId") chanId: number)
+	{
+		await this.partService.deleteAll(chanId);
+	}
+
+
 
 }

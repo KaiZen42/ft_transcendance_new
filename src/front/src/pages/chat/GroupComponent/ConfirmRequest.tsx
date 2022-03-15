@@ -18,33 +18,7 @@ export default function ConfirmRequest({req, setReq}: Prop)
 	
 	function confirm()
 	{
-		switch(req?.type)
-		{
-			case "kick":
-					console.log("kicked")
-					cont.socket?.emit("kick", req)
-				break;
-
-			case "ban":
-					console.log("Ban")
-					cont.socket?.emit("ban", req)
-				break;
-
-			case "up":
-					console.log("Up")
-					cont.socket?.emit("up", req)
-				break;
-
-			case "down":
-					console.log("down")
-					cont.socket?.emit("down", req)	
-				break;
-
-			case "mute":
-					console.log("mute")
-					cont.socket?.emit("mute", req)
-				break;
-		}
+		cont.socket?.emit("ChannelRequest", req)
 		setReq(undefined);
 		
 	}

@@ -12,10 +12,13 @@ import {
 } from '@nestjs/websockets';
 
 import { Socket, Server } from 'socket.io';
+import { UserService } from 'src/user/user.service';
 import {
   channelRequestDto,
+  channelResponseDto,
   creationDto,
   JoinRoomDto,
+  LeaveRoomDto,
   messageDto,
   OnlineMap,
   openRoomDto,
@@ -36,6 +39,7 @@ export class ChatGateway
 
   constructor(
     private readonly messageService: MessageService,
+	private readonly userService: UserService,
     private readonly channelService: ChannelService,
     private readonly partService: PartecipantService,
   ) {}
@@ -60,10 +64,19 @@ export class ChatGateway
   }
 
   @SubscribeMessage('channelMessage')
-  recieveChannelMessage(
+  async recieveChannelMessage(
     client: Socket,
     mex: messageDto,
-  ): WsResponse<messageDto> {
+  ): Promise <WsResponse<messageDto> >{
+	const sender = await this.partService.getPartecipantByUserAndChan(mex.userId.id, +mex.room)
+	//TODO: add mute option	
+	if (sender.mod === "b")
+	{
+		mex.userId.id = -1;
+		mex.data = `you are banned from this channel`
+		this.server.to(mex.room).emit('message', mex);
+		return;
+	}
     const msg: Message = new Message();
     //this.logger.log(`MSG ID ${msg.id}`);
     msg.userId = mex.userId.id;
@@ -72,7 +85,7 @@ export class ChatGateway
     msg.channelId = +mex.room;
     this.messageService.create(msg);
     this.server.to(mex.room).emit('message', mex);
-    this.server.to(mex.room).emit('notification', mex);
+   // this.server.to(mex.room).emit('notification', mex);
     this.logger.log(
       `Data recived is: ${mex.data} From: ${mex.userId.id} to ${
         mex.room === undefined ? 'UNA' : mex.room
@@ -145,6 +158,14 @@ export class ChatGateway
     return { event: 'joinedStatus', data: false };
   }
 
+  @SubscribeMessage('leaveRoom')
+  async leaveRoom(client: Socket,
+    roomId: number)
+  {
+		client.leave(roomId + "")
+		this.server.to(client.id).emit("QuitRoom", roomId)
+  }
+
   @SubscribeMessage('openRoom')
   openRoom(client: Socket, data: openRoomDto): WsResponse<boolean> {
     client.join(data.room);
@@ -191,11 +212,52 @@ export class ChatGateway
     this.server.emit('areNotInGame', userId);
   }
 
-  @SubscribeMessage('ban')
-  ban(client: Socket, req: channelRequestDto) {
+  @SubscribeMessage('ChannelRequest')
+  async execRequest(client: Socket,req: channelRequestDto)
+  {
+	const sender = await this.partService.getPartecipantByUserAndChan(req.sender, req.channelId)
+	const reciver = await this.partService.getPartecipantByUserAndChan(req.reciver, req.channelId)
     //controlli
+	this.logger.log("in chan ["+ req.channelId + "] " + req.sender + " try to "+ req.type+ " " + req.reciver)
+	if (sender.mod === "b"
+	|| sender.mod === "m" 
+	|| reciver.mod === "o"
+	|| (req.type === "upgrade" && (reciver.mod === "a" || reciver.mod === "b"))
+	|| (req.type === "downgrade" && (reciver.mod === "m" || reciver.mod === "b")))
+		return
+	
+	this.logger.log("in chan ["+ req.channelId + "] " + req.sender + " has " + req.type + "ed " + req.reciver)
     //attuare richiesta
+	switch (req.type)
+	{
+		case "ban" :
+			await this.partService.update(reciver.id, {mod: "b"})
+		break;
+		case "kick" :
+			await this.partService.delete(reciver.id)
+		break;
+		case "upgrade" :
+			await this.partService.update(reciver.id, {mod: "a"})
+		break;
+		case "downgrade" :
+			await this.partService.update(reciver.id, {mod: "m"})
+		break;
+		case "mute" :
+			//TODO: mute
+		break;
+	}
+	
     //comunicazione ai membri
-    this.server.to(req.channelId.toString()).emit('memberUpdate');
+	const response: channelResponseDto = {
+		reciver: req.reciver,
+		reciverName: (await this.userService.getById(req.reciver)).username,
+		type: req.type
+	}
+    this.server.to(req.channelId.toString()).emit('memberUpdate', response);
+	//this.server.to(req.channelId.toString()).emit('memberNotification', response);
+
+	
   }
+
+  
 }

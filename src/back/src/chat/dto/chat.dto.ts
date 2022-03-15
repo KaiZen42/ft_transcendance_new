@@ -15,6 +15,15 @@ export class JoinRoomDto {
 	key: string;
   }
 
+  export class LeaveRoomDto {
+	@IsNotEmpty()
+	idUser: number ;
+
+	@IsNotEmpty()
+	room: number;
+
+  }
+
   export class creationDto {
 
 	@IsNotEmpty()
@@ -96,14 +105,17 @@ export class channelRequestDto
   reciver: number;
   @IsNotEmpty()
   channelId: number;
+  @IsNotEmpty()
+  type : string;
 }
 
 export class channelResponseDto
 {
-	@IsNotEmpty()
-	sender: number;
+
 	@IsNotEmpty()
 	reciver: number;
+	@IsNotEmpty()
+	reciverName: string;
 	@IsNotEmpty()
 	type : string;
 }

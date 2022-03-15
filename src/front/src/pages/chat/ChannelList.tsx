@@ -127,6 +127,20 @@ export function ChannelList({ room, setChatInfo }: Prop) {
         getRoom(prvRoom.room);
       }
     });
+
+    //remove ROOM
+    socket?.on('QuitRoom', (roomId: number) => {
+      const idx = channels.findIndex( ch => ch.id === roomId)
+      if (idx !== -1)
+      {
+        setChannel((pred) =>
+        {
+          pred.splice(idx,1)
+          return [...pred]
+        })
+      }
+    });
+
     return () => {
       socket?.removeListener('notification');
     };
@@ -188,7 +202,6 @@ export function ChannelList({ room, setChatInfo }: Prop) {
                   key={chan.id}
                   style={{ border: '1px solid white', borderRadius: '10px' }}
                 >
-                  {/* TODO: aggiungere stato effettivo */}
                   <div
                     className="d-flex"
                     onClick={(e) => selectChannel(e, chan.id, chan)}

@@ -54,7 +54,10 @@ export default function Profile() {
               <MatchList userId={userId ? userId : 0} />
             </div>
             <div className="profile-box friend-list">
-              <FriendList userId={userId ? userId : 0} />
+              <FriendList
+                userId={userId ? userId : 0}
+                friendRequests={myProfilePage}
+              />
             </div>
           </div>
         </Wrapper>

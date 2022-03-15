@@ -19,6 +19,7 @@ export default function ProfileInfo({
   const myId: number = useContext(Context).userId!;
   const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<User | null>();
+  const [friendStatus, setFriendStatus] = useState('');
 
   const navigate = useNavigate();
 
@@ -40,6 +41,20 @@ export default function ProfileInfo({
       });
     });
   }, [username]);
+
+  useEffect(() => {
+    if (!user || myProfilePage || !myId) return;
+    fetch(
+      `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getFriendStatus/` +
+        myId +
+        '?other=' +
+        user.id
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status) setFriendStatus(data.status);
+      });
+  }, [user, myProfilePage, myId]);
 
   const updateUser = async (updatedUser: User) => {
     const res = await axios.put(
@@ -63,6 +78,7 @@ export default function ProfileInfo({
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/friendRequest`,
       data
     );
+    setFriendStatus('REQUESTED');
   };
 
   return (
@@ -108,14 +124,33 @@ export default function ProfileInfo({
               </button>
             ) : (
               <>
-                <button
-                  className="game-popup-btn btn-home"
-                  onClick={sendFriendRequest}
-                >
-                  FRIEND
-                  <br />
-                  REQUEST
-                </button>
+                {!friendStatus ? (
+                  <button
+                    className="game-popup-btn btn-home"
+                    onClick={sendFriendRequest}
+                  >
+                    <>
+                      FRIEND
+                      <br />
+                      REQUEST
+                    </>
+                  </button>
+                ) : friendStatus === 'REQUESTED' ? (
+                  <button className="game-popup-btn btn-home" disabled>
+                    REQUESTED
+                  </button>
+                ) : (
+                  <button
+                    className="game-popup-btn btn-home"
+                    onClick={() => {}}
+                  >
+                    <>
+                      FRIENDLY
+                      <br />
+                      MATCH
+                    </>
+                  </button>
+                )}
                 <button className="game-popup-btn btn-play">BLOCK</button>
               </>
             )}

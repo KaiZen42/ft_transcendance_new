@@ -22,6 +22,7 @@ export default function Pong() {
   const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
 
   const [user, setUser] = useState<UserWL>();
+  const [updatedUser, setUpdatedUser] = useState<UserWL>();
   const [opponent, setOpponent] = useState<User>();
   const [winner, setWinner] = useState<number>();
   const [safe, setSafe] = useState<Socket>();
@@ -284,6 +285,7 @@ export default function Pong() {
   }, []);
 
   const restartGame = () => {
+    setUser(updatedUser);
     setOpponent(undefined);
     setWinner(undefined);
     defaultCanva();
@@ -306,7 +308,7 @@ export default function Pong() {
     )
       .then((response) => response.json())
       .then((data) => {
-        setUser({ ...data, score: 0 });
+        setUpdatedUser({ ...data, score: 0 });
       })
       .catch((error) => {
         console.error('Error:', error);

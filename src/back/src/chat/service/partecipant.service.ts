@@ -76,5 +76,14 @@ import { Partecipant } from '../models/partecipant.entity';
 	async delete(id: number) {
 	  return this.partecipantDB.delete({ id });
 	}
-  }
+
+	async update(id: number, data: any) {
+		await this.partecipantDB
+		.createQueryBuilder()
+		.update(Partecipant)
+		.set({...data})
+		.where("partecipant.id = :uId", {uId: id})
+		.execute()
+	  }
+	}
   

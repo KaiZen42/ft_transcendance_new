@@ -104,8 +104,8 @@ export interface channelRequestPkj
 
 export interface channelResponsePkj
 {
-  sender: number,
   reciver: number,
+  reciverName: string,
 	type : string
 }
 

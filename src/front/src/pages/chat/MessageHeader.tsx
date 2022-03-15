@@ -115,7 +115,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
         />
       )}
       {settingsVisibility === false && 
-      (partecipantInfo?.mod === 'o' || partecipantInfo?.mod === 'a') ? null : (
+      (partecipantInfo?.mod !== 'o' && partecipantInfo?.mod !== 'a') ? null : (
         chatInfo === undefined || chatInfo.roomId === "" ? null : 
         <GroupSettings
           isVisible={settingsVisibility}

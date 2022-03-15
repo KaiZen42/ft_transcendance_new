@@ -78,7 +78,6 @@ export function Chat(/* {user} : Prop */) {
           {pkg === undefined ? null : (
             <ChannelList room={room} setChatInfo={setChatInfo} />
           )}
-		  {console.log("ECCOLOOO", chatInfo)}
           {chatInfo === undefined ? null : (
             <div className="col-md-4 col-xl-5 chat">
               <div>

@@ -77,8 +77,8 @@ export default function UserGroup({part, on, myInfo, setRequest}: Prop)
 				<i className="fab fa-korvue" 	onClick={(e) =>  confirm("kick", user.username)}></i>
 				{
 					(part.mod === "m" ? 
-						<i className="fas fa-level-up-alt" 	onClick={(e) =>  confirm("up", user.username)}></i>
-						: <i className="fas fa-level-down-alt" 	onClick={(e) => confirm("down", user.username)}></i>)
+						<i className="fas fa-level-up-alt" 	onClick={(e) =>  confirm("upgrade", user.username)}></i>
+						: <i className="fas fa-level-down-alt" 	onClick={(e) => confirm("downgrade", user.username)}></i>)
 				}
 				<i className="fas fa-comment-slash"	onClick={(e) =>  confirm("mure", user.username)}></i>
           	</span>}

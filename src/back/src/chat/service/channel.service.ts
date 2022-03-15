@@ -158,7 +158,7 @@ export class ChannelService {
 	{
 		return this.msgService.getByChannel(id);
 	}
-
+/* 
 	async goOnline(userId: number)
 	{
 		
@@ -170,7 +170,7 @@ export class ChannelService {
 				muted: -1,
 				mod: "m",
 			});
-	}
+	} */
 
 	async goOffline(userId: number)
 	{

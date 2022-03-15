@@ -69,7 +69,6 @@ export default function App() {
 
   useEffect(() => {
     if (contextData.socket === undefined) return;
-    console.log('NOT 2 TIMES!');
     contextData.socket.on('areOnline', (ons: number[]) => {
       if (contextData.online.length === 0)
         setcontextData((pred) => {

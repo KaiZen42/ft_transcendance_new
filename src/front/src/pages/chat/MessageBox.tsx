@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { Sender } from './Sender';
 import Wrapper from '../../components/Wrapper';
-import { MessagePkg } from '../../models/Chat.interface';
+import { channelResponsePkj, MessagePkg } from '../../models/Chat.interface';
 import MessageHeader from './MessageHeader';
 import { maxHeaderSize } from 'http';
 import { emitKeypressEvents } from 'readline';
 import { Context } from '../../App';
+import { time } from 'console';
 
 interface Prop {
   room: string;
@@ -45,6 +46,23 @@ export default function MessageBox({ room }: Prop) {
         });
       socket?.on('message', messageListener);
     }
+    //TODO: capire perche stampa 3 volte
+    socket?.on('memberUpdate', (res: channelResponsePkj)=>
+    {
+      if (res.reciver === userId &&
+        (res.type === "ban" || res.type === "kick"))
+        socket.emit("leaveRoom", +room)
+      const serverMex : MessagePkg = {
+        data: `${res.reciverName} has ${res.type}ed`,
+        id: -1,
+        userId: {id:-1, username: "server"},
+        room: "",
+        sendDate: new Date()
+      };
+      setChats((prevChat) => {
+        return [...prevChat, serverMex];
+      });
+    });
   }, [socket, room]);
 
   const handleTime = (dataD: Date) => {

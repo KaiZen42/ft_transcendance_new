@@ -32,9 +32,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
       });
   }
 
-  document.getElementById('parent')?.addEventListener('click', (e) => {
-    setClick(false);
-  });
+  
 
   useEffect(() => {
     if (chatInfo?.userId !== undefined) {
@@ -45,6 +43,12 @@ export default function MessageHeader({ chatInfo }: Prop) {
     }
     console.log('RENDER HEADER: ', on, chatInfo, onlines);
     getPartecipantInfo();
+    document.getElementById('parent')?.addEventListener('click', (e) => {
+    if (e.target !== e.currentTarget) setClick(false);
+    else
+      return
+    console.log(e.target, e.currentTarget);
+  });
   }, [chatInfo, useContext(Context)]);
 
   return (
@@ -92,7 +96,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
               <i className="fas fa-ellipsis-v"></i>
             </span>
           ) : null}
-          {click === true ? (
+          {click ? (
             <div className="action_menu" style={{ zIndex: 1 }}>
               <ul>
                 <li onClickCapture={(e) => setInfoVisibility(true)}>

@@ -153,10 +153,10 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   useEffect(() => {
     document.getElementById('parent')?.addEventListener('click', (e) => {
       if (e.target !== e.currentTarget) setClick(false);
-      else setClick(true);
-      console.log(e.target, e.currentTarget);
+      else return;
+      console.log('ECCOMI', click);
     });
-  }, [click]);
+  }, []);
 
   return (
     <div className="col-md-2 col-xl-2 chat">

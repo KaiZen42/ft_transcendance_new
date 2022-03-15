@@ -69,7 +69,7 @@ export function Chat(/* {user} : Prop */) {
 
   return cont.socket === undefined ? null : (
     <Wrapper>
-      <div className="container-fluid">
+      <div id="parent" className="container-fluid">
         <div
           className="row h-50"
           style={{ marginLeft: '17%', marginRight: 'auto', width: '80%' }}

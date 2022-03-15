@@ -35,7 +35,9 @@ export default function GroupInfo(Prop: Prop) {
   const socket = useContext(Context).socket;
   const onlines = useContext(Context).online;
 
-  const [request, setRequest] = useState<channelRequestPkj | undefined>(undefined)
+  const [request, setRequest] = useState<channelRequestPkj | undefined>(
+    undefined
+  );
   const [partecipants, setPartecipants] = useState<FullPartecipant[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>();
@@ -111,34 +113,7 @@ export default function GroupInfo(Prop: Prop) {
                     style={{ marginTop: '10px' }}
                   />
                   <div className="profile-info-text username">
-                    {partecipantInfo?.mod === 'm' ||
-                    partecipantInfo?.mod === 'o' ? (
-                      Prop.chatInfo?.username
-                    ) : (
-                      <div className="row justify-content-center">
-                        <div className="col-4">
-                          <label
-                            htmlFor="username"
-                            className="text-right form-label"
-                          >
-                            username
-                          </label>
-                        </div>
-                        <>
-                          <div className="col-auto">
-                            <span className="form-text">
-                              {updatedGroup?.name}
-                            </span>
-                          </div>
-                          <div className="col-2">
-                            <i
-                              className="bi bi-pencil popup--form--icon"
-                              onClick={() => setEditUsername(true)}
-                            />
-                          </div>
-                        </>
-                      </div>
-                    )}
+                    {Prop.chatInfo?.username}
                   </div>
                   <p className="profile-info-text">
                     MODE:{' '}
@@ -163,56 +138,37 @@ export default function GroupInfo(Prop: Prop) {
                   <p className="profile-info-text username">Partecipants</p>
                   <div className="card-body contacts_body">
                     <ul className="contacts scrollable-search">
-                      {
-                        partecipants === undefined || partecipantInfo === undefined ? null : 
-                        partecipants.map((part: FullPartecipant) => 
-                        {
-                          const on = onlines.find
-                          (
-                            (el) => part.userId.id === el || part.userId.id === -el
-                          );
-                          return(
-                          partecipantInfo === undefined ? null:(
-                          <li key={ part.userId.id}>
-                            <UserGroup part={part} on={on} myInfo={partecipantInfo!} setRequest={setRequest} ></UserGroup>)
-                          </li>)
-                        )})
-                      }
+                      {partecipants === undefined ||
+                      partecipantInfo === undefined
+                        ? null
+                        : partecipants.map((part: FullPartecipant) => {
+                            const on = onlines.find(
+                              (el) =>
+                                part.userId.id === el || part.userId.id === -el
+                            );
+                            return partecipantInfo === undefined ? null : (
+                              <li key={part.userId.id}>
+                                <UserGroup
+                                  part={part}
+                                  on={on}
+                                  myInfo={partecipantInfo!}
+                                  setRequest={setRequest}
+                                ></UserGroup>
+                                )
+                              </li>
+                            );
+                          })}
                     </ul>
                   </div>
                 </div>
               </div>
-              {/* {channels.map((chan: ShortChannel, i) => {
-            return (
-              <li key={chan.id}>
-                <Stack direction="row" spacing={2}>
-                  <Avatar alt="Img" src={'./group_icon.png'} />
-                </Stack>
-                <ul
-                  className="group-contacts scrollable-search"
-                  id="horizontal-list"
-                >
-                  <div
-                    className="d-flex bd-highlight"
-                    onClick={(e) => selectChannel(e, chan)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div className="user_info">
-                      <span>{chan.name}</span>
-                      <p>{chan.id}</p>
-                      <p>{chan.mode}</p>
-                    </div>
-                  </div>
-                </ul>
-              </li>
-            );
-          })} */}
             </div>
           </div>
         </div>
       </div>
-      {request === undefined ? null :
-       <ConfirmRequest req={request} setReq={setRequest}/>}
+      {request === undefined ? null : (
+        <ConfirmRequest req={request} setReq={setRequest} />
+      )}
     </div>
   );
 }

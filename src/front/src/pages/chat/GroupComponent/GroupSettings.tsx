@@ -80,8 +80,8 @@ export default function GroupSettings(Prop: Prop) {
   async function submitChanges() {
     const requestOptions = {
       method: 'PUT',
-      /* credentials: 'include', */
       headers: { 'Content-Type': 'application/json' },
+      credientals: 'include',
       body: JSON.stringify({
         name: updatedGroup.name,
         mode: updatedGroup.mode,
@@ -89,31 +89,29 @@ export default function GroupSettings(Prop: Prop) {
         id: updatedGroup.id,
       }),
     };
-
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/UpdateGroup`,
-      requestOptions
-    );
-
-    Prop.setVisibility(false);
+    if (partecipantInfo?.mod === 'o' || partecipantInfo?.mod === 'a') {
+      await fetch(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/UpdateGroup`,
+        requestOptions
+      );
+      handleClose();
+    }
   }
 
   async function deleteGroup() {
-    if(partecipantInfo?.mod === 'o')
-    {
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveAllPartecipants/${Prop.chatInfo?.roomId}`,
-      { credentials: 'include', method: 'DELETE' }
-    );
+    if (partecipantInfo?.mod === 'o') {
+      await fetch(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveAllPartecipants/${Prop.chatInfo?.roomId}`,
+        { credentials: 'include', method: 'DELETE' }
+      );
 
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveGroup/${Prop.chatInfo?.roomId}`,
-      { credentials: 'include', method: 'DELETE' }
-    );
-    }
-    else
-      console.log("You do not have the appropiate privileges");
-    Prop.setVisibility(false);
+      await fetch(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveGroup/${Prop.chatInfo?.roomId}`,
+        { credentials: 'include', method: 'DELETE' }
+      );
+    } else console.log('You do not have the appropiate privileges');
+    handleClose();
+    window.location.reload(); /* ????? Si può fare? */
   }
 
   useEffect(() => {

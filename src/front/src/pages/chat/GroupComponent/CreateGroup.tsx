@@ -55,6 +55,15 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       });
   }
 
+  function handleKeyDown(e: any) {
+    if (e.keyCode === 13) {
+      createGroup();
+      handleClose();
+    } else if (e.key === 'Escape') {
+      handleClose();
+    }
+  }
+
   function createGroup() {
     if (groupName === '') {
       setMissingName(true);
@@ -85,6 +94,8 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
         visibility: isVisible === 'visible' ? 'visible' : 'hidden',
         opacity: '1',
       }}
+      tabIndex={1}
+      onKeyDown={(e) => handleKeyDown(e)}
       className="overlay container-fluid row justify-content-center"
     >
       <div className="col-ms-10">

@@ -473,3 +473,12 @@ input[type='password']:hover {
   align-items: center;
 }
 
+.scrollable-addUser{
+  margin-top: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 25vh;
+  padding: 25px;
+  object-position: 50% 50%;
+}
+

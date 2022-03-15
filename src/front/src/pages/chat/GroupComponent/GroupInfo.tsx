@@ -80,6 +80,12 @@ export default function GroupInfo(Prop: Prop) {
       });
   }
 
+  function handleKeyDown(e: any) {
+    if (e.key === 'Escape') {
+      Prop.setVisibility(false);
+    }
+  }
+
   useEffect(() => {
     getPartecipantInfo();
     getUsersInChan();
@@ -93,6 +99,8 @@ export default function GroupInfo(Prop: Prop) {
         opacity: '1',
       }}
       className="overlay container-fluid row justify-content-center"
+      tabIndex={1}
+      onKeyDown={(e) => handleKeyDown(e)}
     >
       <div className="col-ms-10">
         <div className="group-search mb-sm-3 mb-md-0 contacts_card ">

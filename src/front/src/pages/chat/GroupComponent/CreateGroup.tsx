@@ -160,7 +160,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                     </span>
                   </div>
                 </div>
-                <ul className="contacts scrollable-search">
+                <ul className="contacts scrollable-addUser">
                   {users.map((user: User) => {
                     const on = onlines.find(
                       (el) => user.id === el || user.id === -el

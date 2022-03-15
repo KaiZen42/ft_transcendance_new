@@ -44,7 +44,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
   }, [chatInfo, useContext(Context)]);
 
   return (
-    <div className="card-header msg_head">
+    <div className="card-header msg_head" onClick={(e) => (click ? setClick(false) : null)}> 
       <div className="d-flex bd-highlight">
         <div className="img_cont">
           <NavLink

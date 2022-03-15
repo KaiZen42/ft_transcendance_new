@@ -55,17 +55,26 @@ export function Chat(/* {user} : Prop */) {
     if (pkg === undefined) getUser();
     if (socket === undefined && cont.socket !== undefined)
       setSocket(cont.socket);
-    else if (socket !== undefined) {
+    
+  }, [pkg, socket, room]);
+
+  useEffect(() =>
+  {
+    if (socket !== undefined) {
       socket.on('viewedRoom', (roomView: string) => {
         setRoom(roomView);
         console.log('active room ;', room);
+        if (roomView === "" && chatInfo !== undefined)
+         { const preInfo = chatInfo
+          preInfo.roomId = ""
+          setChatInfo(undefined)}
       });
       socket.on('createRoom', (newRoom: string) => {
-        setRoom(newRoom);
         console.log('active room ;', room);
+        setRoom(newRoom);
       });
     }
-  }, [pkg, socket]);
+  })
 
   return cont.socket === undefined ? null : (
     <Wrapper>
@@ -85,7 +94,7 @@ export function Chat(/* {user} : Prop */) {
                   {chatInfo === undefined || chatInfo.roomId === "" ? null: 
                     <MessageHeader chatInfo={chatInfo} />
                     }
-                  {pkg === undefined ? null : <MessageBox room={room} />}
+                  {pkg === undefined || room === ""? null : <MessageBox room={room} />}
                 </div>
               </div>
               {pkg === undefined ? null : <Sender room={room} packet={pkg} />}

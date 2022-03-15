@@ -118,6 +118,8 @@ export class channelResponseDto
 	reciverName: string;
 	@IsNotEmpty()
 	type : string;
+	@IsNotEmpty()
+	room : number;
 }
   export class updateChannelDto {
 	  id: number;

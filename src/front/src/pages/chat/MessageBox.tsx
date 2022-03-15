@@ -47,11 +47,8 @@ export default function MessageBox({ room }: Prop) {
       socket?.on('message', messageListener);
     }
     //TODO: capire perche stampa 3 volte
-    socket?.on('memberUpdate', (res: channelResponsePkj)=>
+    socket?.on('messageUpdate', (res: channelResponsePkj)=>
     {
-      if (res.reciver === userId &&
-        (res.type === "ban" || res.type === "kick"))
-        socket.emit("leaveRoom", +room)
       const serverMex : MessagePkg = {
         data: `${res.reciverName} has ${res.type}ed`,
         id: -1,

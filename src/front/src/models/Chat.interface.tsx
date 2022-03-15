@@ -106,6 +106,7 @@ export interface channelResponsePkj
 {
   reciver: number,
   reciverName: string,
-	type : string
+	type : string,
+  room : number,
 }
 

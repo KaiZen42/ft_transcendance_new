@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Context } from '../../App';
 import {
   ChannelInfo,
+  channelResponsePkj,
   MessageInfoPkg,
   OpenRoomPkg,
 } from '../../models/Chat.interface';
@@ -78,6 +79,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   }
 
   async function getRoom(chanId: string) {
+    console.log("NON ENTRARE IN GET ROOM ", chanId)
     await fetch(
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelsInfoId/${chanId}`,
       { credentials: 'include' }
@@ -110,6 +112,10 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     //---------CONDITION 3 LOAD EXIST ROOM----------
     else if (room !== undefined && room !== '')
       chatInfo(channels.find((ch) => ch.id.toString() == room));
+    
+  }, [socket, room, channels]);
+
+  useEffect(()=>{
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
         let ch = channels.find((chan) => {
@@ -131,20 +137,35 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     //remove ROOM
     socket?.on('QuitRoom', (roomId: number) => {
       const idx = channels.findIndex( ch => ch.id === roomId)
+      console.log("QUITTING ", idx ,"  ", roomId, " ch ", channels)
       if (idx !== -1)
       {
+        console.log("NON DEVE ENTRARE QUI")
         setChannel((pred) =>
         {
           pred.splice(idx,1)
           return [...pred]
         })
       }
+      if (room === roomId.toString())
+        socket.emit("viewRoom", {idUser: userId, room : ""})
+    });
+
+    socket?.on('memberUpdate', (res: channelResponsePkj) => {
+      console.log("UPDATE: ", res)
+      if (res.reciver === userId &&
+        (res.type === "ban" || res.type === "kick"))
+        {
+          console.log("leave: ", res.room)
+          socket.emit("leaveRoom", res.room)
+        }
+        
     });
 
     return () => {
       socket?.removeListener('notification');
     };
-  }, [socket, room]);
+  },[])
 
   function selectUser(info: ChannelInfo) {
     return info.partecipants[0].userId.id === userId

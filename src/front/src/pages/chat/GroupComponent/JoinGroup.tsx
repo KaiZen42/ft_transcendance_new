@@ -45,14 +45,13 @@ export function JoinGroup({
   };
 
   function selectChannel(e: any, chan: ShortChannel) {
-    setReq(pred => {
-      pred.room = chan.id + "";
-      return pred})
+    const req = joinReq
+    req.room = "" + chan.id
+    setReq(req)
     if (chan.mode === "PRO")
       return  setPassVisibility("visible");
-    socket?.emit('joinRoom', joinReq);
+    socket?.emit('joinRoom', req);
     setPassVisibility("hidden");
-    setVisibility('hidden')
   }
 
   useEffect(() => {
@@ -60,16 +59,19 @@ export function JoinGroup({
         if (status)
         {
           setPassVisibility("hidden");
-          setVisibility('hidden')
           console.log("join success");
+          setVisibility('hidden')
         }
         else
         {
-          setErrorVisibility("visible")
           console.log("Join Fail")
+          if (passVisibility === "visibble")
+            setErrorVisibility("visible")
+          else
+            setErrorVisibility("internal")
         }
     })
-  }, []);
+  }, [joinReq]);
 
   return (
     <div
@@ -78,7 +80,7 @@ export function JoinGroup({
         opacity: '1',
       }}
       className="overlay container-fluid row justify-content-center"
-    >
+      /* onClick={(e)=> { if (errorVisibility === "internal") setErrorVisibility("hidden") } } */>
       <div className="col-ms-10">
       <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
         <div className="card-header">
@@ -133,7 +135,7 @@ export function JoinGroup({
         </div>
         </div>
         <div className="col-sm-5">
-          {passVisibility === "hidden"? null :
+          {passVisibility !== "visible"? null :
             <CheckPass  
             isVisible={passVisibility} 
             setVisibility={setPassVisibility} 
@@ -142,6 +144,21 @@ export function JoinGroup({
             />
           }
         </div>
+        {errorVisibility !== 'internal' ? null :
+          <div
+          className="card-footer"
+          style={{
+            visibility: errorVisibility !== 'internal'   ? 'hidden' : 'visible',
+            opacity: '1',
+          }}>
+            <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
+              <div className="card-header">
+                <div className='glow'>YOU ARE BANNED FROM THIS CHANNEL</div>
+              </div>
+            </div>
+          </div>
+        }
+        
     </div>
   );
 }

@@ -72,7 +72,7 @@ export class ChannelService {
 				.select(["channel.id"])
 				.from(Channel, "channel")
 				.leftJoin("channel.partecipants", "partecipant", "partecipant.channelId = channel.id")
-				.where("partecipant.userId = :userId", {userId: id})
+				.where("partecipant.userId = :userId AND partecipant.mod != 'b'", {userId: id})
 				.getQuery();
 			return "channel.id IN " + subQuery;
 		})
@@ -89,7 +89,7 @@ export class ChannelService {
 	{
 		const res = await this.channelDB
 		.createQueryBuilder("channel")
-		.where("channel.id = :chId", {chId: id})
+		.where("channel.id = :chId ", {chId: id})
 		.select(['channel.id', "channel.name", "channel.isPrivate",  "partecipant.id", "users.id", "users.username", "users.avatar"  ])
 		.leftJoin("channel.partecipants", "partecipant")
 		.leftJoin("partecipant.userId", "users" )
@@ -192,6 +192,7 @@ export class ChannelService {
 	async join(data: JoinRoomDto): Promise<boolean>
 	{
 		const ch:Channel = await this.getById(+data.room);
+		console.log("JOIN ", ch)
 		if ( ch === undefined || ch.isPrivate )
 			return false;
 		if ( ch.mode === "PRO" && ch.pass !== data.key )

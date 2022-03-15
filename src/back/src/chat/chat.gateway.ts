@@ -42,7 +42,7 @@ export class ChatGateway
 	private readonly userService: UserService,
     private readonly channelService: ChannelService,
     private readonly partService: PartecipantService,
-  ) {}
+  ) {} 
 
   @WebSocketServer()
   server: Server;
@@ -74,7 +74,7 @@ export class ChatGateway
 	{
 		mex.userId.id = -1;
 		mex.data = `you are banned from this channel`
-		this.server.to(mex.room).emit('message', mex);
+		this.server.to(client.id).emit('message', mex);
 		return;
 	}
     const msg: Message = new Message();
@@ -145,12 +145,14 @@ export class ChatGateway
     client: Socket,
     data: JoinRoomDto,
   ): Promise<WsResponse<boolean>> {
-    client.join(data.room);
-    if (await this.partService.isPartecipant(+data.room, data.idUser)) {
+    const user = await this.partService.getPartecipantByUserAndChan(data.idUser, +data.room)
+    console.log("USER ", user )
+    if (user !== undefined && user.mod !== "b") {
       this.server.to(client.id).emit('createRoom', data.room);
       return { event: 'joinedStatus', data: true };
-    } else if (await this.channelService.join(data)) {
+    } else if  (user === undefined && await this.channelService.join(data)) {
       this.logger.log(`JOIN TO ${data.room} SUCCESS`);
+      //client.join(data.room);
       this.server.to(client.id).emit('createRoom', data.room);
       return { event: 'joinedStatus', data: true };
     }
@@ -164,6 +166,7 @@ export class ChatGateway
   {
 		client.leave(roomId + "")
 		this.server.to(client.id).emit("QuitRoom", roomId)
+    console.log("DIO BESTIA MISTICA")
   }
 
   @SubscribeMessage('openRoom')
@@ -251,9 +254,12 @@ export class ChatGateway
 	const response: channelResponseDto = {
 		reciver: req.reciver,
 		reciverName: (await this.userService.getById(req.reciver)).username,
-		type: req.type
+		type: req.type,
+    room: req.channelId
 	}
     this.server.to(req.channelId.toString()).emit('memberUpdate', response);
+    this.server.to(req.channelId.toString()).emit('messageUpdate', response);
+    
 	//this.server.to(req.channelId.toString()).emit('memberNotification', response);
 
 	

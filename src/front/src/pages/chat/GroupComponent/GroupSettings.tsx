@@ -98,6 +98,7 @@ export default function GroupSettings(Prop: Prop) {
     }
   }
 
+  //TODO: make it whith socket
   async function deleteGroup() {
     if (partecipantInfo?.mod === 'o') {
       await fetch(

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface FriendRequest {
   id: number;
@@ -23,21 +24,31 @@ interface FriendAccepted {
   };
 }
 
-export default function FriendList({ userId }: { userId: number }) {
+export default function FriendList({
+  userId,
+  friendRequests,
+}: {
+  userId: number;
+  friendRequests: boolean;
+}) {
   const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [friends, setFriends] = useState<FriendRequest[]>([]);
   const [updated, setUpdated] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (!updated) return;
     setUpdated(false);
-    fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getRequests/${userId}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setRequests(data);
-      });
+    if (friendRequests) {
+      fetch(
+        `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getRequests/${userId}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setRequests(data);
+        });
+    }
     fetch(
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getFriends/${userId}`
     )
@@ -51,7 +62,7 @@ export default function FriendList({ userId }: { userId: number }) {
           })
         );
       });
-  }, [updated]);
+  }, [updated, friendRequests]);
 
   useEffect(() => {
     setUpdated(true);
@@ -89,12 +100,17 @@ export default function FriendList({ userId }: { userId: number }) {
       </div>
       <div className="friends-items">
         <div className="friend-requests">
-          {requests.length ? (
+          {friendRequests && requests.length ? (
             <>
               <h3>requests</h3>
               {requests.map((req) => (
                 <div className="friend-item">
-                  <div style={{ paddingLeft: '1rem' }}>
+                  <div
+                    style={{ paddingLeft: '1rem', cursor: 'pointer' }}
+                    onClick={() =>
+                      navigate('/users/' + req.requesting.username)
+                    }
+                  >
                     <img
                       src={req.requesting.avatar}
                       alt=""
@@ -128,7 +144,10 @@ export default function FriendList({ userId }: { userId: number }) {
         <div className="friends-accepted">
           {friends.map((friend) => (
             <div className="friend-item">
-              <div style={{ paddingLeft: '1rem' }}>
+              <div
+                style={{ paddingLeft: '1rem', cursor: 'pointer' }}
+                onClick={() => navigate('/users/' + friend.requesting.username)}
+              >
                 <img
                   src={friend.requesting.avatar}
                   alt=""
@@ -138,12 +157,14 @@ export default function FriendList({ userId }: { userId: number }) {
                 <p>{friend.requesting.username}</p>
               </div>
               <div>
-                <button
-                  className="game-popup-btn btn-home"
-                  onClick={() => declineFriend(friend.id)}
-                >
-                  unfriend
-                </button>
+                {friendRequests && (
+                  <button
+                    className="game-popup-btn btn-home"
+                    onClick={() => declineFriend(friend.id)}
+                  >
+                    unfriend
+                  </button>
+                )}
               </div>
             </div>
           ))}

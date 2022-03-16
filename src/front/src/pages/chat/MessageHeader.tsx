@@ -122,13 +122,13 @@ export default function MessageHeader({ chatInfo }: Prop) {
         </div>
         <div className="user_info">
           <span>{chatInfo?.username}</span>
-            <span
-              id="action_menu_btn"
-              style={{ zIndex: 0 }}
-              onClick={(e) => setClick(!click)}
-            >
-              <i className="fas fa-ellipsis-v"></i>
-            </span>
+          <span
+            id="action_menu_btn"
+            style={{ zIndex: 0 }}
+            onClick={(e) => setClick(!click)}
+          >
+            <i className="fas fa-ellipsis-v"></i>
+          </span>
           {chatInfo?.avatar === undefined && click === true ? (
             <div className="action_menu" style={{ zIndex: 1 }}>
               <ul>
@@ -151,8 +151,9 @@ export default function MessageHeader({ chatInfo }: Prop) {
                   <i className="fas fa-ban"></i> {(otherPartecipant !== undefined && otherPartecipant.mod !== "b") ?
                     "Block" : "Unblock"}
                 </li>
-				</ul>
-				</div>): null}
+              </ul>
+            </div>
+          ) : null}
           <p>{chatInfo?.avatar === undefined ? 'Gente' : null}</p>
         </div>
       </div>

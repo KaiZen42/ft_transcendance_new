@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { Socket } from 'socket.io';
 import { Context } from '../App';
 import { User } from '../models/User.interface';
 import ProfilePopUp from './ProfilePopUp';
@@ -10,17 +11,20 @@ export default function ProfileInfo({
   setUsername,
   myProfilePage,
   setUserId,
+  me,
 }: {
   username: string;
   setUsername: (newName: string) => void;
   myProfilePage: boolean;
   setUserId: (id: number) => void;
+  me: User | null;
 }) {
-  const myId: number = useContext(Context).userId!;
+  //const myId: number = useContext(Context).userId!;
   const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<User | null>();
   const [friendStatus, setFriendStatus] = useState('');
   const onlines = useContext(Context).online;
+  const socket = useContext(Context).socket;
 
   const navigate = useNavigate();
 
@@ -50,19 +54,18 @@ export default function ProfileInfo({
   }, [username]);
 
   useEffect(() => {
-    if (!user || myProfilePage || !myId) return;
+    if (!user || myProfilePage || !me) return;
     fetch(
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getFriendStatus/` +
-        myId +
+        me.id +
         '?other=' +
         user.id
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data.status) setFriendStatus(data.status);
       });
-  }, [user, myProfilePage, myId, username]);
+  }, [user, myProfilePage, me, username]);
 
   const updateUser = async (updatedUser: User) => {
     await axios.put(
@@ -79,7 +82,7 @@ export default function ProfileInfo({
 
   const sendFriendRequest = () => {
     const data = {
-      requesting: myId,
+      requesting: me?.id,
       receiving: user?.id,
     };
     axios.post(
@@ -87,6 +90,21 @@ export default function ProfileInfo({
       data
     );
     setFriendStatus('REQUESTED');
+  };
+
+  const friendlyMatch = () => {
+    socket!.emit('friendlyMatch', {
+      requesting: { id: me?.id, username: me?.username },
+      receving: user?.id,
+    });
+    navigate('/game', {
+      state: {
+        id: user?.id,
+        username: user?.username,
+        avatar: user?.avatar,
+        requesting: true,
+      },
+    });
   };
 
   return (
@@ -164,7 +182,7 @@ export default function ProfileInfo({
                 ) : (
                   <button
                     className="game-popup-btn btn-home"
-                    onClick={() => {}}
+                    onClick={friendlyMatch}
                     disabled={checkOnline(user.id) === 'offline'}
                   >
                     <>

@@ -40,6 +40,7 @@ export default function Profile() {
             <div className="profile-box profile-info">
               <ProfileInfo
                 username={username}
+                me={me ? me : null}
                 setUsername={(newName: string) =>
                   setMe((prevMe) => ({
                     ...prevMe!,

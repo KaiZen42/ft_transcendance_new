@@ -121,7 +121,7 @@ export default function FriendList({
             <>
               <h3>requests</h3>
               {requests.map((req) => (
-                <div className="friend-item">
+                <div key={req.id} className="friend-item">
                   <div
                     onClick={() =>
                       navigate('/users/' + req.requesting.username)
@@ -164,7 +164,7 @@ export default function FriendList({
           {friends.length ? (
             <>
               {friends.map((friend) => (
-                <div className="friend-item">
+                <div key={friend.id} className="friend-item">
                   <div
                     onClick={() =>
                       navigate('/users/' + friend.requesting.username)

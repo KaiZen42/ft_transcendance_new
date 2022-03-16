@@ -44,7 +44,6 @@ export default function GamePopUp({
   }, [winner]);
 
   const calcPoints = (iWin: boolean) => {
-    console.log('AA');
     let points: number, diff, winl: [number, number];
     if (iWin) {
       points = users[0]!.points + 30;

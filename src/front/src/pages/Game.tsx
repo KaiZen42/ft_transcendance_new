@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import socketIOClient, { Socket } from 'socket.io-client';
 import { Context } from '../App';
 import opponent_img from '../assets/opponent.jpeg';
@@ -16,6 +16,14 @@ import {
 
 import '../styles/Game.css';
 
+interface GameFriend {
+  id: number;
+  username: string;
+  avatar: string;
+  requesting: boolean;
+  idRequesting?: number;
+}
+
 export default function Pong() {
   const contextSocket: Socket = useContext(Context).socket!;
   const userId: number = useContext(Context).userId!;
@@ -27,7 +35,12 @@ export default function Pong() {
   const [winner, setWinner] = useState<number>();
   const [safe, setSafe] = useState<Socket>();
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const friend: GameFriend = useLocation().state as GameFriend;
+
+  useEffect(() => {
+    console.log(friend);
+  }, []);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let socket: Socket;
@@ -209,13 +222,21 @@ export default function Pong() {
   };
 
   const joinGame = (tmp_user: UserWL) => {
-    socket.emit('joinGame', {
+    const sendInfo = {
       id: tmp_user.id,
       username: tmp_user.username,
       points: tmp_user.points,
       avatar: tmp_user.avatar,
-    });
+    };
 
+    if (friend) {
+      friend.requesting
+        ? socket.emit('createFriendlyMatch', sendInfo)
+        : socket.emit('acceptFriendlyMatch', {
+            user: sendInfo,
+            friendId: friend.idRequesting,
+          });
+    } else socket.emit('joinGame', sendInfo);
     document.addEventListener('keydown', keydown);
     document.addEventListener('keyup', keyup);
   };
@@ -228,7 +249,13 @@ export default function Pong() {
     socket.on('gameOver', handleGameOver);
     socket.on('playerNumber', handlePlayerNumber);
     socket.on('players', handlePlayers);
+    socket.on('friendlyMatchExpired', handleExpired);
     setSafe(socket);
+  };
+
+  const handleExpired = () => {
+    drawRect(0, 0, canvas.width, canvas.height, 'rgba(0, 0, 0)');
+    drawText(`Invitation Expired`, 375, 40, 'white');
   };
 
   const defaultCanva = () => {
@@ -236,7 +263,8 @@ export default function Pong() {
     ctx = canvas.getContext('2d')!;
     canvas.width = 750;
     canvas.height = 40;
-    drawText('Searching for an opponent...', 375, 40, 'white');
+    if (friend) drawText(`Waiting for your friend...`, 375, 40, 'white');
+    else drawText('Searching for an opponent...', 375, 40, 'white');
   };
 
   const startCountdown = () => {
@@ -348,6 +376,15 @@ export default function Pong() {
                 <p className="game-text">
                   {opponent.points} <small>pts</small>
                 </p>
+              </>
+            ) : friend && friend.requesting ? (
+              <>
+                <img
+                  alt="profile"
+                  src={friend.avatar}
+                  className="game--image game-opponent"
+                />
+                <p className="game-text">{friend.username}</p>
               </>
             ) : (
               <img

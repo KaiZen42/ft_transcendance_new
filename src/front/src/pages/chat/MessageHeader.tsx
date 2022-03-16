@@ -83,10 +83,10 @@ export default function MessageHeader({ chatInfo }: Prop) {
       if (e.target !== e.currentTarget) setClick(false);
       else return;
     });
+    getPartecipantInfo();
   }, [chatInfo, useContext(Context), otherPartecipant]);
 
   useEffect(() => {
-    getPartecipantInfo();
   }, []);
 
   return (

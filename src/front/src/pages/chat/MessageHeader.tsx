@@ -77,17 +77,27 @@ export default function MessageHeader({ chatInfo }: Prop) {
         onlines.find((el) => chatInfo.userId === el || chatInfo.userId === -el)
       );
     }
-    console.log('RENDER HEADER: ', on, chatInfo, onlines);
+    console.log('RENDER HEADER: ', on, chatInfo, onlines, ' click ' + click);
+    //--------click event listener---------
+    document.getElementById('parent')?.addEventListener('click', clicker);
+    return () => {
+      document.getElementById('parent')?.removeEventListener('click', clicker);
+    };
+  }, [chatInfo, useContext(Context), otherPartecipant, click]);
 
-    document.getElementById('parent')?.addEventListener('click', (e) => {
-      if (e.target !== e.currentTarget) setClick(false);
-      else return;
-    });
-  }, [chatInfo, useContext(Context), otherPartecipant]);
+  function clicker(e: any) {
+    if (document.getElementById('prova') === e.target) {
+      setClick(!click);
+    } else if (click) {
+      setClick(false);
+    }
+  }
 
   useEffect(() => {
+    console.log('INIT ', click);
+
     getPartecipantInfo();
-  }, []);
+  }, [chatInfo]);
 
   return (
     <div className="card-header msg_head">
@@ -125,12 +135,12 @@ export default function MessageHeader({ chatInfo }: Prop) {
         </div>
         <div className="user_info">
           <span>{chatInfo?.username}</span>
-          <span
-            id="action_menu_btn"
-            style={{ zIndex: 0 }}
-            onClick={(e) => setClick(!click)}
-          >
-            <i className="fas fa-ellipsis-v"></i>
+          <span id="action_menu_btn" style={{ zIndex: 0 }}>
+            <i
+              id="prova"
+              className="fas fa-ellipsis-v"
+              /* onClick={(e) => setClick(!click)} */
+            ></i>
           </span>
           {chatInfo?.avatar === undefined && click === true ? (
             <div className="action_menu" style={{ zIndex: 1 }}>

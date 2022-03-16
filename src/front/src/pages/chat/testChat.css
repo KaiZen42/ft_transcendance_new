@@ -482,3 +482,10 @@ input[type='password']:hover {
   object-position: 50% 50%;
 }
 
+.icon-container
+{
+  margin-top: 20px;
+  margin-left: 40px;
+  color: white;
+}
+

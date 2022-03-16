@@ -16,9 +16,9 @@ interface Prop {
 let key: number = 0;
 export default function MessageBox({ room }: Prop) {
   const userId = useContext(Context).userId;
-  const socket = useContext(Context).socket
+  const socket = useContext(Context).socket;
   const [chats, setChats] = useState<MessagePkg[]>([]);
-  console.log('Render mex box');
+  console.log('Render mex box of '+ room);
 
   const messageListener = (message: MessagePkg) => {
     //let newChat = chats;
@@ -33,11 +33,9 @@ export default function MessageBox({ room }: Prop) {
 
   useEffect(() => {
     console.log('ACTUAL ROOM ', room);
-    
   }, [socket, room]);
 
-  useEffect (()=>
-  {
+  useEffect(() => {
     if (chats.length === 0 || chats[0].room !== room) {
       fetch(
         `http://${
@@ -49,24 +47,34 @@ export default function MessageBox({ room }: Prop) {
         .then((result) => {
           setChats(result);
         });
-      socket?.on('message', messageListener);
+      
     }
     //TODO: capire perche stampa 3 volte
-    socket?.on('messageUpdate', (res: channelResponsePkj)=>
-    {
-      const serverMex : MessagePkg = {
+    
+  }, [room]);
+
+  useEffect(()=>
+  {
+    socket?.on('messageUpdate', (res: channelResponsePkj) => {
+      const serverMex: MessagePkg = {
         data: `${res.reciverName} has ${res.type}ed`,
         id: -1,
-        userId: {id:-1, username: "server"},
-        room: "",
-        sendDate: new Date()
+        userId: { id: -1, username: 'server' },
+        room: '',
+        sendDate: new Date(),
       };
       setChats((prevChat) => {
         return [...prevChat, serverMex];
       });
     });
     
-  },[])
+    socket?.on('message', messageListener);
+    
+    return () => {
+      socket?.removeListener('messageUpdate');
+      socket?.removeListener('message');
+    };
+  },[room])
 
   const handleTime = (dataD: Date) => {
     let data = new Date(dataD);

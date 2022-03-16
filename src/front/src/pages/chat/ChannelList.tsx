@@ -30,6 +30,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   //const [openRoomPkg, setOpenPkg] = useState();
 
   function chatInfo(current: ChannelInfo | undefined) {
+    console.log("NON ENTRARE IN INFO")
     if (current?.isPrivate) {
       setChatInfo({
         userId: selectUser(current)?.id,
@@ -79,7 +80,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   }
 
   async function getRoom(chanId: string) {
-    console.log("NON ENTRARE IN GET ROOM ", chanId)
+    console.log('NON ENTRARE IN GET ROOM ', chanId);
     await fetch(
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelsInfoId/${chanId}`,
       { credentials: 'include' }
@@ -98,11 +99,11 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       });
   }
 
+
+  
   useEffect(() => {
-    //---------CONDITION 1 FIRST RENDER----------
-    if (channels.length == 0) getRooms();
     //---------CONDITION 2 ADD NEW ROOM----------
-    else if (
+    if (
       room !== undefined &&
       room !== '' &&
       !channels.find((ch) => ch.id.toString() == room)
@@ -112,10 +113,36 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     //---------CONDITION 3 LOAD EXIST ROOM----------
     else if (room !== undefined && room !== '')
       chatInfo(channels.find((ch) => ch.id.toString() == room));
-    
-  }, [socket, room, channels]);
+  }, [socket, room]);
 
-  useEffect(()=>{
+
+  //----------------------remove ROOM
+useEffect(()=>
+{
+  socket?.on('QuitRoom', (roomId: number) => {
+    const idx = channels.findIndex((ch) => ch.id === roomId);
+    console.log('QUITTING ', idx, '  ', roomId, ' ch ', channels);
+    if (idx !== -1) {
+      console.log('NON DEVE ENTRARE QUI');
+      setChannel((pred) => {
+        pred.splice(idx, 1);
+        return [...pred];
+      });
+    }
+    if (room === roomId.toString())
+      socket.emit('viewRoom', { idUser: userId, room: '' });
+  });
+
+  return(()=>
+  { socket?.removeListener('QuitRoom');
+  })
+},[channels])
+
+  useEffect(() => {
+    //---------CONDITION 1 FIRST RENDER----------
+    if (channels.length == 0) getRooms();
+
+    //---------SOCKET ON-------------
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
         let ch = channels.find((chan) => {
@@ -134,39 +161,27 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       }
     });
 
-    //remove ROOM
-    socket?.on('QuitRoom', (roomId: number) => {
-
-      const idx = channels.findIndex( ch => ch.id === roomId)
-      console.log("QUITTING ", idx ,"  ", roomId, " ch ", channels)
-      if (idx !== -1)
-      {
-        console.log("NON DEVE ENTRARE QUI")
-        setChannel((pred) =>
-        {
-          pred.splice(idx,1)
-          return [...pred]
-        })
-      }
-      if (room === roomId.toString())
-        socket.emit("viewRoom", {idUser: userId, room : ""})
-    });
+    socket?.on('deleted', (res: number) => {
+      socket.emit('leaveRoom', res);
+    })
 
     socket?.on('memberUpdate', (res: channelResponsePkj) => {
-      console.log("UPDATE: ", res)
-      if (res.reciver === userId &&
-        (res.type === "ban" || res.type === "kick"))
-        {
-          console.log("leave: ", res.room)
-          socket.emit("leaveRoom", res.room)
-        }
-        
+      console.log('UPDATE: ', res);
+      if (
+        res.reciver === userId &&
+        (res.type === 'ban' || res.type === 'kick' )
+      ) {
+        socket.emit('leaveRoom', res.room);
+      } 
     });
 
     return () => {
       socket?.removeListener('notification');
+      socket?.removeListener('createdPrivateRoom');
+      socket?.removeListener('memberUpdate');
+      socket?.removeListener('deleted');
     };
-  },[])
+  }, []);
 
   function selectUser(info: ChannelInfo) {
     return info.partecipants[0].userId.id === userId
@@ -174,13 +189,20 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       : info.partecipants[0].userId;
   }
 
+  function clicker(e: any) {
+    if (document.getElementById('prova1') === e.target) {
+      setClick(!click);
+    } else if (click) {
+      setClick(false);
+    }
+  }
+
   useEffect(() => {
-    document.getElementById('parent')?.addEventListener('click', (e) => {
-      if (e.target !== e.currentTarget) setClick(false);
-      else return;
-      console.log('ECCOMI', click);
-    });
-  }, []);
+    document.getElementById('parent')?.addEventListener('click', clicker);
+    return () => {
+      document.getElementById('parent')?.removeEventListener('click', clicker);
+    };
+  }, [click]);
 
   return (
     <div className="col-md-2 col-xl-2 chat">
@@ -191,9 +213,9 @@ export function ChannelList({ room, setChatInfo }: Prop) {
             <span
               id="action_menu_btn"
               style={{ zIndex: 0 }}
-              onClick={(e) => setClick(!click)}
+              /* onClick={(e) => setClick(!click)} */
             >
-              <i className="fas fa-ellipsis-v"></i>
+              <i id="prova1" className="fas fa-ellipsis-v"></i>
             </span>
             {click === true ? (
               <div className="action_menu" style={{ zIndex: 1 }}>
@@ -210,6 +232,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
           </div>
         </div>
         <div className="card-body contacts_body">
+          {console.log("CHANNS",channels)}
           <ul className="contacts">
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;

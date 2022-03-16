@@ -307,6 +307,10 @@ export default function Pong() {
     initSocket();
     return () => {
       if (contextSocket) contextSocket.emit('NotInGame', user);
+      contextSocket?.removeListener('gameState');
+      contextSocket?.removeListener('gameOver');
+      contextSocket?.removeListener('playerNumber');
+      contextSocket?.removeListener('players');
       socket.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

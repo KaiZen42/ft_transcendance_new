@@ -141,7 +141,7 @@ export class chatController {
 	@Delete("RemoveAllPartecipants/:chanId")
 	async RemoveAllPartecipants(@Param("chanId") chanId: number)
 	{
-		await this.partService.deleteAll(chanId);
+		await this.partService.deleteAllByChan(chanId);
 	}
 
 

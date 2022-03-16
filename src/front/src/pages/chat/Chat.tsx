@@ -51,30 +51,42 @@ export function Chat(/* {user} : Prop */) {
       });
   }
 
+   //-----------PKG OR SOCKET UPDATE
   useEffect(() => {
     if (pkg === undefined) getUser();
     if (socket === undefined && cont.socket !== undefined)
       setSocket(cont.socket);
-    
   }, [pkg, socket, room]);
+  
+  //-----------VIEW LISTENER
+  useEffect(() => {
+    socket?.on('viewedRoom', (roomView: string) => {
+      setRoom(roomView);
+      console.log('active room ;', room);
+      if (roomView === "" && chatInfo !== undefined)
+        { const preInfo = chatInfo
+        preInfo.roomId = ""
+        setChatInfo(undefined)}
+    });
+
+  return () => {
+    socket?.removeListener('viewedRoom');
+  };
+  }, [pkg, socket, room, chatInfo]);
 
   useEffect(() =>
   {
     if (socket !== undefined) {
-      socket.on('viewedRoom', (roomView: string) => {
-        setRoom(roomView);
-        console.log('active room ;', room);
-        if (roomView === "" && chatInfo !== undefined)
-         { const preInfo = chatInfo
-          preInfo.roomId = ""
-          setChatInfo(undefined)}
-      });
+      
       socket.on('createRoom', (newRoom: string) => {
         console.log('active room ;', room);
         setRoom(newRoom);
       });
     }
-  })
+    return () => {
+      socket?.removeListener('createRoom');
+    };
+  },[socket])
 
   return cont.socket === undefined ? null : (
     <Wrapper>
@@ -87,14 +99,15 @@ export function Chat(/* {user} : Prop */) {
           {pkg === undefined ? null : (
             <ChannelList room={room} setChatInfo={setChatInfo} />
           )}
-          {chatInfo === undefined ? null : (
+          {chatInfo === undefined || chatInfo.roomId === ""|| room === ""? 
+          null : (
             <div className="col-md-4 col-xl-5 chat">
               <div>
                 <div className="card">
-                  {chatInfo === undefined || chatInfo.roomId === "" ? null: 
+                  {chatInfo === undefined  ? null: 
                     <MessageHeader chatInfo={chatInfo} />
                     }
-                  {pkg === undefined || room === ""? null : <MessageBox room={room} />}
+                  {pkg === undefined || room === undefined? null : <MessageBox room={room} />}
                 </div>
               </div>
               {pkg === undefined ? null : <Sender room={room} packet={pkg} />}

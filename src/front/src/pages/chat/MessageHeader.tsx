@@ -3,7 +3,11 @@ import { Avatar } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Context } from '../../App';
-import { channelRequestPkj, ChatInfo, Partecipant } from '../../models/Chat.interface';
+import {
+  channelRequestPkj,
+  ChatInfo,
+  Partecipant,
+} from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
 import GroupInfo from './GroupComponent/GroupInfo';
 import GroupSettings from './GroupComponent/GroupSettings';
@@ -32,9 +36,9 @@ export default function MessageHeader({ chatInfo }: Prop) {
       .then((result) => {
         setPartecipantInfo(result);
       });
-    
-      //console.log("other ", chatInfo, otherPartecipant)
-      if (chatInfo?.userId !== undefined){
+
+    //console.log("other ", chatInfo, otherPartecipant)
+    if (chatInfo?.userId !== undefined) {
       await fetch(
         `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${chatInfo?.roomId}/${chatInfo?.userId}`,
         { credentials: 'include' }
@@ -42,25 +46,28 @@ export default function MessageHeader({ chatInfo }: Prop) {
         .then((response) => response.json())
         .then((result) => {
           setOtherPartecipant(result);
-        });}
+        });
+    }
   }
 
-  function blockUser()
-  {
-    console.log("BLOCK/UNBLOCK ", chatInfo, otherPartecipant)
-    if (chatInfo !== undefined && chatInfo.userId !== undefined && otherPartecipant !== undefined)
-    {
-      const req : channelRequestPkj = {
+  function blockUser() {
+    console.log('BLOCK/UNBLOCK ', chatInfo, otherPartecipant);
+    if (
+      chatInfo !== undefined &&
+      chatInfo.userId !== undefined &&
+      otherPartecipant !== undefined
+    ) {
+      const req: channelRequestPkj = {
         sender: userId,
         reciver: chatInfo.userId,
         channelId: +chatInfo.roomId,
-        type: otherPartecipant.mod === "m" ? "Block" : "Unblock",
+        type: otherPartecipant.mod === 'm' ? 'Block' : 'Unblock',
         reciverName: chatInfo.username,
-      }
-      socket?.emit("BlockUser", req)
+      };
+      socket?.emit('BlockUser', req);
       const ot = otherPartecipant;
-      ot.mod =  (req.type === "Block" ? "b" : "m")
-      setOtherPartecipant(ot)
+      ot.mod = req.type === 'Block' ? 'b' : 'm';
+      setOtherPartecipant(ot);
     }
   }
 
@@ -71,20 +78,16 @@ export default function MessageHeader({ chatInfo }: Prop) {
       );
     }
     console.log('RENDER HEADER: ', on, chatInfo, onlines);
-    
-    
+
     document.getElementById('parent')?.addEventListener('click', (e) => {
       if (e.target !== e.currentTarget) setClick(false);
-      else
-        return
+      else return;
     });
-  }, [chatInfo, useContext(Context),otherPartecipant]);
+  }, [chatInfo, useContext(Context), otherPartecipant]);
 
-
-  useEffect(()=>
-  {
+  useEffect(() => {
     getPartecipantInfo();
-  },[])
+  }, []);
 
   return (
     <div className="card-header msg_head">
@@ -143,13 +146,26 @@ export default function MessageHeader({ chatInfo }: Prop) {
                 ) : null}
               </ul>
             </div>
-          ) : click === true ? (<div className="action_menu" style={{ zIndex: 1 }}><ul>
-                <li onClickCapture={(e) => setInfoVisibility(true)/*TODO: ROOT TO USER PROFILE*/}>
-                  <i className="fas fa-user"></i> User Profile
-                </li>
-				<li onClickCapture={(e) => blockUser() }>
-                  <i className="fas fa-ban"></i> {(otherPartecipant !== undefined && otherPartecipant.mod !== "b") ?
-                    "Block" : "Unblock"}
+          ) : click === true ? (
+            <div className="action_menu" style={{ zIndex: 1 }}>
+              <ul>
+                <NavLink
+                  to={
+                    chatInfo?.avatar === undefined
+                      ? ''
+                      : '/users/' + chatInfo?.username
+                  }
+                >
+                  <li>
+                    <i className="fas fa-user"></i> User Profile
+                  </li>
+                </NavLink>
+                <li onClickCapture={(e) => blockUser()}>
+                  <i className="fas fa-ban"></i>{' '}
+                  {otherPartecipant !== undefined &&
+                  otherPartecipant.mod !== 'b'
+                    ? 'Block'
+                    : 'Unblock'}
                 </li>
               </ul>
             </div>

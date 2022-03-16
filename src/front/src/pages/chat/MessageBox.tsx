@@ -47,9 +47,14 @@ export default function MessageBox({ room }: Prop) {
         .then((result) => {
           setChats(result);
         });
-      socket?.on('message', messageListener);
+      
     }
     //TODO: capire perche stampa 3 volte
+    
+  }, [room]);
+
+  useEffect(()=>
+  {
     socket?.on('messageUpdate', (res: channelResponsePkj) => {
       const serverMex: MessagePkg = {
         data: `${res.reciverName} has ${res.type}ed`,
@@ -62,7 +67,14 @@ export default function MessageBox({ room }: Prop) {
         return [...prevChat, serverMex];
       });
     });
-  }, [room]);
+    
+    socket?.on('message', messageListener);
+    
+    return () => {
+      socket?.removeListener('messageUpdate');
+      socket?.removeListener('message');
+    };
+  },[])
 
   const handleTime = (dataD: Date) => {
     let data = new Date(dataD);

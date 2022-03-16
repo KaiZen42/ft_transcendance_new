@@ -77,6 +77,9 @@ export function JoinGroup({
             setErrorVisibility("internal")
         }
     })
+    return () => {
+      socket?.removeListener('joinedStatus');
+    };
   }, [joinReq]);
 
   return (

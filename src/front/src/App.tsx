@@ -120,6 +120,13 @@ export default function App() {
           return { ...pred };
         });
     });
+    return () => {
+      contextData.socket?.removeListener('areOnline');
+      contextData.socket?.removeListener('areNowOnline');
+      contextData.socket?.removeListener('areNowInGame');
+      contextData.socket?.removeListener('areNotInGame');
+      contextData.socket?.removeListener('areNowOffline');
+    };
   }, [contextData.socket]);
 
   return (

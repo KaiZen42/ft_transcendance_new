@@ -99,10 +99,8 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   }
 
   useEffect(() => {
-    //---------CONDITION 1 FIRST RENDER----------
-    if (channels.length == 0) getRooms();
     //---------CONDITION 2 ADD NEW ROOM----------
-    else if (
+    if (
       room !== undefined &&
       room !== '' &&
       !channels.find((ch) => ch.id.toString() == room)
@@ -116,6 +114,10 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   }, [socket, room, channels]);
 
   useEffect(()=>{
+    //---------CONDITION 1 FIRST RENDER----------
+    if (channels.length == 0) getRooms();
+
+    //---------SOCKET ON-------------
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
         let ch = channels.find((chan) => {
@@ -165,6 +167,9 @@ export function ChannelList({ room, setChatInfo }: Prop) {
 
     return () => {
       socket?.removeListener('notification');
+      socket?.removeListener('createdPrivateRoom');
+      socket?.removeListener('memberUpdate');
+      socket?.removeListener('QuitRoom');
     };
   },[])
 

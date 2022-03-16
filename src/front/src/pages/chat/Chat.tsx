@@ -74,7 +74,11 @@ export function Chat(/* {user} : Prop */) {
         setRoom(newRoom);
       });
     }
-  })
+    return () => {
+      socket?.removeListener('viewedRoom');
+      socket?.removeListener('createRoom');
+    };
+  },[socket])
 
   return cont.socket === undefined ? null : (
     <Wrapper>

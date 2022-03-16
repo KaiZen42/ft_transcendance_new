@@ -33,6 +33,11 @@ export default function MessageBox({ room }: Prop) {
 
   useEffect(() => {
     console.log('ACTUAL ROOM ', room);
+    
+  }, [socket, room]);
+
+  useEffect (()=>
+  {
     if (chats.length === 0 || chats[0].room !== room) {
       fetch(
         `http://${
@@ -60,7 +65,8 @@ export default function MessageBox({ room }: Prop) {
         return [...prevChat, serverMex];
       });
     });
-  }, [socket, room]);
+    
+  },[])
 
   const handleTime = (dataD: Date) => {
     let data = new Date(dataD);

@@ -76,7 +76,7 @@ import { Partecipant } from '../models/partecipant.entity';
 	  return this.partecipantDB.delete({ id });
 	}
 
-	async deleteAll(chanId: number)
+	async deleteAllByChan(chanId: number)
 	{
 		return await this.partecipantDB
 		.createQueryBuilder()

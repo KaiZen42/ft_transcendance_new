@@ -298,9 +298,33 @@ export class ChatGateway
     this.server.to(req.channelId.toString()).emit('messageUpdate', response);
     
 	//this.server.to(req.channelId.toString()).emit('memberNotification', response);
-
-	
   }
 
+
+  @SubscribeMessage('DeleteChan')
+  async deleteRoom(client: Socket, data: viewRoomDto) {
+    this.logger.log(`DELETE REQEST ${data.idUser} in ${data.room}`);
+    const sender = await this.partService.getPartecipantByUserAndChan(data.idUser, +data.room)
+    if (sender !== undefined && sender.mod === "o")
+    {
+      const response: channelResponseDto = {
+        reciver: -1,
+        reciverName: "",
+        type: "delete",
+        room: +data.room
+      }
+
+      this.logger.log(`DELETE REQEST ACCEPTED`);
+      await this.partService.deleteAllByChan(+data.room)
+      await this.messageService.deleteByChan(+data.room)
+      await this.channelService.delete(+data.room)
+      this.server.to(data.room).emit("deleted", +data.room)
+      this.server.to(data.room).emit("messageUpdate", response)
+    }
+    
+
+    
+    return { event: 'viewedRoom', data: '' + data.room };
+  }
   
 }

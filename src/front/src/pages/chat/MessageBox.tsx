@@ -18,7 +18,7 @@ export default function MessageBox({ room }: Prop) {
   const userId = useContext(Context).userId;
   const socket = useContext(Context).socket;
   const [chats, setChats] = useState<MessagePkg[]>([]);
-  console.log('Render mex box');
+  console.log('Render mex box of '+ room);
 
   const messageListener = (message: MessagePkg) => {
     //let newChat = chats;
@@ -74,7 +74,7 @@ export default function MessageBox({ room }: Prop) {
       socket?.removeListener('messageUpdate');
       socket?.removeListener('message');
     };
-  },[])
+  },[room])
 
   const handleTime = (dataD: Date) => {
     let data = new Date(dataD);

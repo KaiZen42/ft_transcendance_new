@@ -75,6 +75,14 @@ import { Message } from '../models/message.entity';
 	  return this.messageDB.delete({ id });
 	}
 
+	async deleteByChan(idC: number) {
+		await this.messageDB
+			.createQueryBuilder("message")
+			.delete()
+			.from(Message)
+			.where("channelId = :idC", {idC })
+			.execute();
+	  }
 	
   }
   

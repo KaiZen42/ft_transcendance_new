@@ -1,9 +1,11 @@
 import { Avatar, Checkbox, Stack } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
 import {
+  channelRequestPkj,
   ChatInfo,
   JoinChannelPkg,
   ShortChannel,
+  ViewRoomPkg,
 } from '../../../models/Chat.interface';
 import CheckPass from './CheckPass';
 import { Context } from '../../../App';
@@ -100,7 +102,7 @@ export default function GroupSettings(Prop: Prop) {
 
   //TODO: make it whith socket
   async function deleteGroup() {
-    if (partecipantInfo?.mod === 'o') {
+    /* if (partecipantInfo?.mod === 'o') {
       await fetch(
         `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveAllPartecipants/${Prop.chatInfo?.roomId}`,
         { credentials: 'include', method: 'DELETE' }
@@ -110,9 +112,17 @@ export default function GroupSettings(Prop: Prop) {
         `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveGroup/${Prop.chatInfo?.roomId}`,
         { credentials: 'include', method: 'DELETE' }
       );
-    } else console.log('You do not have the appropiate privileges');
+    } else console.log('You do not have the appropiate privileges'); */
+    if (partecipantInfo?.mod === 'o')
+    {
+      console.log("DELETE CHAN")
+      const req: ViewRoomPkg = {
+        room: Prop.chatInfo!.roomId.toString(),
+        idUser: userId
+      }
+      socket?.emit("DeleteChan", req)
     handleClose();
-    window.location.reload(); /* ????? Si può fare? */
+    }
   }
 
   function handleKeyDown(e: any) {
@@ -238,6 +248,7 @@ export default function GroupSettings(Prop: Prop) {
                       </button>
                     </div>
                   </div>
+                  {partecipantInfo?.mod !== 'o'? null:
                   <div
                     className="col"
                     style={{ textAlign: 'center', marginTop: '-5px' }}
@@ -250,6 +261,7 @@ export default function GroupSettings(Prop: Prop) {
                       Delete Group 🚫
                     </button>
                   </div>
+                  }
                 </form>
               </div>
             </div>

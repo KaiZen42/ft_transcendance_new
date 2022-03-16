@@ -30,6 +30,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   //const [openRoomPkg, setOpenPkg] = useState();
 
   function chatInfo(current: ChannelInfo | undefined) {
+    console.log("NON ENTRARE IN INFO")
     if (current?.isPrivate) {
       setChatInfo({
         userId: selectUser(current)?.id,
@@ -98,6 +99,8 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       });
   }
 
+
+  
   useEffect(() => {
     //---------CONDITION 2 ADD NEW ROOM----------
     if (
@@ -110,7 +113,30 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     //---------CONDITION 3 LOAD EXIST ROOM----------
     else if (room !== undefined && room !== '')
       chatInfo(channels.find((ch) => ch.id.toString() == room));
-  }, [socket, room, channels]);
+  }, [socket, room]);
+
+
+  //----------------------remove ROOM
+useEffect(()=>
+{
+  socket?.on('QuitRoom', (roomId: number) => {
+    const idx = channels.findIndex((ch) => ch.id === roomId);
+    console.log('QUITTING ', idx, '  ', roomId, ' ch ', channels);
+    if (idx !== -1) {
+      console.log('NON DEVE ENTRARE QUI');
+      setChannel((pred) => {
+        pred.splice(idx, 1);
+        return [...pred];
+      });
+    }
+    if (room === roomId.toString())
+      socket.emit('viewRoom', { idUser: userId, room: '' });
+  });
+
+  return(()=>
+  { socket?.removeListener('QuitRoom');
+  })
+},[channels])
 
   useEffect(() => {
     //---------CONDITION 1 FIRST RENDER----------
@@ -135,37 +161,25 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       }
     });
 
-    //remove ROOM
-    socket?.on('QuitRoom', (roomId: number) => {
-      const idx = channels.findIndex((ch) => ch.id === roomId);
-      console.log('QUITTING ', idx, '  ', roomId, ' ch ', channels);
-      if (idx !== -1) {
-        console.log('NON DEVE ENTRARE QUI');
-        setChannel((pred) => {
-          pred.splice(idx, 1);
-          return [...pred];
-        });
-      }
-      if (room === roomId.toString())
-        socket.emit('viewRoom', { idUser: userId, room: '' });
-    });
+    socket?.on('deleted', (res: number) => {
+      socket.emit('leaveRoom', res);
+    })
 
     socket?.on('memberUpdate', (res: channelResponsePkj) => {
       console.log('UPDATE: ', res);
       if (
         res.reciver === userId &&
-        (res.type === 'ban' || res.type === 'kick')
+        (res.type === 'ban' || res.type === 'kick' )
       ) {
-        console.log('leave: ', res.room);
         socket.emit('leaveRoom', res.room);
-      }
+      } 
     });
 
     return () => {
       socket?.removeListener('notification');
       socket?.removeListener('createdPrivateRoom');
       socket?.removeListener('memberUpdate');
-      socket?.removeListener('QuitRoom');
+      socket?.removeListener('deleted');
     };
   }, []);
 
@@ -218,6 +232,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
           </div>
         </div>
         <div className="card-body contacts_body">
+          {console.log("CHANNS",channels)}
           <ul className="contacts">
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;

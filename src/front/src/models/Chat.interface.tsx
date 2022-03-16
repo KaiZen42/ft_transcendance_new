@@ -71,6 +71,7 @@ export interface ViewRoomPkg {
   room: string;
 }
 
+
 export interface ChatInfo {
   userId: number | undefined;
   username: string;

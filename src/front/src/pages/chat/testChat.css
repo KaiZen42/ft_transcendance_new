@@ -57,12 +57,29 @@
   width: 50%;
   margin-top: 10%;
   margin-bottom: 10%;
-  margin-left: 25%;
   margin-right: 10%;
   position: absolute;
   border-radius: 15px !important;
   background-color: rgba(168, 12, 182, 0.521) !important;
   backdrop-filter: blur(2px);
+  margin-left: 35%;
+  justify-content: center;
+}
+
+.group-info
+{
+  height: 50%;
+  width: 50%;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  /*  margin-left: 25%; */
+  margin-right: 10%;
+  position: absolute;
+  border-radius: 15px !important;
+  background-color: rgba(168, 12, 182, 0.521) !important;
+  backdrop-filter: blur(2px);
+  margin-left: 25%;
+  justify-content: center;
 }
 
 .group-create {
@@ -186,7 +203,7 @@
   padding: 0;
   object-position: 50% 50%;
   background-color: rgba(0, 0, 0, 0.342);
-  
+
   border-radius: 15px !important;
 }
 
@@ -458,8 +475,7 @@ input[type='password']:hover {
   font-size: 12px;
 }
 
-.group-info-box
-{
+.group-info-box {
   background-color: rgba(0, 0, 0, 0.281);
   border-radius: 20px;
   width: 50%;
@@ -473,7 +489,7 @@ input[type='password']:hover {
   align-items: center;
 }
 
-.scrollable-addUser{
+.scrollable-addUser {
   margin-top: 10px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -482,10 +498,8 @@ input[type='password']:hover {
   object-position: 50% 50%;
 }
 
-.icon-container
-{
+.icon-container {
   margin-top: 20px;
   margin-left: 40px;
   color: white;
 }
-

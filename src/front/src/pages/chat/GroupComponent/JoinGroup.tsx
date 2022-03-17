@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import { JoinChannelPkg, ShortChannel } from '../../../models/Chat.interface';
 import CheckPass from './CheckPass';
 import { Context } from '../../../App';
+import { AlignHorizontalCenter } from '@mui/icons-material';
 
 interface Prop {
   isVisible: string;
@@ -79,13 +80,12 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       }}
       tabIndex={1}
       onKeyDown={(e) => handleKeyDown(e)}
-      className="overlay container-fluid row justify-content-center"
-      /* onClick={(e)=> { if (errorVisibility === "internal") setErrorVisibility("hidden") } } */
+      className="overlay container-fluid justify-content-center"
     >
       <div className="col-ms-10">
         <div
-          className="group-search mb-sm-3 mb-md-0 contacts_card"
-          style={{ width: '25%', marginLeft: '55rem' }}
+          className="group-search"
+          style={{ width: '25%'}}
         >
           <div className="card-header">
             <div className="input-group">

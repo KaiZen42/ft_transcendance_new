@@ -103,7 +103,7 @@ export default function GroupInfo(Prop: Prop) {
       onKeyDown={(e) => handleKeyDown(e)}
     >
       <div className="col-ms-10">
-        <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
+        <div className="mb-sm-3 mb-md-0 contacts_card group-info">
           <div className="card-header">
             <span className="close_btn">
               <i

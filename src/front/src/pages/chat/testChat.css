@@ -72,8 +72,22 @@
   justify-content: center;
 }
 
-.group-info
-{
+.pass-check {
+  margin-top: 10%;
+  margin-bottom: 10%;
+  margin-right: 10%;
+  border-radius: 15px !important;
+  background-color: rgba(168, 12, 182, 0.521) !important;
+  backdrop-filter: blur(2px);
+  margin-left: 25%;
+  justify-content: center;
+  width: '500px';
+  height: '200px';
+  position: 'absolute';
+  margin-left: '40%';
+}
+
+.group-info {
   height: 50%;
   width: 50%;
   margin-top: 10%;
@@ -127,10 +141,16 @@
 .card-header {
   border-radius: 15px 15px 0 0 !important;
   border-bottom: 0 !important;
+  
 }
 
-.flexibility
+.check-pass-header
 {
+  border-radius: 15px 15px 0 0;
+  border-bottom: 0 !important;
+}
+
+.flexibility {
   min-width: min-content;
 }
 

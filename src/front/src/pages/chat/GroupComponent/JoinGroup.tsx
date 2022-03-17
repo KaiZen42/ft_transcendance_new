@@ -156,7 +156,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
           }}
         >
           <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
-            <div className="card-header">
+            <div className="card-header flexibility">
               <div className="glow">YOU ARE BANNED FROM THIS CHANNEL</div>
             </div>
           </div>

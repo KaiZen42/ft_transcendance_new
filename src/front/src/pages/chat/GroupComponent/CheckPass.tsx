@@ -31,10 +31,12 @@ export default function CheckPass({
       style={{
         visibility: isVisible === 'hidden' ? 'hidden' : 'visible',
         opacity: '1',
+		marginLeft: '20%',
+		marginTop:'50%',
+		marginRight: '20%'
       }}
     >
-		<div className="col-ms-10">
-      <div className="group-search mb-sm-3 mb-md-0 contacts_card" onKeyDown={enterSubmit}>
+      <div className="mb-sm-3 contacts_card" onKeyDown={enterSubmit}>
         <div className="check-pass-header pass-check">
           <div className="contacts_body card-body scrollable-searchGroup">
             <div className="glow">Insert password</div>
@@ -59,13 +61,11 @@ export default function CheckPass({
                 </span>
               </div>
             </div>
-            {/* TODO: MAKE IT RED */}
             <div className="glow" hidden={errorVisibility === 'hidden'} style={{color: 'red'}}>
               Wrong Password
             </div>
           </div>
 		  </div>
-        </div>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import {
   channelResponsePkj,
   MessageInfoPkg,
   OpenRoomPkg,
+  ShortChannel,
 } from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
 import { CreateGroup } from './GroupComponent/CreateGroup';
@@ -120,10 +121,8 @@ export function ChannelList({ room, setChatInfo }: Prop) {
 useEffect(()=>
 {
   socket?.on('QuitRoom', (roomId: number) => {
-    const idx = channels.findIndex((ch) => ch.id === roomId);
-    console.log('QUITTING ', idx, '  ', roomId, ' ch ', channels);
+    const idx = channels.findIndex((ch) => ch.id === roomId)
     if (idx !== -1) {
-      console.log('NON DEVE ENTRARE QUI');
       setChannel((pred) => {
         pred.splice(idx, 1);
         return [...pred];
@@ -132,9 +131,25 @@ useEffect(()=>
     if (room === roomId.toString())
       socket.emit('viewRoom', { idUser: userId, room: '' });
   });
+  socket?.on('ChangedRoomSettings', (shortCh: ShortChannel) => {
+    const idx = channels.findIndex((ch) => ch.id === shortCh.id);
+    const ch = channels[idx]
 
+    ch.name = shortCh.name
+    ch.mode = shortCh.mode
+
+    if (idx !== -1){
+      setChannel((pred) => 
+        {
+          pred[idx] = ch
+          return [...pred]
+        })
+        chatInfo(ch)
+      }
+  });
   return(()=>
   { socket?.removeListener('QuitRoom');
+  socket?.removeListener('ChangedRoomSettings');
   })
 },[channels])
 
@@ -143,6 +158,7 @@ useEffect(()=>
     if (channels.length == 0) getRooms();
 
     //---------SOCKET ON-------------
+    
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
         let ch = channels.find((chan) => {

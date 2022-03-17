@@ -247,12 +247,21 @@ export class ChannelService {
 
 		async updateChannel(toUpdate: updateChannelDto)
 		{
-			await this.channelDB
-			.createQueryBuilder()
-			.update(Channel)
-			.set({name: toUpdate.name, mode: toUpdate.mode, pass: toUpdate.pass})
-			.where("Channel.id = :uId", {uId: toUpdate.id})
-			.execute()
 			console.log(toUpdate);
+			if (toUpdate.pass === undefined)
+				await this.channelDB
+				.createQueryBuilder()
+				.update(Channel)
+				.set({name: toUpdate.name, mode: toUpdate.mode})
+				.where("Channel.id = :uId", {uId: toUpdate.id})
+				.execute()
+			else
+				await this.channelDB
+				.createQueryBuilder()
+				.update(Channel)
+				.set({name: toUpdate.name, mode: toUpdate.mode, pass: toUpdate.pass})
+				.where("Channel.id = :uId", {uId: toUpdate.id})
+				.execute()
+			
 		}
 }

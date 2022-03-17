@@ -15,6 +15,7 @@ import {
 } from 'typeorm';
 import { Channel } from '../models/channel.entity';
 import { Partecipant } from '../models/partecipant.entity';
+import { ChannelService } from './channel.service';
 
 @Injectable()
 export class PartecipantService {

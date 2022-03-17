@@ -5,6 +5,7 @@ import {
   ChatInfo,
   JoinChannelPkg,
   ShortChannel,
+  updateChannelPkj,
   ViewRoomPkg,
 } from '../../../models/Chat.interface';
 import CheckPass from './CheckPass';
@@ -17,6 +18,7 @@ import { NavLink } from 'react-router-dom';
 import { Partecipant } from '../../../models/Chat.interface';
 import GroupInfo from './GroupInfo';
 import { userInfo } from 'os';
+import { channel } from 'diagnostics_channel';
 
 interface Prop {
   isVisible: boolean;
@@ -28,7 +30,7 @@ interface UpdateGroup {
   id: string | undefined;
   name: string | undefined;
   mode: string | undefined;
-  pass: string;
+  pass: string | undefined;
 }
 
 export default function GroupSettings(Prop: Prop) {
@@ -51,6 +53,8 @@ export default function GroupSettings(Prop: Prop) {
     Prop.chatInfo?.mode === 'PRI' ? true : false
   );
 
+
+
   async function getPartecipantInfo() {
     await fetch(
       `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
@@ -63,8 +67,17 @@ export default function GroupSettings(Prop: Prop) {
   }
 
   function setToPriv(priv: boolean) {
-    setUpdatedGroup({ ...updatedGroup, pass: '', mode: priv ? 'PRI' : 'PUB' });
+    setUpdatedGroup({ ...updatedGroup, pass: undefined, mode: priv ? 'PRI' : 'PUB' });
     setPrivateChan(priv);
+  }
+  function removePass(pub: boolean) {
+    if (pub)
+    {
+      setUpdatedGroup({ ...updatedGroup, pass: '', mode: "PUB" });
+      setPrivateChan(false);
+    }
+    else
+      setUpdatedGroup({ ...updatedGroup, pass: undefined, mode: "PUB" });
   }
 
   function handleClose() {
@@ -80,24 +93,22 @@ export default function GroupSettings(Prop: Prop) {
   };
 
   async function submitChanges(e: any) {
-    const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      credientals: 'include',
-      body: JSON.stringify({
-        name: updatedGroup.name,
-        mode: updatedGroup.mode,
-        pass: updatedGroup.pass,
-        id: updatedGroup.id,
-      }),
-    };
-    if (partecipantInfo?.mod === 'o' || partecipantInfo?.mod === 'a') {
-      await fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/UpdateGroup`,
-        requestOptions
-      );
-      handleClose();
-    }
+    if (updatedGroup !== undefined 
+      && partecipantInfo !== undefined 
+      && Prop.chatInfo !== undefined
+      && Prop.chatInfo.roomId !== undefined
+      && partecipantInfo?.mod === 'o' || partecipantInfo?.mod === 'a')
+      {
+        const update: updateChannelPkj = {
+          userId: userId,
+          id: +Prop.chatInfo!.roomId,
+          name: updatedGroup.name !== undefined ? updatedGroup.name : Prop.chatInfo!.roomId,
+          mode: updatedGroup.mode !== undefined ? updatedGroup.mode : Prop.chatInfo!.mode,
+          pass: updatedGroup.pass ,
+        }
+        socket?.emit("ChangeRoomSettings", update)
+        handleClose();
+      }
   }
 
   async function deleteGroup() {
@@ -200,18 +211,25 @@ export default function GroupSettings(Prop: Prop) {
                       onChange={(e) =>
                         setUpdatedGroup({
                           ...updatedGroup,
-                          pass: e.target.value,
-                          mode: 'PRO',
+                          pass: e.target.value === "" ? undefined : "" + e.target.value ,
+                          mode: e.target.value === "" ? "PUB" : "PRO",
                         })
                       }
-                      value={!privateChan ? updatedGroup.pass : '🚫Disabled🚫'}
-                      disabled={privateChan}
+                      value={!privateChan && updatedGroup.pass !== "" ?  
+                              (updatedGroup.pass !== undefined ? updatedGroup.pass : "")
+                              : '🚫Disabled🚫'}
+                      disabled={privateChan || updatedGroup.pass === ""}
                     />
                     <Checkbox
                       checked={privateChan}
                       onChange={(e) => setToPriv(e.target.checked)}
                     />{' '}
                     Private
+                    <Checkbox
+                      checked={updatedGroup.pass === ""}
+                      onChange={(e) => removePass(e.target.checked)}
+                    />{' '}
+                    NO Password
                   </div>
                   <div
                     className="row"

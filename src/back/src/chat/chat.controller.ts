@@ -66,7 +66,7 @@ export class chatController {
 
 
 	@Get("ChannelByName/:name")
-	async getTest(@Param("name") name: string) : Promise<any[]>
+	async getChannelByName(@Param("name") name: string) : Promise<any[]>
 	{
 		let ms : any[] =  await this.chService.getByName(name);
 		console.log(`NAME is(): `, ms);
@@ -126,23 +126,23 @@ export class chatController {
 		return someThings;
 	}
 
-	@Put("UpdateGroup")
+	/* @Put("UpdateGroup")
 	async UpdateGroup(@Body() toUpdate: { name: string; mode: string; pass: string; id: number })
 	{
 		await this.chService.updateChannel(toUpdate);
-	}
+	} */
 
-	@Delete("RemoveGroup/:chanId")
+	/* @Delete("RemoveGroup/:chanId")
 	async DeleteGroup(@Param("chanId") chanId: number)
 	{
 		await this.chService.delete(chanId)
-	}
+	} */
 
-	@Delete("RemoveAllPartecipants/:chanId")
+	/* @Delete("RemoveAllPartecipants/:chanId")
 	async RemoveAllPartecipants(@Param("chanId") chanId: number)
 	{
 		await this.partService.deleteAllByChan(chanId);
-	}
+	} */
 
 
 

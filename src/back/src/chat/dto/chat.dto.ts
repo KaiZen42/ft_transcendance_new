@@ -122,10 +122,16 @@ export class channelResponseDto
 	room : number;
 }
   export class updateChannelDto {
+	@IsNotEmpty()
+	userId: number
+	@IsNotEmpty()
 	  id: number;
+	  @IsNotEmpty()
 	name: string;
+	@IsNotEmpty()
 	mode: string;
-	pass: string;
+	pass: string | undefined;
   }
+
 
   

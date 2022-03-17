@@ -116,6 +116,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                   className="d-flex bd-highlight group-info-box justify-content-center"
                   onClick={(e) => selectChannel(e, chan)}
                   style={{ cursor: 'pointer', marginBottom: '10px', flex: '1' }}
+                  key={i}
                 >
                   <div className="img_cont" style={{marginTop: '20px'}}>
                     <Stack direction="row" spacing={2}>

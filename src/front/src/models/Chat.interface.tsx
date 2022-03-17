@@ -111,3 +111,10 @@ export interface channelResponsePkj
   room : number,
 }
 
+export interface updateChannelPkj {
+	userId: number,
+	id: number,
+	name: string,
+	mode: string,
+	pass: string | undefined,
+  }

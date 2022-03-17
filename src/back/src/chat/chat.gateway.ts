@@ -22,6 +22,7 @@ import {
   messageDto,
   OnlineMap,
   openRoomDto,
+  updateChannelDto,
   viewRoomDto,
 } from './dto/chat.dto';
 import { Channel } from './models/channel.entity';
@@ -186,8 +187,9 @@ export class ChatGateway
     else
     {
       console.log("LEAVE BECAUSE LEAVE", data)
-      this.partService.delete((await this.partService.getPartecipantByUserAndChan(data.idUser, +data.room)).id)
-      this.partService.FixAdmin(+data.room)
+      await this.partService.delete((await this.partService.getPartecipantByUserAndChan(data.idUser, +data.room)).id)
+      if ((await this.partService.FixAdmin(+data.room)) === undefined)
+        this.channelService.delete(+data.room)
       this.server.to(client.id).emit('QuitRoom', +data.room);
     }
     this.server.to(client.id).emit('viewedRoom', "");
@@ -398,5 +400,19 @@ export class ChatGateway
       this.server.to(data.room).emit('messageUpdate', response);
     }
     
+  }
+
+  @SubscribeMessage('ChangeRoomSettings')
+  async changeRoomSettings(client: Socket, data: updateChannelDto) {
+    this.logger.log(`CHANGE REQEST ${data.userId} in ${data.id}`);
+    const sender = await this.partService.getPartecipantByUserAndChan(
+      data.userId,
+      +data.id,
+    );
+    if (sender !== undefined && (sender.mod === 'o' || sender.mod === 'a')) {
+      this.logger.log(`CHANGE REQEST ACCEPTED`);
+      await this.channelService.updateChannel(data)
+      this.server.to(data.id.toString()).emit('ChangedRoomSettings',{id: data.id, name: data.name, mode: data.mode} );
+    }
   }
 }

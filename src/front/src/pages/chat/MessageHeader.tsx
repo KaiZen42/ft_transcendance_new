@@ -1,11 +1,13 @@
 import { Block, RestorePageOutlined, Room } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
+import { constants } from 'buffer';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Context } from '../../App';
 import {
   channelRequestPkj,
   ChatInfo,
+  OpenRoomPkg,
   Partecipant,
 } from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
@@ -69,6 +71,15 @@ export default function MessageHeader({ chatInfo }: Prop) {
       ot.mod = req.type === 'Block' ? 'b' : 'm';
       setOtherPartecipant(ot);
     }
+  }
+
+  function userLeave()
+  {
+    const leavePkg : OpenRoomPkg = {
+      idUser : userId,
+      room : chatInfo!.roomId
+    }
+    socket?.emit("leaveRoom", leavePkg)
   }
 
   useEffect(() => {
@@ -205,30 +216,6 @@ export default function MessageHeader({ chatInfo }: Prop) {
           chatInfo={chatInfo}
         />
       )}
-      {/*TODO: ROUTE TO PROFILE*/}
-      {/*  visibleJoin ? null : <JoinGroup
-        isVisible={visibleJoin}
-        setVisibility={setVisibleJoin} 
-      /> */}
-      {/* <span id="action_menu_btn">
-							<i className="fas fa-ellipsis-v"></i>
-						</span> 
-      <div className="action_menu">
-							<ul>
-								<li>
-								<i className="fas fa-user-circle"></i> View profile
-								</li>
-								<li>
-								<i className="fas fa-users"></i> Add to close friends
-								</li>
-								<li>
-								<i className="fas fa-plus"></i> Add to group
-								</li>
-								<li>
-								<i className="fas fa-ban"></i> Block
-								</li>
-							</ul>
-						</div> */}
     </div>
   );
 }

@@ -79,7 +79,7 @@ export default function GroupSettings(Prop: Prop) {
     );
   };
 
-  async function submitChanges() {
+  async function submitChanges(e: any) {
     const requestOptions = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -100,19 +100,7 @@ export default function GroupSettings(Prop: Prop) {
     }
   }
 
-  //TODO: make it whith socket
   async function deleteGroup() {
-    /* if (partecipantInfo?.mod === 'o') {
-      await fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveAllPartecipants/${Prop.chatInfo?.roomId}`,
-        { credentials: 'include', method: 'DELETE' }
-      );
-
-      await fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/RemoveGroup/${Prop.chatInfo?.roomId}`,
-        { credentials: 'include', method: 'DELETE' }
-      );
-    } else console.log('You do not have the appropiate privileges'); */
     if (partecipantInfo?.mod === 'o')
     {
       console.log("DELETE CHAN")
@@ -128,7 +116,7 @@ export default function GroupSettings(Prop: Prop) {
   function handleKeyDown(e: any) {
     if (partecipantInfo?.mod === 'a' || partecipantInfo?.mod === 'o') {
       if (e.key === 'Enter' && isChanged()) {
-        submitChanges();
+        submitChanges(e);
       }
       if (e.key === 'Escape') {
         Prop.setVisibility(false);
@@ -178,7 +166,7 @@ export default function GroupSettings(Prop: Prop) {
                 >
                   Group Settings
                 </p>
-                <form onSubmit={() => submitChanges}>
+
                   <div className="row justify-content-center justify-content-center">
                     <p className="profile-info-text">
                       Group Name:{' '}
@@ -262,7 +250,6 @@ export default function GroupSettings(Prop: Prop) {
                     </button>
                   </div>
                   }
-                </form>
               </div>
             </div>
           </div>

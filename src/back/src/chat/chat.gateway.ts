@@ -176,11 +176,24 @@ export class ChatGateway
   }
 
   @SubscribeMessage('leaveRoom')
-  async leaveRoom(client: Socket, roomId: number) {
-    client.leave(roomId + '');
-    this.server.to(client.id).emit('QuitRoom', roomId);
-    console.log('BESTIA MISTICA');
+  async leaveRoom(client: Socket, data: number | openRoomDto) {
+    if (typeof(data) === "number")
+    {
+      console.log("LEAVE BECAUSE YES ", data)
+      client.leave(data + '');
+      this.server.to(client.id).emit('QuitRoom', data);
+    }
+    else
+    {
+      console.log("LEAVE BECAUSE LEAVE", data)
+      this.partService.delete((await this.partService.getPartecipantByUserAndChan(data.idUser, +data.room)).id)
+      this.partService.FixAdmin(+data.room)
+      this.server.to(client.id).emit('QuitRoom', +data.room);
+    }
+    this.server.to(client.id).emit('viewedRoom', "");
   }
+
+
 
   @SubscribeMessage('openRoom')
   openRoom(client: Socket, data: openRoomDto): WsResponse<boolean> {
@@ -384,7 +397,6 @@ export class ChatGateway
       this.server.to(data.room).emit('deleted', +data.room);
       this.server.to(data.room).emit('messageUpdate', response);
     }
-
-    return { event: 'viewedRoom', data: '' + data.room };
+    
   }
 }

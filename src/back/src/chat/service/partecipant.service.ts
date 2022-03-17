@@ -10,6 +10,7 @@ import {
   EntityRepository,
   getConnection,
   getRepository,
+  Not,
   Repository,
 } from 'typeorm';
 import { Channel } from '../models/channel.entity';
@@ -40,6 +41,26 @@ export class PartecipantService {
       .getMany();
 
     return res.map((r) => r.id);
+  }
+
+  async FixAdmin(channelId: number): Promise<Partecipant> {
+    let res = await this.partecipantDB
+      .createQueryBuilder('partecipant')
+      .select("partecipant")
+      .where("partecipant.channelId = :chId AND (partecipant.mod = 'a' OR partecipant.mod = 'o')", {
+        chId: channelId,
+      })
+      .getOne();
+
+    console.log("adbmin", res)
+    if (res === undefined)
+    {
+      res = await this.partecipantDB.findOne({ where: { channelId , mod: Not("b")} });
+      if (res !== undefined)
+        await this.update(res.id, {mod: "a"})
+    }
+    console.log('ret:', res);
+    return res;
   }
 
   async getByChannel(channelId: number): Promise<Partecipant[]> {
@@ -103,11 +124,12 @@ export class PartecipantService {
   }
 
   async update(id: number, data: any) {
-    await this.partecipantDB
+    const res = await this.partecipantDB
       .createQueryBuilder()
       .update(Partecipant)
       .set({ ...data })
       .where('partecipant.id = :uId', { uId: id })
       .execute();
+      console.log("UPDATE PART: ", res)
   }
 }

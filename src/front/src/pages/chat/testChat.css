@@ -39,6 +39,12 @@
   object-position: 100% 100%;
 }
 
+.scrollable-searchGroup {
+  overflow-y: auto;
+  object-position: 100% 100%;
+  max-height: 43vh;
+}
+
 .card {
   height: 70vh;
   border-radius: 15px !important;

@@ -99,7 +99,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       className="overlay container-fluid row justify-content-center"
     >
       <div className="col-ms-10">
-        <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
+        <div className="group-create mb-sm-3 mb-md-0 contacts_card ">
           <div className="card-header scrollable">
             <span className="close_btn">
               <i

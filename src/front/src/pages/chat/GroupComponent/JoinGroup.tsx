@@ -109,7 +109,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
               </div>
             </div>
           </div>
-          <div className="contacts_body card-body">
+          <div className="contacts_body card-body scrollable-searchGroup">
             {channels.map((chan: ShortChannel, i) => {
               return (
                 <div

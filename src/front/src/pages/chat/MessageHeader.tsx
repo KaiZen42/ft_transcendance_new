@@ -148,6 +148,9 @@ export default function MessageHeader({ chatInfo }: Prop) {
                 <li onClickCapture={(e) => setInfoVisibility(true)}>
                   <i className="fas fa-info"></i> Group Info
                 </li>
+                <li onClickCapture={(e) => userLeave()}>
+                  <i className="fas fa-sign-out-alt"></i> Leave group
+                </li>
                 {partecipantInfo?.mod === 'o' ||
                 partecipantInfo?.mod === 'a' ? (
                   <li onClickCapture={(e) => setSettingsVisibility(true)}>

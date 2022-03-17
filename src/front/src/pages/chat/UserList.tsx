@@ -51,7 +51,7 @@ export function UserList() {
   // setClicked(false)
   //
   return (
-    <div className="col-md-3 col-xl-3 chat">
+    <div className="col-md-3 col-xl-3 chat flexibility">
       <div className="card-search mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
           <div className="input-group">

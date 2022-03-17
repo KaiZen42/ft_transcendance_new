@@ -205,7 +205,7 @@ useEffect(()=>
   }, [click]);
 
   return (
-    <div className="col-md-2 col-xl-2 chat">
+    <div className="col-md-2 col-xl-2 chat flexibility">
       <div className="card mb-sm-3 mb-md-0 contacts_card">
         <div className="card-header">
           <div className="user_info">
@@ -279,13 +279,14 @@ useEffect(()=>
                               <Avatar
                                 alt="Img"
                                 src={selectUser(chan)?.avatar}
+                                style={{wordWrap: 'break-word'}}
                               />
                             </StyledBadge>
                           </Stack>
                         </div>
                       </div>
                     ) : null}
-                    <div className="user_info">
+                    <div className="user_info" style={{wordWrap: 'break-word'}}>
                       <span>
                         {chan.isPrivate
                           ? selectUser(chan)?.username

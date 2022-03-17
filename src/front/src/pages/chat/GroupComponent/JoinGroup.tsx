@@ -109,15 +109,15 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
               </div>
             </div>
           </div>
-          <div className="contacts_body card-body scrollable-searchGroup">
+          <div className="contacts_body card-body scrollable-searchGroup" >
             {channels.map((chan: ShortChannel, i) => {
               return (
                 <div
-                  className="d-flex bd-highlight group-info-box"
+                  className="d-flex bd-highlight group-info-box justify-content-center"
                   onClick={(e) => selectChannel(e, chan)}
-                  style={{ cursor: 'pointer', marginBottom: '10px' }}
+                  style={{ cursor: 'pointer', marginBottom: '10px', flex: '1' }}
                 >
-                  <div className="img_cont">
+                  <div className="img_cont" style={{marginTop: '20px'}}>
                     <Stack direction="row" spacing={2}>
                       <Avatar alt="Img" src={'./group_icon.png'} />
                     </Stack>

@@ -76,7 +76,7 @@ export class chatController {
 	@Get("TEST/:id1")
 	async test(@Param("id1") chanId: number) : Promise<any>
 	{
-		let someThings: any =  await this.partService.getCompletePartecipantByChannel(chanId)
+		let someThings: any =  await this.partService.FixAdmin(chanId)
 		console.log("QUALCOSA: ", someThings);
 		return someThings;
 	}

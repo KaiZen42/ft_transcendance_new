@@ -99,8 +99,11 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       className="overlay container-fluid row justify-content-center"
     >
       <div className="col-ms-10">
-        <div className="group-create mb-sm-3 mb-md-0 contacts_card " style={{height: '35vh'}}>
-          <div className="card-header">
+        <div
+          className="group-create mb-sm-3 mb-md-0 contacts_card "
+          style={{ height: '39vh', minHeight: '420px', minWidth: '750px' }}
+        >
+          <div className="card-header" style={{ height: '39vh', minHeight: '420px', minWidth: '750px' }}>
             <span className="close_btn">
               <i
                 className="fas fa-times fa-lg"
@@ -108,7 +111,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
               ></i>
             </span>
             <div className="card-body contacts_body row scrollable">
-              <div className="group-info-box">
+              <div className="group-info-box" style={{minHeight: '280px'}}>
                 <div className="info-username-image">
                   <div className="profile-info-text justify-content-center">
                     Group Name:
@@ -150,7 +153,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                   ))}
                 </div>
               </div>
-              <div className="group-info-box">
+              <div className="group-info-box" style={{minHeight: '280px'}}>
                 <div
                   className="profile-info-text justify-content-center"
                   style={{ display: 'flex' }}

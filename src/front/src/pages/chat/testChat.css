@@ -513,6 +513,7 @@ input[type='password']:hover {
   width: 50%;
   margin-left: auto;
   margin-right: auto;
+  height: 27vh;
 }
 
 .group-info-image {
@@ -525,7 +526,7 @@ input[type='password']:hover {
   margin-top: 10px;
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 25vh;
+  max-height: 20vh;
   padding: 25px;
   object-position: 50% 50%;
 }
@@ -534,4 +535,8 @@ input[type='password']:hover {
   margin-top: 20px;
   margin-left: 40px;
   color: white;
+}
+
+.button-container {
+  width: fit-content;
 }

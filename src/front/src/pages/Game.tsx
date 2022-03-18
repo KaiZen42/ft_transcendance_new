@@ -267,6 +267,11 @@ export default function Pong() {
     drawText(`Invitation Expired`, 375, 40, 'white');
   };
 
+  const handleNoGameFound = () => {
+    drawRect(0, 0, canvas.width, canvas.height, 'rgba(0, 0, 0)');
+    drawText(`no game found`, 375, 40, 'white');
+  };
+
   const defaultCanva = () => {
     canvas = canvasRef.current!;
     ctx = canvas.getContext('2d')!;
@@ -309,6 +314,7 @@ export default function Pong() {
     socket.on('gameState', handleGameState);
     socket.on('gameOver', handleGameOver);
     socket.on('players', handlePlayers);
+    socket.on('noGameFound', handleNoGameFound);
     setSafe(socket);
   };
 
@@ -379,20 +385,33 @@ export default function Pong() {
     <>
       <div className="container h-100 w-100">
         <div
-          className={`row align-items-center ${opponent ? 'h-100' : 'h-80'}`}
+          className={`row align-items-center ${
+            opponent && !watchId ? 'h-100' : 'h-80'
+          }`}
           style={{ paddingTop: opponent ? '' : '15%' }}
         >
           <div className="col col-centered">
-            <img
-              alt="profile"
-              src={user?.avatar}
-              className="game--image game-user"
-            />
-            <p className="game-text">{user?.username}</p>
-            <p className="game-text">
-              {user?.points} <small>pts</small>
-            </p>
+            {user ? (
+              <>
+                <img
+                  alt="profile"
+                  src={user?.avatar}
+                  className="game--image game-user"
+                />
+                <p className="game-text">{user?.username}</p>
+                <p className="game-text">
+                  {user?.points} <small>pts</small>
+                </p>
+              </>
+            ) : (
+              <img
+                alt="profile"
+                src={opponent_img}
+                className="game--image game-opponent"
+              />
+            )}
           </div>
+
           <div className="col col-centered">
             <canvas ref={canvasRef} />
           </div>
@@ -427,31 +446,31 @@ export default function Pong() {
             )}
           </div>
         </div>
-        {
-          <div
-            className="row align-items-start justify-content-center"
-            style={{ height: '20%' }}
-          >
-            <div className="col-2 col-centered ">
-              <button
-                onClick={() => {
-                  if (safe) safe.close();
-                  navigate('/');
-                }}
-                style={{ backgroundColor: 'white', width: 'auto' }}
-                className="game-popup-btn btn-home"
-              >
-                BACK TO HOME
-              </button>
-            </div>
+
+        <div
+          className="row align-items-start justify-content-center"
+          style={{ height: '20%' }}
+        >
+          <div className="col-2 col-centered ">
+            <button
+              onClick={() => {
+                if (safe) safe.close();
+                navigate('/');
+              }}
+              style={{ backgroundColor: 'white', width: 'auto' }}
+              className="game-popup-btn btn-home"
+            >
+              BACK TO HOME
+            </button>
           </div>
-        }
+        </div>
       </div>
       <GamePopUp
         winner={winner}
         users={[user, opponent]}
         playAgain={restartGame}
         updatePoints={updatePoints}
+        watch={watchId ? true : false}
       />
       <video autoPlay muted loop className="video">
         <source src="./movie2.webm" type="video/webm" />

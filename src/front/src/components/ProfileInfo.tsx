@@ -98,12 +98,10 @@ export default function ProfileInfo({
     });
     navigate('/game', {
       state: {
-        friendlyMatch: {
-          id: user?.id,
-          username: user?.username,
-          avatar: user?.avatar,
-          requesting: true,
-        },
+        id: user?.id,
+        username: user?.username,
+        avatar: user?.avatar,
+        requesting: true,
       },
     });
   };

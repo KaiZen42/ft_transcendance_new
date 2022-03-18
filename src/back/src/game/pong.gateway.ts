@@ -64,7 +64,7 @@ export default class PongGateway implements OnGatewayDisconnect {
         return;
       }
     }
-    // emit that there is not any game with userId
+    client.emit('noGameFound');
   }
 
   @SubscribeMessage('createFriendlyMatch')

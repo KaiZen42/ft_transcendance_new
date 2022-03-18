@@ -38,9 +38,9 @@ export default function Pong() {
   const navigate = useNavigate();
   const friend: GameFriend = useLocation().state as GameFriend;
 
-  useEffect(() => {
-    console.log(friend);
-  }, []);
+  const [watchId] = useState(
+    new URLSearchParams(window.location.search).get('watchId')
+  );
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let socket: Socket;
@@ -181,6 +181,8 @@ export default function Pong() {
   };
 
   const handleGameState = (state: GameState) => {
+    if (!canvas) return;
+
     if (searching) {
       canvas.width = state.fieldWidth;
       canvas.height = state.fieldHeight;
@@ -210,6 +212,13 @@ export default function Pong() {
   };
 
   const handlePlayers = (players: [User, User]) => {
+    if (watchId) {
+      playerNumber = 0;
+      setUser({ ...players[0], score: 0, wins: 0, losses: 0 });
+      setOpponent({ ...players[1], score: 0 });
+      return;
+    }
+
     if (playerNumber) setOpponent({ ...players[0], score: 0 });
     else setOpponent({ ...players[1], score: 0 });
 
@@ -263,6 +272,7 @@ export default function Pong() {
     ctx = canvas.getContext('2d')!;
     canvas.width = 750;
     canvas.height = 40;
+    if (watchId) return;
     if (friend) drawText(`Waiting for your friend...`, 375, 40, 'white');
     else drawText('Searching for an opponent...', 375, 40, 'white');
   };
@@ -292,7 +302,25 @@ export default function Pong() {
     }, 500);
   };
 
+  const initWatchSocket = () => {
+    if (safe) safe.close();
+
+    socket = socketIOClient(ENDPOINT);
+    socket.on('gameState', handleGameState);
+    socket.on('gameOver', handleGameOver);
+    socket.on('players', handlePlayers);
+    setSafe(socket);
+  };
+
   useEffect(() => {
+    if (!watchId) return;
+    defaultCanva();
+    initWatchSocket();
+    socket.emit('watchGame', Number(watchId));
+  }, []);
+
+  useEffect(() => {
+    if (watchId) return;
     async function getter() {
       const res = await fetch(
         `http://${process.env.REACT_APP_BASE_IP}:3001/api/user`,

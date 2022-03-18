@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Socket } from 'socket.io';
 import { Context } from '../App';
 import { User } from '../models/User.interface';
 import ProfilePopUp from './ProfilePopUp';
@@ -99,12 +98,18 @@ export default function ProfileInfo({
     });
     navigate('/game', {
       state: {
-        id: user?.id,
-        username: user?.username,
-        avatar: user?.avatar,
-        requesting: true,
+        friendlyMatch: {
+          id: user?.id,
+          username: user?.username,
+          avatar: user?.avatar,
+          requesting: true,
+        },
       },
     });
+  };
+
+  const watchGame = () => {
+    navigate('/game?watchId=' + user?.id);
   };
 
   return (
@@ -171,7 +176,7 @@ export default function ProfileInfo({
                 ) : checkOnline(user.id) === 'ingame' ? (
                   <button
                     className="game-popup-btn btn-home"
-                    onClick={() => {}}
+                    onClick={watchGame}
                   >
                     <>
                       WATCH

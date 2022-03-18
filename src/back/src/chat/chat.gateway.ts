@@ -178,24 +178,26 @@ export class ChatGateway
 
   @SubscribeMessage('leaveRoom')
   async leaveRoom(client: Socket, data: number | openRoomDto) {
-    if (typeof(data) === "number")
-    {
-      console.log("LEAVE BECAUSE YES ", data)
+    if (typeof data === 'number') {
+      console.log('LEAVE BECAUSE YES ', data);
       client.leave(data + '');
       this.server.to(client.id).emit('QuitRoom', data);
-    }
-    else
-    {
-      console.log("LEAVE BECAUSE LEAVE", data)
-      await this.partService.delete((await this.partService.getPartecipantByUserAndChan(data.idUser, +data.room)).id)
+    } else {
+      console.log('LEAVE BECAUSE LEAVE', data);
+      await this.partService.delete(
+        (
+          await this.partService.getPartecipantByUserAndChan(
+            data.idUser,
+            +data.room,
+          )
+        ).id,
+      );
       if ((await this.partService.FixAdmin(+data.room)) === undefined)
-        this.channelService.delete(+data.room)
+        this.channelService.delete(+data.room);
       this.server.to(client.id).emit('QuitRoom', +data.room);
     }
-    this.server.to(client.id).emit('viewedRoom', "");
+    this.server.to(client.id).emit('viewedRoom', '');
   }
-
-
 
   @SubscribeMessage('openRoom')
   openRoom(client: Socket, data: openRoomDto): WsResponse<boolean> {
@@ -363,7 +365,7 @@ export class ChatGateway
   }
 
   @SubscribeMessage('friendlyMatch')
-  handleKeyUp(
+  handleFriendlyMatch(
     @MessageBody()
     data: {
       requesting: { id: number; username: string };
@@ -372,7 +374,6 @@ export class ChatGateway
   ) {
     const receivingId = this.socketOnlines[data.receving];
     this.server.to(receivingId).emit('friendlyMatch', data.requesting);
-    console.log('FRIENDLY MATCH: ', data);
   }
 
   //this.server.to(req.channelId.toString()).emit('memberNotification', response);
@@ -399,7 +400,6 @@ export class ChatGateway
       this.server.to(data.room).emit('deleted', +data.room);
       this.server.to(data.room).emit('messageUpdate', response);
     }
-    
   }
 
   @SubscribeMessage('ChangeRoomSettings')
@@ -411,8 +411,12 @@ export class ChatGateway
     );
     if (sender !== undefined && (sender.mod === 'o' || sender.mod === 'a')) {
       this.logger.log(`CHANGE REQEST ACCEPTED`);
-      await this.channelService.updateChannel(data)
-      this.server.to(data.id.toString()).emit('ChangedRoomSettings',{id: data.id, name: data.name, mode: data.mode} );
+      await this.channelService.updateChannel(data);
+      this.server.to(data.id.toString()).emit('ChangedRoomSettings', {
+        id: data.id,
+        name: data.name,
+        mode: data.mode,
+      });
     }
   }
 }

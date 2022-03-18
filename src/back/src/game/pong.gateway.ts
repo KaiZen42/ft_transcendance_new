@@ -47,12 +47,31 @@ export default class PongGateway implements OnGatewayDisconnect {
     this.joinGame(client, user);
   }
 
+  @SubscribeMessage('watchGame')
+  handleWatchGame(
+    @MessageBody() userId: number,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const available_rooms: string[] = Object.keys(this.rooms);
+    for (let i = 0; i < available_rooms.length; i++) {
+      const roomId = available_rooms[i];
+      if (
+        this.rooms[roomId].users[0].id === userId ||
+        this.rooms[roomId].users[1].id === userId
+      ) {
+        client.join(roomId);
+        this.server.to(client.id).emit('players', this.rooms[roomId].users);
+        return;
+      }
+    }
+    // emit that there is not any game with userId
+  }
+
   @SubscribeMessage('createFriendlyMatch')
   handleCreateFriendlyMatch(
     @MessageBody() user: any,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log(this.rooms[client.id]);
     if (this.rooms[client.id]) {
       client.emit('friendlyMatchExpired');
       return;

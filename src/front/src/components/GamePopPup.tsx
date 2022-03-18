@@ -84,7 +84,7 @@ export default function GamePopUp({
                 <div className="flex-row flex-center" style={{ width: '100%' }}>
                   <div className="flex-col flex-center">
                     <img
-                      alt="profile image"
+                      alt="profile"
                       src={users[0]?.avatar}
                       className="game-popup-image"
                     />
@@ -103,7 +103,7 @@ export default function GamePopUp({
                   </div>
                   <div className="flex-col flex-center">
                     <img
-                      alt="profile image"
+                      alt="profile"
                       src={users[1]?.avatar}
                       className="game-popup-image"
                       onClick={() => navigate('/users/' + users[1]?.username)}
@@ -141,7 +141,7 @@ export default function GamePopUp({
                 <div className="flex-row flex-center" style={{ width: '100%' }}>
                   <div className="flex-col flex-center">
                     <img
-                      alt="profile image"
+                      alt="profile"
                       src={users[0]?.avatar}
                       className="game-popup-image"
                     />
@@ -160,7 +160,7 @@ export default function GamePopUp({
                   </div>
                   <div className="flex-col flex-center">
                     <img
-                      alt="profile image"
+                      alt="profile"
                       src={users[1]?.avatar}
                       className="game-popup-image"
                       onClick={() => navigate('/users/' + users[1]?.username)}

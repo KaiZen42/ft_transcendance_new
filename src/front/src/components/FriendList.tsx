@@ -69,10 +69,12 @@ export default function FriendList({
     if (!updated) return;
     setUpdated(false);
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updated]);
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendRequests]);
 
   useEffect(() => {

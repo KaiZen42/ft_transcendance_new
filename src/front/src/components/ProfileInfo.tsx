@@ -18,7 +18,6 @@ export default function ProfileInfo({
   setUserId: (id: number) => void;
   me: User | null;
 }) {
-  //const myId: number = useContext(Context).userId!;
   const [edit, setEdit] = useState(false);
   const [user, setUser] = useState<User | null>();
   const [friendStatus, setFriendStatus] = useState('');
@@ -50,6 +49,7 @@ export default function ProfileInfo({
         }
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   useEffect(() => {

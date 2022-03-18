@@ -96,8 +96,7 @@ export default function ProfilePopUp({
   }, [user]);
 
   async function validateInput(): Promise<boolean> {
-    let res;
-    if (updatedUser.username != user.username) {
+    if (updatedUser.username !== user.username) {
       const { data } = await axios.get(
         `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${updatedUser.username}`
       );
@@ -112,7 +111,7 @@ export default function ProfilePopUp({
     }
     if (updatedUser.two_fa_auth && !user.two_fa_auth) {
       try {
-        res = await axios.post(
+        axios.post(
           `http://${process.env.REACT_APP_BASE_IP}:3001/api/turn2fa`,
           { twoFaAuthCode: updatedUser.auth_code },
           { withCredentials: true }
@@ -156,20 +155,20 @@ export default function ProfilePopUp({
   function inputChecker(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
 
-    if (name == 'auth_code') {
+    if (name === 'auth_code') {
       if (!valid.auth_code)
         setValid((prevValid) => ({
           ...prevValid,
           auth_code: true,
         }));
       const re = /^[0-9\b]+$/;
-      if (value == '' || re.test(value))
+      if (value === '' || re.test(value))
         setUpdatedUser((prevUser) => ({
           ...prevUser,
           auth_code: value,
         }));
     }
-    if (name == 'username') {
+    if (name === 'username') {
       if (!valid.username)
         setValid((prevValid) => ({
           ...prevValid,
@@ -186,9 +185,9 @@ export default function ProfilePopUp({
 
   const isChanged = (): boolean | undefined => {
     return !(
-      updatedUser?.avatar != user?.avatar ||
-      updatedUser?.two_fa_auth != user?.two_fa_auth ||
-      updatedUser?.username != user?.username
+      updatedUser?.avatar !== user?.avatar ||
+      updatedUser?.two_fa_auth !== user?.two_fa_auth ||
+      updatedUser?.username !== user?.username
     );
   };
 
@@ -205,7 +204,11 @@ export default function ProfilePopUp({
           &times;
         </span>
         <div className="content">
-          <img src={updatedUser?.avatar} className="popup--image" />
+          <img
+            src={updatedUser?.avatar}
+            className="popup--image"
+            alt="user avatar"
+          />
           <div className="image-upload">
             <label htmlFor="file-input">
               <i className="bi bi-cloud-arrow-up popup--icon" />
@@ -213,6 +216,7 @@ export default function ProfilePopUp({
             <input
               id="file-input"
               type="file"
+              accept="image/*"
               ref={updatedUser.file}
               onChange={onSelectFile}
             />
@@ -293,7 +297,7 @@ export default function ProfilePopUp({
               <>
                 <div className="row">
                   <div className="col">
-                    <img src={qrCode} />
+                    <img src={qrCode} alt="qr code" />
                   </div>
                 </div>
                 <div className="row" style={{ justifyContent: 'center' }}>

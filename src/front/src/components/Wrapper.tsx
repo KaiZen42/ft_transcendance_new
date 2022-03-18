@@ -1,6 +1,4 @@
-import * as React from 'react';
 import Nav from './Nav';
-// import bgVideo from '../assets/movie2.webm';
 
 interface Props {
   children: JSX.Element | JSX.Element[];

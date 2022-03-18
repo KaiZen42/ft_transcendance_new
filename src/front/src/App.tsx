@@ -1,6 +1,5 @@
-// import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Chat from './pages/chat/Chat';
 import Leaderboard from './pages/Leaderboard';
@@ -28,7 +27,6 @@ export const Context = createContext<context>({
 });
 
 export default function App() {
-  const [checkOnline, setCk] = useState(false);
   const [contextData, setcontextData] = useState<context>({
     socket: undefined,
     userId: -1,
@@ -47,24 +45,21 @@ export default function App() {
           userId: result.id,
           online: [],
         });
-        //console.log("getted: ", contextData)
       })
       .catch((error) => console.log(error));
   }
   function quit(event: any) {
     event.preventDefault();
-    //console.log("APP DEST: " ,contextData)
     if (contextData.socket === undefined) return;
     contextData.socket.emit('offline', contextData.userId);
   }
 
   useEffect(() => {
     window.onbeforeunload = quit;
-    //window.onclose = quit
-    console.log('RENDER: ', contextData);
     if (contextData.socket === undefined) return getUser();
     if (contextData.online.length < 1)
       contextData.socket.emit('WhoOnline', contextData.userId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contextData]);
 
   useEffect(() => {
@@ -75,14 +70,12 @@ export default function App() {
           pred.online = ons;
           return { ...pred };
         });
-      console.log('are online: ', ons);
     });
 
     contextData.socket.on('areNowOnline', (id: number) => {
       setcontextData((pred) => {
         if (pred.online.findIndex((el) => el === id || el === -id) === -1)
           pred.online = [...pred.online, id];
-        console.log(' ON id: ', id, pred);
         return { ...pred };
       });
     });
@@ -127,6 +120,7 @@ export default function App() {
       contextData.socket?.removeListener('areNotInGame');
       contextData.socket?.removeListener('areNowOffline');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contextData.socket]);
 
   return (

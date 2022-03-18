@@ -323,6 +323,7 @@ export default function Pong() {
     defaultCanva();
     initWatchSocket();
     socket.emit('watchGame', Number(watchId));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

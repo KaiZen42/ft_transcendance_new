@@ -29,7 +29,7 @@ export default function Nav({ noImage }: { noImage?: boolean }) {
       setUser(data);
     })();
     socket?.on('friendlyMatch', handleFriendlyMatch);
-  }, [socket]);
+  }, [socket, noImage]);
 
   const handleFriendlyMatch = (friend: { id: number; username: string }) => {
     setFriend({
@@ -84,11 +84,7 @@ export default function Nav({ noImage }: { noImage?: boolean }) {
               className="header--photo_name"
               onClick={() => navigate('/users/' + user?.username)}
             >
-              <img
-                alt="profile image"
-                src={user?.avatar}
-                className="nav--image"
-              />
+              <img alt="profile" src={user?.avatar} className="nav--image" />
               <div className="header--text">{user?.username}</div>
             </div>
           )}

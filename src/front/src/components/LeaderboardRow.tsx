@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Leaderboard.css';
 
 interface TmpUser {
@@ -17,7 +17,6 @@ interface Props {
 
 export default function LeaderboardRow({ user, pos }: Props) {
   const navigate = useNavigate();
-  const { state } = useLocation();
   return (
     <li
       className={`table-row ${
@@ -29,7 +28,7 @@ export default function LeaderboardRow({ user, pos }: Props) {
     >
       <div className="leaderboard-col board-col-1">{pos + 1}</div>
       <div className="leaderboard-col board-col-2">
-        <img src={user.avatar} />
+        <img src={user.avatar} alt="user avatar" />
         <p>{user.username}</p>
       </div>
       <div className="leaderboard-col board-col-3">{user.points}</div>

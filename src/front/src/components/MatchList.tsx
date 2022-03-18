@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Context } from '../App';
-import { User } from '../models/User.interface';
 
 interface MatchUser {
   id: number;
@@ -36,7 +35,7 @@ export default function MatchList({ userId }: { userId: number }) {
       );
       setMatches(data);
     })();
-  }, [userId]);
+  }, [userId, username]);
 
   return (
     <>
@@ -124,7 +123,7 @@ function MatchItem({
         >
           <div className="image-username">
             <img
-              alt="profile image"
+              alt="profile"
               src={me.avatar}
               className="profile-info-img sm"
             />
@@ -140,7 +139,7 @@ function MatchItem({
             onClick={() => navigate('/users/' + opponent.username)}
           >
             <img
-              alt="profile image"
+              alt="profile"
               src={opponent.avatar}
               className="profile-info-img sm"
             />

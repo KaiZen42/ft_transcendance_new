@@ -1,6 +1,4 @@
-import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Context } from '../App';
 import { User } from '../models/User.interface';
 
 interface Friend {
@@ -17,7 +15,6 @@ export default function FriendlyMatchPopUp({
   onClose: () => void;
   user: User | undefined;
 }) {
-  const socket = useContext(Context).socket;
   const navigate = useNavigate();
 
   const acceptMatch = () => {

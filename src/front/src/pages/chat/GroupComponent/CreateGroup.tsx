@@ -99,15 +99,15 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       className="overlay container-fluid row justify-content-center"
     >
       <div className="col-ms-10">
-        <div className="group-create mb-sm-3 mb-md-0 contacts_card ">
-          <div className="card-header scrollable">
+        <div className="group-create mb-sm-3 mb-md-0 contacts_card " style={{height: '35vh'}}>
+          <div className="card-header">
             <span className="close_btn">
               <i
                 className="fas fa-times fa-lg"
                 onClick={(e) => setVisibility('hidden')}
               ></i>
             </span>
-            <div className="card-body contacts_body row">
+            <div className="card-body contacts_body row scrollable">
               <div className="group-info-box">
                 <div className="info-username-image">
                   <div className="profile-info-text justify-content-center">
@@ -150,7 +150,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                   ))}
                 </div>
               </div>
-              <div className="group-info-box" style={{ height: '28rem' }}>
+              <div className="group-info-box">
                 <div
                   className="profile-info-text justify-content-center"
                   style={{ display: 'flex' }}
@@ -229,7 +229,6 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                 <div className="col">
                   <button
                     className="btn btn-outline-success"
-                    /* disabled={isChanged()} */
                     onClick={(e) => createGroup()}
                   >
                     Create

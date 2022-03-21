@@ -113,7 +113,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
             {channels.map((chan: ShortChannel, i) => {
               return (
                 <div
-                  className="d-flex bd-highlight group-info-box justify-content-center"
+                  className="d-flex bd-highlight group-search-box justify-content-center"
                   onClick={(e) => selectChannel(e, chan)}
                   style={{ cursor: 'pointer', marginBottom: '10px', flex: '1' }}
                   key={i}
@@ -128,9 +128,9 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                     <p>ID: {chan.id}</p>
                   </div>
                   {chan.mode === 'PRO' ? (
-                    <div className="fas fa-lock icon-container"></div>
+                    <div className="fas fa-lock icon-container" style={{marginRight: "10px", marginTop: "30px"}}></div>
                   ) : (
-                    <div className="fas fa-lock-open icon-container"></div>
+                    <div className="fas fa-lock-open icon-container" style={{marginRight: "10px", marginTop: "30px"}}></div>
                   )}
                 </div>
               );

@@ -155,7 +155,6 @@ export default function GroupInfo(Prop: Prop) {
                     Partecipants: {partecipants.length}{' '}
                     {partecipants.length === 1 ? ' User' : ' Users'}
                   </p>
-                  <p className="profile-info-text">Group Type: </p>
                 </div>
               </div>
               <div className="group-info-box">

@@ -34,7 +34,7 @@ export default function Profile() {
 
   return (
     <>
-      {username ? (
+      {username && (
         <Wrapper noImage={myProfilePage}>
           <div className="profile-content">
             <div className="profile-box profile-info">
@@ -62,8 +62,6 @@ export default function Profile() {
             </div>
           </div>
         </Wrapper>
-      ) : (
-        <Error404 />
       )}
     </>
   );

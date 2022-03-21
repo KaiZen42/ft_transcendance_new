@@ -12,21 +12,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import {
-  UpdateUser,
-  UpdateUserImg,
-  UpdateUserName,
-} from './dto/update-user.dto';
-import { LoginUsreDto } from './dto/login-user.dto';
 import { User } from './models/user.entity';
-//import Multer, { diskStorage, MulterError } from 'multer';
-import {
-  AnyFilesInterceptor,
-  FileInterceptor,
-  MulterModule,
-} from '@nestjs/platform-express';
-import { Multer, diskStorage } from 'multer';
-import { IsNotEmptyObject } from 'class-validator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 
@@ -41,12 +29,6 @@ export class UserController {
   async users(): Promise<User[]> {
     return await this.user.getAll();
   }
-
-  //   @Get('id/:id')
-  //   async getById(@Param('id') id: number): Promise<User> {
-  //     return await this.user.getById(id);
-  //   }
-  //
 
   @Get('email/:email')
   async getByEmail(@Param('email') email: string): Promise<User> {
@@ -121,18 +103,6 @@ export class UserController {
   async getLikeUsername(@Param('username') username: string): Promise<User[]> {
     return await this.user.getLikeUsername(username);
   }
-
-  //   @Put('image/:id')
-  //   async updateImg(@Param('id') id: number, @Body() userData: UpdateUserImg) {
-  //     await this.user.update(id, userData);
-  //     return this.user.getById(id);
-  //   }
-
-  //   @Put('username/:id')
-  //   async updateUsername(@Param('id') id: number, @Body() userData: UpdateUserName) {
-  //     await this.user.update(id, userData);
-  //     return this.user.getById(id);
-  //   }
 
   @Delete(':id')
   async delete(@Param('id') id: number) {

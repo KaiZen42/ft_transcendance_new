@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { Match } from './models/match.entity';
 

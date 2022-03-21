@@ -2,13 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './models/user.entity';
-import {
-  Connection,
-  getConnection,
-  Repository,
-  Like,
-  getRepository,
-} from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import fetch from 'node-fetch';
@@ -48,24 +42,7 @@ export class UserService {
     return this.userDB.findOne({ where: { email } });
   }
 
-  // async find_image_url(username: string)
-  // {
-  //   let avatar = `https://cdn.intra.42.fr/users/${username}.`;
-  //   let res = await fetch(avatar+"jpeg")
-  //   if (res.status === 200)
-  //     return (avatar += "jpeg")
-  //   res = await fetch(avatar+"jpg")
-  //   if (res.status === 200)
-  //     return (avatar += "jpg")
-  //   res = await fetch(avatar+"png")
-  //   if (res.status === 200)
-  //     return (avatar += "png")
-  //   return ("")
-  // }
-
   async create(userData: CreateUserDto): Promise<User> {
-    //const avatar = await this.find_image_url(userData.login)
-
     return this.userDB.save({
       id: userData.id,
       username: userData.login,

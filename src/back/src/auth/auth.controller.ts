@@ -4,29 +4,20 @@ import {
   Controller,
   Get,
   Post,
-  Param,
   Req,
   Res,
   UseGuards,
   UseInterceptors,
   Query,
-  ValidationPipe,
-  Redirect,
   HttpCode,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
-import { LoginUsreDto } from 'src/user/dto/login-user.dto';
 import { Request, response, Response } from 'express';
-import { User } from '../user/models/user.entity';
 import { AuthGuard } from './auth.guard';
 import { JwtService } from '@nestjs/jwt';
-import fetch from 'node-fetch';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
 import { UpdateUser } from 'src/user/dto/update-user.dto';
-// import {JwtAuthGuard} from './auth/jwt-auth.guard';
-// import RequestWithUser from '../requestWithUser.interface';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller()
@@ -40,11 +31,7 @@ export class AuthController {
 
   @Post('generate')
   @UseInterceptors(ClassSerializerInterceptor)
-  async check(
-    @Body('id') id: number,
-    @Res() response: Response,
-    @Req() request,
-  ) {
+  async check(@Body('id') id: number, @Res() response: Response) {
     const { otpauthUrl } = await this.twoFaAuthService.generatetwoFaAuthSecret(
       id,
     );
@@ -70,7 +57,6 @@ export class AuthController {
   @Post('auth2fa')
   @HttpCode(200)
   async auth2fa(@Req() request: Request, @Body() data: UpdateUser) {
-
     const cookie = request.cookies['token'];
 
     const user = await this.user.userCookie(cookie);
@@ -79,13 +65,13 @@ export class AuthController {
       user,
     );
     if (!isCodeValid) {
-      return false
+      return false;
     }
-    
-    request.res.clearCookie('token')
+
+    request.res.clearCookie('token');
     const token = await this.jwt.signAsync({ id: user.id, two_fa: false });
     request.res.cookie('token', token, { httpOnly: true });
-    return true
+    return true;
   }
 
   @Get('login')
@@ -107,7 +93,7 @@ export class AuthController {
 
     //return "ritorno cookie errore";
     const user = await this.user.userCookie(cookie);
-    return {...user, two_fa: data['two_fa']};
+    return { ...user, two_fa: data['two_fa'] };
   }
 
   @UseGuards(AuthGuard)

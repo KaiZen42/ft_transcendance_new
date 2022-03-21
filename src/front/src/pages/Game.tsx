@@ -263,7 +263,13 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
     socket.on('playerNumber', handlePlayerNumber);
     socket.on('players', handlePlayers);
     socket.on('friendlyMatchExpired', handleExpired);
+    socket.on('alreadyInGame', handleAlreadyInGame);
     setSafe(socket);
+  };
+
+  const handleAlreadyInGame = () => {
+    drawRect(0, 0, canvas.width, canvas.height, 'rgba(0, 0, 0)');
+    drawText(`You are already in a game`, 375, 40, 'white');
   };
 
   const handleExpired = () => {
@@ -476,6 +482,7 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
         playAgain={restartGame}
         updatePoints={updatePoints}
         watch={watchId ? true : false}
+        friendly={friend ? true : false}
       />
       <video autoPlay muted loop className="video">
         <source src="./movie2.webm" type="video/webm" />

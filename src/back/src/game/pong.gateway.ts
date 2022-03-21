@@ -45,6 +45,13 @@ export default class PongGateway implements OnGatewayDisconnect {
   handleJoinGame(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     const { user, inverted } = data;
 
+    console.log('USER: ', user);
+
+    if (this.isAlreadyInGame(user.id)) {
+      client.emit('alreadyInGame');
+      return;
+    }
+
     this.loopLimit = 0;
     this.joinGame(client, user, inverted);
   }
@@ -124,6 +131,19 @@ export default class PongGateway implements OnGatewayDisconnect {
     if (key === 'ArrowUp')
       this.rooms[roomId].moves[client.data.number].up = false;
     else this.rooms[roomId].moves[client.data.number].down = false;
+  }
+
+  isAlreadyInGame(id: number) {
+    const available_rooms: string[] = Object.keys(this.rooms);
+    for (let i = 0; i < available_rooms.length; i++) {
+      const roomId = available_rooms[i];
+      if (
+        this.rooms[roomId].users[0].id === id ||
+        (this.rooms[roomId].users[1] && this.rooms[roomId].users[1].id === id)
+      )
+        return true;
+    }
+    return false;
   }
 
   startGameInterval(roomId: string) {

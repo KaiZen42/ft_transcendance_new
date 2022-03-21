@@ -53,14 +53,14 @@ export class PartecipantService {
       })
       .getOne();
 
-    console.log("adbmin", res)
+    //console.log("adbmin", res)
     if (res === undefined)
     {
       res = await this.partecipantDB.findOne({ where: { channelId , mod: Not("b")} });
       if (res !== undefined)
         await this.update(res.id, {mod: "a"})
     }
-    console.log('ret:', res);
+    //console.log('ret:', res);
     return res;
   }
 
@@ -81,7 +81,7 @@ export class PartecipantService {
         chId: channelId,
       })
       .getMany();
-    console.log('ret:', res);
+    //console.log('ret:', res);
     return res;
   }
 
@@ -131,6 +131,6 @@ export class PartecipantService {
       .set({ ...data })
       .where('partecipant.id = :uId', { uId: id })
       .execute();
-      console.log("UPDATE PART: ", res)
+      //console.log("UPDATE PART: ", res)
   }
 }

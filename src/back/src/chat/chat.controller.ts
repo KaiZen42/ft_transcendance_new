@@ -43,7 +43,7 @@ export class chatController {
 	async getMsgByChannel(@Param("channelId") channelId: number) : Promise<any[]>
 	{
 		let ms : any[] =  await this.msgService.getByChannel(channelId);
-		console.log(`MESSAGE (${channelId}): `,ms);
+		//console.log(`MESSAGE (${channelId}): `,ms);
 		return ms;
 	}
 
@@ -51,7 +51,7 @@ export class chatController {
 	async getUsersByChannel(@Param("channelId") channelId: number) : Promise<any[]>
 	{
 		let ms : any[] =  await this.chService.getUserByChan(channelId);
-		console.log(`Users in(${channelId}): `, ms);
+		//console.log(`Users in(${channelId}): `, ms);
 		return ms;
 	}
 
@@ -59,7 +59,7 @@ export class chatController {
 	async getOtherUsersByChannel(@Param("channelId") channelId: number, @Param("userId") userId: number) : Promise<any[]>
 	{
 		let ms : any =  await this.chService.getOtherByChan(channelId, userId);
-		console.log(`Users in(${channelId}): `, ms);
+		//console.log(`Users in(${channelId}): `, ms);
 		return ms;
 	}
 
@@ -69,7 +69,7 @@ export class chatController {
 	async getChannelByName(@Param("name") name: string) : Promise<any[]>
 	{
 		let ms : any[] =  await this.chService.getByName(name);
-		console.log(`NAME is(): `, ms);
+		//console.log(`NAME is(): `, ms);
 		return ms;
 	}
 
@@ -77,7 +77,7 @@ export class chatController {
 	async test(@Param("id1") chanId: number) : Promise<any>
 	{
 		let someThings: any =  await this.partService.FixAdmin(chanId)
-		console.log("QUALCOSA: ", someThings);
+		//console.log("QUALCOSA: ", someThings);
 		return someThings;
 	}
 
@@ -85,7 +85,7 @@ export class chatController {
 	async getFullPartInfoNyChan(@Param("id1") chanId: number) : Promise<any>
 	{
 		let someThings: any =  await this.partService.getCompletePartecipantByChannel(chanId)
-		//console.log("QUALCOSA: ", someThings);
+		////console.log("QUALCOSA: ", someThings);
 		return someThings;
 	}
 
@@ -100,7 +100,7 @@ export class chatController {
 	async getChannelsInfo(@Param("idUser") userID: number) : Promise<ChannelInfoDto[]>
 	{
 		let someThings: ChannelInfoDto[] =  await this.chService.getInfoChanByUser(userID)
-		console.log("QUALCOSA: ", someThings);
+		//console.log("QUALCOSA: ", someThings);
 		return someThings;
 	}
 
@@ -108,7 +108,7 @@ export class chatController {
 	async getChannelsInfoById(@Param("idChan") chanId: number) : Promise<ChannelInfoDto>
 	{
 		let someThings: ChannelInfoDto =  await this.chService.getInfoChanById(chanId)
-		console.log("QUALCOSA: ", someThings);
+		//console.log("QUALCOSA: ", someThings);
 		return someThings;
 	}
 

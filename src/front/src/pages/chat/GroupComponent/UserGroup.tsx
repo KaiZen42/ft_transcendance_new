@@ -30,9 +30,16 @@ export default function UserGroup({part, on, myInfo, setRequest}: Prop)
 			channelId: part.channelId,
 			type: type,
 			reciverName: name,
+			time : 0
 		}
 		setRequest(req)
 	}
+
+	useEffect(()=>
+	{
+		
+	}, [part])
+
 
 	return (
 
@@ -80,7 +87,12 @@ export default function UserGroup({part, on, myInfo, setRequest}: Prop)
 						<i className="fas fa-level-up-alt" 	onClick={(e) =>  confirm("upgrade", user.username)}></i>
 						: <i className="fas fa-level-down-alt" 	onClick={(e) => confirm("downgrade", user.username)}></i>)
 				}
-				<i className="fas fa-comment-slash"	onClick={(e) =>  confirm("mure", user.username)}></i>
+				{console.log("MUTED?", part.muted)}
+				{
+					(part.muted === 0 ? 
+						<i className="fas fa-comment-slash"	onClick={(e) =>  confirm("mute", user.username)}></i>
+						: <i className="fas fa-comment" 	onClick={(e) => confirm("unmute", user.username)}></i>)
+				}
           	</span>}
 			  
 		</div>

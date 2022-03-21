@@ -41,7 +41,7 @@ export class ChannelService {
 			.andWhere(" channel.mode != 'PRI'")
 			.orderBy("channel.name", "ASC")
 			.getMany()
-		//console.log("CHANNEL INFO", res)
+		////console.log("CHANNEL INFO", res)
 		return res;
 	}
 
@@ -59,7 +59,7 @@ export class ChannelService {
 			.addSelect(['channel.id', "channel.name", "channel.isPrivate"])
 			.orderBy("channel.id", "ASC")
 			.getMany()
-		//console.log("CHANNEL INFO", res)
+		////console.log("CHANNEL INFO", res)
 		return res;
 	}
 
@@ -81,7 +81,7 @@ export class ChannelService {
 		.leftJoin("partecipant.userId", "users" )
 		.orderBy("channel.id", "ASC")
 		.getMany()
-		// console.log("CHANNEL INFO", res)
+		// //console.log("CHANNEL INFO", res)
 		 return res;
 	}
 
@@ -94,7 +94,7 @@ export class ChannelService {
 		.leftJoin("channel.partecipants", "partecipant")
 		.leftJoin("partecipant.userId", "users" )
 		.getOne()
-		// console.log("CHANNEL INFO", res)
+		// //console.log("CHANNEL INFO", res)
 		 return res;
 	}
 
@@ -106,7 +106,7 @@ export class ChannelService {
 			.leftJoinAndSelect(Partecipant, "partecipant", "partecipant.userId = users.id")
 			.where("partecipant.channelId = :chId", {chId: id})
 			.getMany();
-		console.log("user by chan", res)
+		//console.log("user by chan", res)
 		return res;
 	}
 
@@ -175,7 +175,7 @@ export class ChannelService {
 	async goOffline(userId: number)
 	{
 		const part = (await this.partService.getPartecipantByUserAndChan(userId, 1));
-		console.log("" + userId + " FOUND: ", part)
+		//console.log("" + userId + " FOUND: ", part)
 		if (part !== undefined)
 			await this.partService.delete(part.id);
 	}
@@ -192,7 +192,7 @@ export class ChannelService {
 	async join(data: JoinRoomDto): Promise<boolean>
 	{
 		const ch:Channel = await this.getById(+data.room);
-		console.log("JOIN ", ch)
+		//console.log("JOIN ", ch)
 		if ( ch === undefined || ch.isPrivate )
 			return false;
 		if ( ch.mode === "PRO" && ch.pass !== data.key )
@@ -237,7 +237,7 @@ export class ChannelService {
 					muted: 0,
 					mod: "m",
 				});
-		console.log(ch);
+		//console.log(ch);
 		return ch;
 		}
 
@@ -247,7 +247,7 @@ export class ChannelService {
 
 		async updateChannel(toUpdate: updateChannelDto)
 		{
-			console.log(toUpdate);
+			//console.log(toUpdate);
 			if (toUpdate.pass === undefined)
 				await this.channelDB
 				.createQueryBuilder()

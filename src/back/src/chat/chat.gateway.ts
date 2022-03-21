@@ -10,6 +10,7 @@ import {
   MessageBody,
   ConnectedSocket,
 } from '@nestjs/websockets';
+import { check } from 'prettier';
 
 import { Socket, Server } from 'socket.io';
 import { UserService } from 'src/user/user.service';
@@ -78,14 +79,26 @@ export class ChatGateway
       mex.userId.id,
       +mex.room,
     );
+
     const ch = await this.channelService.getById(+mex.room);
     //TODO: add mute option
+    console.log("check time ",  Math.trunc((new Date()).getTime() / 6000) , "  -  " ,  sender.muted )
+    console.log("wait = ",  )
     if (sender.mod === 'b') {
       mex.userId.id = -1;
       mex.data =
         ch !== undefined && !ch.isPrivate
           ? `you are banned from this channel`
           : `you are blocked`;
+      this.server.to(client.id).emit('message', mex);
+      return;
+    }
+
+    const remainingTime: number = Math.trunc((new Date()).getTime() / 6000) - sender.muted;
+    if (remainingTime < 0)
+    {
+      mex.userId.id = -1;
+      mex.data =`you are muted for ${remainingTime / -10} min.`;
       this.server.to(client.id).emit('message', mex);
       return;
     }
@@ -162,7 +175,7 @@ export class ChatGateway
       data.idUser,
       +data.room,
     );
-    console.log('USER ', user);
+    //console.log('USER ', user);
     if (user !== undefined && user.mod !== 'b') {
       this.server.to(client.id).emit('createRoom', data.room);
       return { event: 'joinedStatus', data: true };
@@ -179,11 +192,11 @@ export class ChatGateway
   @SubscribeMessage('leaveRoom')
   async leaveRoom(client: Socket, data: number | openRoomDto) {
     if (typeof data === 'number') {
-      console.log('LEAVE BECAUSE YES ', data);
+      //console.log('LEAVE BECAUSE YES ', data);
       client.leave(data + '');
       this.server.to(client.id).emit('QuitRoom', data);
     } else {
-      console.log('LEAVE BECAUSE LEAVE', data);
+      //console.log('LEAVE BECAUSE LEAVE', data);
       await this.partService.delete(
         (
           await this.partService.getPartecipantByUserAndChan(
@@ -231,7 +244,7 @@ export class ChatGateway
   @SubscribeMessage('WhoOnline')
   WhoOnline(client: Socket, userId: number): WsResponse<number[]> {
     this.online(client, userId);
-    console.log('onlines', Object.values(this.onlines));
+    //console.log('onlines', Object.values(this.onlines));
     return { event: 'areOnline', data: Object.values(this.onlines) };
   }
 
@@ -250,7 +263,7 @@ export class ChatGateway
   @SubscribeMessage('BlockUser')
   async blockUsser(client: Socket, data: channelRequestDto) {
     const ch = await this.channelService.getById(data.channelId);
-    console.log('BLOCK');
+    //console.log('BLOCK');
     if (ch.isPrivate) {
       const sender = await this.partService.getPartecipantByUserAndChan(
         data.sender,
@@ -289,7 +302,7 @@ export class ChatGateway
   }
 
   @SubscribeMessage('ChannelRequest')
-  async execRequest(client: Socket, req: channelRequestDto) {
+  async execRequest(client: Socket, req: channelRequestDto){
     const sender = await this.partService.getPartecipantByUserAndChan(
       req.sender,
       req.channelId,
@@ -347,7 +360,13 @@ export class ChatGateway
         await this.partService.update(reciver.id, { mod: 'm' });
         break;
       case 'mute':
-        //TODO: mute
+        let d: number = Math.trunc((new Date()).getTime() / 6000)
+        console.log("now ", d)
+        console.log("mute for ", d + (req.time * 10))
+        await this.partService.update(reciver.id, { muted: (d + (req.time * 10)) });
+        break;
+      case 'unmute':
+        await this.partService.update(reciver.id, { muted: 0 });
         break;
     }
 
@@ -360,9 +379,10 @@ export class ChatGateway
     };
     this.server.to(req.channelId.toString()).emit('memberUpdate', response);
     this.server.to(req.channelId.toString()).emit('messageUpdate', response);
-
-    //this.server.to(req.channelId.toString()).emit('memberNotification', response);
+    console.log("AO")
+    return { event: 'ChannelRequest'};
   }
+    //this.server.to(req.channelId.toString()).emit('memberNotification', response);
 
   @SubscribeMessage('friendlyMatch')
   handleFriendlyMatch(

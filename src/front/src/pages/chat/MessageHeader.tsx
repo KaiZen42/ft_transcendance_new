@@ -65,6 +65,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
         channelId: +chatInfo.roomId,
         type: otherPartecipant.mod === 'm' ? 'Block' : 'Unblock',
         reciverName: chatInfo.username,
+        time: 0,
       };
       socket?.emit('BlockUser', req);
       const ot = otherPartecipant;

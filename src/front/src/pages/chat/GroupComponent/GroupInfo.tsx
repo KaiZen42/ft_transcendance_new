@@ -88,9 +88,26 @@ export default function GroupInfo(Prop: Prop) {
 
   useEffect(() => {
     getPartecipantInfo();
-    getUsersInChan();
     getMessageNumber();
+    if (partecipants.length < 1)
+      getUsersInChan();
+    console.log("RENDER PARTE")
+    
+
+    
   }, [Prop, request]);
+
+  useEffect(()=>
+  {
+    socket?.on("ChannelRequest", ()=>
+    {
+      console.log("RELOAD PARTE")
+      getUsersInChan();
+    })
+    return () => {
+      socket?.removeListener('ChannelRequest');
+    };
+  },[])
 
   return (
     <div

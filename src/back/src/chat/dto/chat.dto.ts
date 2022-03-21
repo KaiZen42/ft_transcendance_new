@@ -107,6 +107,8 @@ export class channelRequestDto
   channelId: number;
   @IsNotEmpty()
   type : string;
+  
+  time: number;
 }
 
 export class channelResponseDto

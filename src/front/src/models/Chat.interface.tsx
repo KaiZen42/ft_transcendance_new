@@ -101,6 +101,7 @@ export interface channelRequestPkj
   channelId: number,
   type : string,
   reciverName: string,
+  time: number 
 }
 
 export interface channelResponsePkj

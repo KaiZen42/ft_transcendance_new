@@ -17,6 +17,7 @@ export interface RoomState {
   users: [UserInfo, UserInfo];
   intervalID: any;
   friendly: boolean;
+  inverted: boolean;
 }
 
 export interface UserInfo {

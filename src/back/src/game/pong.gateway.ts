@@ -42,9 +42,11 @@ export default class PongGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('joinGame')
-  handleJoinGame(@MessageBody() user: any, @ConnectedSocket() client: Socket) {
+  handleJoinGame(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    const { user, inverted } = data;
+
     this.loopLimit = 0;
-    this.joinGame(client, user);
+    this.joinGame(client, user, inverted);
   }
 
   @SubscribeMessage('watchGame')
@@ -76,7 +78,7 @@ export default class PongGateway implements OnGatewayDisconnect {
       client.emit('friendlyMatchExpired');
       return;
     }
-    this.createGame(client, user, true);
+    this.createGame(client, user, false, true);
   }
 
   @SubscribeMessage('acceptFriendlyMatch')
@@ -131,6 +133,7 @@ export default class PongGateway implements OnGatewayDisconnect {
       const intervalID = setInterval(() => {
         if (!this.rooms[roomId]) return;
         const winner = this.game.gameLoop(
+          this.rooms[roomId].inverted,
           this.rooms[roomId].state,
           this.rooms[roomId].moves,
         );
@@ -190,10 +193,10 @@ export default class PongGateway implements OnGatewayDisconnect {
     this.server.to(roomId).emit('gameOver', winner, scores);
   }
 
-  createGame(client: Socket, user: User, friendly = false) {
+  createGame(client: Socket, user: User, inverted: boolean, friendly = false) {
     this.clientRooms[client.id] = client.id;
     this.rooms[client.id] = {
-      state: this.game.createGameState(),
+      state: this.game.createGameState(inverted),
       moves: [
         { up: false, down: false },
         { up: false, down: false },
@@ -201,26 +204,27 @@ export default class PongGateway implements OnGatewayDisconnect {
       users: [{ ...user }, undefined],
       intervalID: undefined,
       friendly,
+      inverted,
     };
     client.data.number = 0;
     client.emit('playerNumber', 0);
   }
 
-  joinGame(client: Socket, user: User) {
+  joinGame(client: Socket, user: User, inverted: boolean) {
     this.loopLimit++;
     const available_rooms: string[] = Object.keys(this.rooms);
     if (available_rooms.length === 0 || this.loopLimit >= 20)
-      return this.createGame(client, user);
+      return this.createGame(client, user, inverted);
     const randPick = Math.floor(Math.random() * available_rooms.length);
     const roomId = available_rooms[randPick];
     const room = this.rooms[roomId];
-    if (!room.users[1] && !room.friendly) {
+    if (!room.users[1] && room.inverted === inverted && !room.friendly) {
       this.clientRooms[client.id] = roomId;
       this.rooms[roomId].users[1] = { ...user };
       client.join(roomId);
       client.data.number = 1;
       client.emit('playerNumber', 1);
       this.startGameInterval(roomId);
-    } else this.joinGame(client, user);
+    } else this.joinGame(client, user, inverted);
   }
 }

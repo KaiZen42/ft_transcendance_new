@@ -10,7 +10,12 @@ export default function Dashboard() {
           <div className="d-flex flex-column align-items-center justify-content-center h-100">
             <h1 className="white-text">Multiplayer Pong</h1>
             <NavLink to={'/game'}>
-              <div className="neon-button">Join Game</div>
+              <div className="neon-button">classic</div>
+            </NavLink>
+            <NavLink to={'/game/inverted'}>
+              <div className="neon-button" style={{ marginTop: '1rem' }}>
+                inverted
+              </div>
             </NavLink>
           </div>
         </div>

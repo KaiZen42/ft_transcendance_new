@@ -24,7 +24,7 @@ interface GameFriend {
   idRequesting?: number;
 }
 
-export default function Pong() {
+export default function Pong({ inverted }: { inverted?: boolean }) {
   const contextSocket: Socket = useContext(Context).socket!;
   const userId: number = useContext(Context).userId!;
   const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
@@ -108,8 +108,8 @@ export default function Pong() {
     ctx.lineTo(canvas.width / 2, canvas.height - 2);
     ctx.lineWidth = 4;
     ctx.shadowBlur = 4;
-    ctx.strokeStyle = OPPONENT_COLOR;
-    ctx.shadowColor = OPPONENT_COLOR;
+    ctx.strokeStyle = inverted ? USER_COLOR : OPPONENT_COLOR;
+    ctx.shadowColor = inverted ? USER_COLOR : OPPONENT_COLOR;
     ctx.stroke();
 
     // drawing opponent half
@@ -118,8 +118,8 @@ export default function Pong() {
     ctx.lineTo(canvas.width - 2, 2);
     ctx.lineTo(canvas.width - 2, canvas.height - 2);
     ctx.lineTo(canvas.width / 2, canvas.height - 2);
-    ctx.strokeStyle = USER_COLOR;
-    ctx.shadowColor = USER_COLOR;
+    ctx.strokeStyle = inverted ? OPPONENT_COLOR : USER_COLOR;
+    ctx.shadowColor = inverted ? OPPONENT_COLOR : USER_COLOR;
     ctx.stroke();
 
     ctx.shadowBlur = 0;
@@ -128,14 +128,14 @@ export default function Pong() {
   const drawPaddles = (players: [Player, Player]) => {
     let player = players[playerNumber];
     ctx.lineWidth = 4;
-    ctx.strokeStyle = USER_COLOR;
-    ctx.shadowColor = USER_COLOR;
+    ctx.strokeStyle = inverted ? OPPONENT_COLOR : USER_COLOR;
+    ctx.shadowColor = inverted ? OPPONENT_COLOR : USER_COLOR;
     ctx.shadowBlur = 5;
     ctx.strokeRect(players[0].x + 2, player.y, player.width, player.height);
 
     player = players[playerNumber ? 0 : 1];
-    ctx.strokeStyle = OPPONENT_COLOR;
-    ctx.shadowColor = OPPONENT_COLOR;
+    ctx.strokeStyle = inverted ? USER_COLOR : OPPONENT_COLOR;
+    ctx.shadowColor = inverted ? USER_COLOR : OPPONENT_COLOR;
     ctx.strokeRect(players[1].x - 2, player.y, player.width, player.height);
     ctx.shadowBlur = 0;
   };
@@ -231,7 +231,7 @@ export default function Pong() {
   };
 
   const joinGame = (tmp_user: UserWL) => {
-    const sendInfo = {
+    const userInfo = {
       id: tmp_user.id,
       username: tmp_user.username,
       points: tmp_user.points,
@@ -240,12 +240,16 @@ export default function Pong() {
 
     if (friend) {
       friend.requesting
-        ? socket.emit('createFriendlyMatch', sendInfo)
+        ? socket.emit('createFriendlyMatch', userInfo)
         : socket.emit('acceptFriendlyMatch', {
-            user: sendInfo,
+            user: userInfo,
             friendId: friend.idRequesting,
           });
-    } else socket.emit('joinGame', sendInfo);
+    } else
+      socket.emit('joinGame', {
+        user: userInfo,
+        inverted: inverted ? true : false,
+      });
     document.addEventListener('keydown', keydown);
     document.addEventListener('keyup', keyup);
   };
@@ -475,6 +479,7 @@ export default function Pong() {
       />
       <video autoPlay muted loop className="video">
         <source src="./movie2.webm" type="video/webm" />
+        <source src="../movie2.webm" type="video/webm" />
       </video>
     </>
   );

@@ -167,6 +167,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/game/inverted"
+            element={
+              <ProtectedRoute>
+                <Game inverted={true} />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/two_fa_auth" element={<TwoFaAuth />} />
           <Route path="*" element={<Error404 />} />

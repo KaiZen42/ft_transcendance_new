@@ -36,7 +36,7 @@ interface SocketMap {
   [id: number]: string;
 }
 
-@WebSocketGateway({ cors: true, namespace: 'chat' })
+@WebSocketGateway({ cors: true, namespace: 'api/chat' })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -162,7 +162,6 @@ export class ChatGateway
       data.idUser,
       +data.room,
     );
-    console.log('USER ', user);
     if (user !== undefined && user.mod !== 'b') {
       this.server.to(client.id).emit('createRoom', data.room);
       return { event: 'joinedStatus', data: true };

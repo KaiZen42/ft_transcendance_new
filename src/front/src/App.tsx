@@ -12,7 +12,7 @@ import Game from './pages/Game';
 import { createContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
+const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat`;
 
 export interface context {
   socket: Socket | undefined;
@@ -35,7 +35,7 @@ export default function App() {
 
   function getUser() {
     //console.log("getUser")
-    fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/user`, {
+    fetch(`/api/user`, {
       credentials: 'include',
     })
       .then((response) => response.json())

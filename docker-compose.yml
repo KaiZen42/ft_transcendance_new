@@ -1,23 +1,25 @@
 version: "3"
 
 services:
-#   nginx:
-#     build: 
-#       context: .
-#       dockerfile: nginx-Dockerfile
-#     container_name: nginx
-#     restart: always
-#     image: nginx
-#     ports:
-#       - "80:80"
-#       - "443:443"
-#     volumes:
-#         - ./src/front/public:/www
-#     depends_on:
-#       - front
-#     networks:
-#       - transcendence_network
-  
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx-Dockerfile
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "4050:4050"
+      - "4051:4051"
+    expose:
+      - "80"
+      - "4050"
+      - "4051"
+    networks:
+      - transcendence_network
+    depends_on:
+      - "front"
+      - "back"
+
   front:
     build:
       context: .
@@ -32,11 +34,13 @@ services:
       REACT_APP_REDIRECT_URI: "${REDIRECT_URI}"
       REACT_APP_BASE_IP: ${BASE_IP}
     volumes:
-        - ./src/front:/app
-        - /app/node_modules
+      - ./src/front:/app
+      - /app/node_modules
     networks:
       - transcendence_network
-    
+    depends_on:
+      - "back"
+
   back:
     build:
       context: .
@@ -63,15 +67,13 @@ services:
     networks:
       - transcendence_network
     depends_on:
-      - db
-    # env_file:
-    #   - .env
+      - "db"
 
   db:
     image: postgres:latest
     container_name: database
     restart: always
-    ports: 
+    ports:
       - 5432:5432
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
@@ -81,8 +83,8 @@ services:
     networks:
       - transcendence_network
     #volumes:
-      #- ./src/database:/var/run/postgresql
-      # - ./src/database/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
+    #- ./src/database:/var/run/postgresql
+    # - ./src/database/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
     env_file:
       - .env
 
@@ -99,8 +101,7 @@ services:
   #     - transcendence_network
 
 # volumes:
-  # database:
-
+# database:
 
 networks:
   transcendence_network:

@@ -22,10 +22,7 @@ export default function Nav({ noImage }: { noImage?: boolean }) {
 
   useEffect(() => {
     (async () => {
-      const { data } = await axios.get(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/user`,
-        { withCredentials: true }
-      );
+      const { data } = await axios.get(`/api/user`, { withCredentials: true });
       setUser(data);
     })();
     socket?.on('friendlyMatch', handleFriendlyMatch);

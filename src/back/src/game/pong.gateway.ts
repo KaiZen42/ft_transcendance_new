@@ -45,8 +45,6 @@ export default class PongGateway implements OnGatewayDisconnect {
   handleJoinGame(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     const { user, inverted } = data;
 
-    console.log('USER: ', user);
-
     if (this.isAlreadyInGame(user.id)) {
       client.emit('alreadyInGame');
       return;

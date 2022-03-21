@@ -13,7 +13,10 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.enableCors({
-    origin: `http://${process.env.BASE_IP}:3000`,
+    origin: [
+      `http://${process.env.BASE_IP}`,
+      `http://${process.env.BASE_IP}:3000`,
+    ],
     credentials: true,
   });
 

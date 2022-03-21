@@ -1,9 +1,11 @@
 DOCKER_COMPOSE = docker-compose
 DOCKER_COMPOSE_FILE = ./docker-compose.yml
 ENV_FILE = ./.env
+IP := $(shell ipconfig getifaddr en0)
 
 all:	install up
 up: 
+	@sed -i "" "s/BASE_IP=.*/BASE_IP=${IP}/g" ./.env
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
 down:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) down

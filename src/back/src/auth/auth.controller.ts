@@ -13,7 +13,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthGuard } from './auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
@@ -84,7 +84,7 @@ export class AuthController {
     return response.redirect(`http://${process.env.BASE_IP}:3000${path}`);
   }
 
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('user')
   async userCookie(@Req() request: Request) {
     const cookie = request.cookies['token'];

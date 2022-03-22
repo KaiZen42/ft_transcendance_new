@@ -31,7 +31,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   //const [openRoomPkg, setOpenPkg] = useState();
 
   function chatInfo(current: ChannelInfo | undefined) {
-    console.log("NON ENTRARE IN INFO")
+    console.log('NON ENTRARE IN INFO');
     if (current?.isPrivate) {
       setChatInfo({
         userId: selectUser(current)?.id,
@@ -63,10 +63,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   };
 
   async function getRooms() {
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelsInfo/${userId}`,
-      { credentials: 'include' }
-    )
+    await fetch(`/api/chat/ChannelsInfo/${userId}`, { credentials: 'include' })
       .then((response) => response.json())
       .then((result) => {
         result.map((chan: ChannelInfo) => {
@@ -82,10 +79,9 @@ export function ChannelList({ room, setChatInfo }: Prop) {
 
   async function getRoom(chanId: string) {
     console.log('NON ENTRARE IN GET ROOM ', chanId);
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelsInfoId/${chanId}`,
-      { credentials: 'include' }
-    )
+    await fetch(`/api/chat/ChannelsInfoId/${chanId}`, {
+      credentials: 'include',
+    })
       .then((response) => response.json())
       .then((result) => {
         const opnePkj: OpenRoomPkg = {
@@ -100,8 +96,6 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       });
   }
 
-
-  
   useEffect(() => {
     //---------CONDITION 2 ADD NEW ROOM----------
     if (
@@ -116,49 +110,46 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       chatInfo(channels.find((ch) => ch.id.toString() == room));
   }, [socket, room]);
 
-
   //----------------------remove ROOM
-useEffect(()=>
-{
-  socket?.on('QuitRoom', (roomId: number) => {
-    const idx = channels.findIndex((ch) => ch.id === roomId)
-    if (idx !== -1) {
-      setChannel((pred) => {
-        pred.splice(idx, 1);
-        return [...pred];
-      });
-    }
-    if (room === roomId.toString())
-      socket.emit('viewRoom', { idUser: userId, room: '' });
-  });
-  socket?.on('ChangedRoomSettings', (shortCh: ShortChannel) => {
-    const idx = channels.findIndex((ch) => ch.id === shortCh.id);
-    const ch = channels[idx]
-
-    ch.name = shortCh.name
-    ch.mode = shortCh.mode
-
-    if (idx !== -1){
-      setChannel((pred) => 
-        {
-          pred[idx] = ch
-          return [...pred]
-        })
-        chatInfo(ch)
+  useEffect(() => {
+    socket?.on('QuitRoom', (roomId: number) => {
+      const idx = channels.findIndex((ch) => ch.id === roomId);
+      if (idx !== -1) {
+        setChannel((pred) => {
+          pred.splice(idx, 1);
+          return [...pred];
+        });
       }
-  });
-  return(()=>
-  { socket?.removeListener('QuitRoom');
-  socket?.removeListener('ChangedRoomSettings');
-  })
-},[channels])
+      if (room === roomId.toString())
+        socket.emit('viewRoom', { idUser: userId, room: '' });
+    });
+    socket?.on('ChangedRoomSettings', (shortCh: ShortChannel) => {
+      const idx = channels.findIndex((ch) => ch.id === shortCh.id);
+      const ch = channels[idx];
+
+      ch.name = shortCh.name;
+      ch.mode = shortCh.mode;
+
+      if (idx !== -1) {
+        setChannel((pred) => {
+          pred[idx] = ch;
+          return [...pred];
+        });
+        chatInfo(ch);
+      }
+    });
+    return () => {
+      socket?.removeListener('QuitRoom');
+      socket?.removeListener('ChangedRoomSettings');
+    };
+  }, [channels]);
 
   useEffect(() => {
     //---------CONDITION 1 FIRST RENDER----------
     if (channels.length == 0) getRooms();
 
     //---------SOCKET ON-------------
-    
+
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
         let ch = channels.find((chan) => {
@@ -179,16 +170,16 @@ useEffect(()=>
 
     socket?.on('deleted', (res: number) => {
       socket.emit('leaveRoom', res);
-    })
+    });
 
     socket?.on('memberUpdate', (res: channelResponsePkj) => {
       console.log('UPDATE: ', res);
       if (
         res.reciver === userId &&
-        (res.type === 'ban' || res.type === 'kick' )
+        (res.type === 'ban' || res.type === 'kick')
       ) {
         socket.emit('leaveRoom', res.room);
-      } 
+      }
     });
 
     return () => {
@@ -248,7 +239,7 @@ useEffect(()=>
           </div>
         </div>
         <div className="card-body contacts_body">
-          {console.log("CHANNS",channels)}
+          {console.log('CHANNS', channels)}
           <ul className="contacts">
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
@@ -295,14 +286,17 @@ useEffect(()=>
                               <Avatar
                                 alt="Img"
                                 src={selectUser(chan)?.avatar}
-                                style={{wordWrap: 'break-word'}}
+                                style={{ wordWrap: 'break-word' }}
                               />
                             </StyledBadge>
                           </Stack>
                         </div>
                       </div>
                     ) : null}
-                    <div className="user_info" style={{wordWrap: 'break-word'}}>
+                    <div
+                      className="user_info"
+                      style={{ wordWrap: 'break-word' }}
+                    >
                       <span>
                         {chan.isPrivate
                           ? selectUser(chan)?.username

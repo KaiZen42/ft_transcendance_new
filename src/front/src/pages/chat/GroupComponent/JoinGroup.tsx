@@ -27,7 +27,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       event.preventDefault();
       (async () => {
         const data = await fetch(
-          `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/ChannelByName/${event.target.value}`,
+          `/api/chat/ChannelByName/${event.target.value}`,
           { credentials: 'include' }
         );
         const result = data.json();
@@ -83,10 +83,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       className="overlay container-fluid justify-content-center"
     >
       <div className="col-ms-10">
-        <div
-          className="group-search"
-          style={{ width: '25%'}}
-        >
+        <div className="group-search" style={{ width: '25%' }}>
           <div className="card-header">
             <div className="input-group">
               <input
@@ -109,7 +106,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
               </div>
             </div>
           </div>
-          <div className="contacts_body card-body scrollable-searchGroup" >
+          <div className="contacts_body card-body scrollable-searchGroup">
             {channels.map((chan: ShortChannel, i) => {
               return (
                 <div
@@ -118,7 +115,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                   style={{ cursor: 'pointer', marginBottom: '10px', flex: '1' }}
                   key={i}
                 >
-                  <div className="img_cont" style={{marginTop: '20px'}}>
+                  <div className="img_cont" style={{ marginTop: '20px' }}>
                     <Stack direction="row" spacing={2}>
                       <Avatar alt="Img" src={'./group_icon.png'} />
                     </Stack>
@@ -128,9 +125,15 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                     <p>ID: {chan.id}</p>
                   </div>
                   {chan.mode === 'PRO' ? (
-                    <div className="fas fa-lock icon-container" style={{marginRight: "10px", marginTop: "30px"}}></div>
+                    <div
+                      className="fas fa-lock icon-container"
+                      style={{ marginRight: '10px', marginTop: '30px' }}
+                    ></div>
                   ) : (
-                    <div className="fas fa-lock-open icon-container" style={{marginRight: "10px", marginTop: "30px"}}></div>
+                    <div
+                      className="fas fa-lock-open icon-container"
+                      style={{ marginRight: '10px', marginTop: '30px' }}
+                    ></div>
                   )}
                 </div>
               );

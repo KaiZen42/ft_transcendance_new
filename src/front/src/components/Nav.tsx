@@ -35,7 +35,7 @@ export default function Nav({ noImage }: { noImage?: boolean }) {
   };
 
   async function signOutUser() {
-    await fetch(`http://${process.env.REACT_APP_BASE_IP}:3001/api/logout`, {
+    await fetch(`/api/logout`, {
       credentials: 'include',
     });
     window.location.reload();

@@ -14,10 +14,7 @@ export default function TwoFaAuth() {
 
   useEffect(() => {
     async function getAuth() {
-      const res = await fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/user`,
-        { credentials: 'include' }
-      );
+      const res = await fetch(`/api/user`, { credentials: 'include' });
       const data = await res.json();
       if (!data.two_fa) navigate(-1);
       // che figata
@@ -29,7 +26,7 @@ export default function TwoFaAuth() {
 
   async function handleSubmit() {
     const res = await axios.post(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/auth2fa`,
+      `/api/auth2fa`,
       {
         twoFaAuthCode: code,
       },

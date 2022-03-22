@@ -18,7 +18,7 @@ export function UserList() {
       event.preventDefault();
       (async () => {
         const data = await fetch(
-          `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/likeusername/${event.target.value}`,
+          `/api/users/likeusername/${event.target.value}`,
           { credentials: 'include' }
         );
         const result = data.json();

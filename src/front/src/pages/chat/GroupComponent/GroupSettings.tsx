@@ -53,11 +53,9 @@ export default function GroupSettings(Prop: Prop) {
     Prop.chatInfo?.mode === 'PRI' ? true : false
   );
 
-
-
   async function getPartecipantInfo() {
     await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
+      `/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
       { credentials: 'include' }
     )
       .then((response) => response.json())
@@ -67,17 +65,18 @@ export default function GroupSettings(Prop: Prop) {
   }
 
   function setToPriv(priv: boolean) {
-    setUpdatedGroup({ ...updatedGroup, pass: undefined, mode: priv ? 'PRI' : 'PUB' });
+    setUpdatedGroup({
+      ...updatedGroup,
+      pass: undefined,
+      mode: priv ? 'PRI' : 'PUB',
+    });
     setPrivateChan(priv);
   }
   function removePass(pub: boolean) {
-    if (pub)
-    {
-      setUpdatedGroup({ ...updatedGroup, pass: '', mode: "PUB" });
+    if (pub) {
+      setUpdatedGroup({ ...updatedGroup, pass: '', mode: 'PUB' });
       setPrivateChan(false);
-    }
-    else
-      setUpdatedGroup({ ...updatedGroup, pass: undefined, mode: "PUB" });
+    } else setUpdatedGroup({ ...updatedGroup, pass: undefined, mode: 'PUB' });
   }
 
   function handleClose() {
@@ -93,34 +92,41 @@ export default function GroupSettings(Prop: Prop) {
   };
 
   async function submitChanges(e: any) {
-    if (updatedGroup !== undefined 
-      && partecipantInfo !== undefined 
-      && Prop.chatInfo !== undefined
-      && Prop.chatInfo.roomId !== undefined
-      && partecipantInfo?.mod === 'o' || partecipantInfo?.mod === 'a')
-      {
-        const update: updateChannelPkj = {
-          userId: userId,
-          id: +Prop.chatInfo!.roomId,
-          name: updatedGroup.name !== undefined ? updatedGroup.name : Prop.chatInfo!.roomId,
-          mode: updatedGroup.mode !== undefined ? updatedGroup.mode : Prop.chatInfo!.mode,
-          pass: updatedGroup.pass ,
-        }
-        socket?.emit("ChangeRoomSettings", update)
-        handleClose();
-      }
+    if (
+      (updatedGroup !== undefined &&
+        partecipantInfo !== undefined &&
+        Prop.chatInfo !== undefined &&
+        Prop.chatInfo.roomId !== undefined &&
+        partecipantInfo?.mod === 'o') ||
+      partecipantInfo?.mod === 'a'
+    ) {
+      const update: updateChannelPkj = {
+        userId: userId,
+        id: +Prop.chatInfo!.roomId,
+        name:
+          updatedGroup.name !== undefined
+            ? updatedGroup.name
+            : Prop.chatInfo!.roomId,
+        mode:
+          updatedGroup.mode !== undefined
+            ? updatedGroup.mode
+            : Prop.chatInfo!.mode,
+        pass: updatedGroup.pass,
+      };
+      socket?.emit('ChangeRoomSettings', update);
+      handleClose();
+    }
   }
 
   async function deleteGroup() {
-    if (partecipantInfo?.mod === 'o')
-    {
-      console.log("DELETE CHAN")
+    if (partecipantInfo?.mod === 'o') {
+      console.log('DELETE CHAN');
       const req: ViewRoomPkg = {
         room: Prop.chatInfo!.roomId.toString(),
-        idUser: userId
-      }
-      socket?.emit("DeleteChan", req)
-    handleClose();
+        idUser: userId,
+      };
+      socket?.emit('DeleteChan', req);
+      handleClose();
     }
   }
 
@@ -178,83 +184,87 @@ export default function GroupSettings(Prop: Prop) {
                   Group Settings
                 </p>
 
-                  <div className="row justify-content-center justify-content-center">
-                    <p className="profile-info-text">
-                      Group Name:{' '}
-                      <input
-                        id="groupname"
-                        name="Change Group Name"
-                        type="text"
-                        className="form-control"
-                        onChange={(e) =>
-                          setUpdatedGroup({
-                            ...updatedGroup,
-                            name: e.target.value,
-                          })
-                        }
-                        value={updatedGroup.name}
-                      />
-                    </p>
-                  </div>
-                  <p className="profile-info-text justify-content-center">
-                    Password:
-                  </p>
-                  <div
-                    className="profile-info-text"
-                    style={{ display: 'flex' }}
-                  >
+                <div className="row justify-content-center justify-content-center">
+                  <p className="profile-info-text">
+                    Group Name:{' '}
                     <input
-                      id="grouppass"
-                      name="Change Group Pass"
+                      id="groupname"
+                      name="Change Group Name"
                       type="text"
                       className="form-control"
                       onChange={(e) =>
                         setUpdatedGroup({
                           ...updatedGroup,
-                          pass: e.target.value === "" ? undefined : "" + e.target.value ,
-                          mode: e.target.value === "" ? "PUB" : "PRO",
+                          name: e.target.value,
                         })
                       }
-                      value={!privateChan && updatedGroup.pass !== "" ?  
-                              (updatedGroup.pass !== undefined ? updatedGroup.pass : "")
-                              : '🚫Disabled🚫'}
-                      disabled={privateChan || updatedGroup.pass === ""}
+                      value={updatedGroup.name}
                     />
-                    <Checkbox
-                      checked={privateChan}
-                      onChange={(e) => setToPriv(e.target.checked)}
-                    />{' '}
-                    Private
-                    <Checkbox
-                      checked={updatedGroup.pass === ""}
-                      onChange={(e) => removePass(e.target.checked)}
-                    />{' '}
-                    NO Password
+                  </p>
+                </div>
+                <p className="profile-info-text justify-content-center">
+                  Password:
+                </p>
+                <div className="profile-info-text" style={{ display: 'flex' }}>
+                  <input
+                    id="grouppass"
+                    name="Change Group Pass"
+                    type="text"
+                    className="form-control"
+                    onChange={(e) =>
+                      setUpdatedGroup({
+                        ...updatedGroup,
+                        pass:
+                          e.target.value === ''
+                            ? undefined
+                            : '' + e.target.value,
+                        mode: e.target.value === '' ? 'PUB' : 'PRO',
+                      })
+                    }
+                    value={
+                      !privateChan && updatedGroup.pass !== ''
+                        ? updatedGroup.pass !== undefined
+                          ? updatedGroup.pass
+                          : ''
+                        : '🚫Disabled🚫'
+                    }
+                    disabled={privateChan || updatedGroup.pass === ''}
+                  />
+                  <Checkbox
+                    checked={privateChan}
+                    onChange={(e) => setToPriv(e.target.checked)}
+                  />{' '}
+                  Private
+                  <Checkbox
+                    checked={updatedGroup.pass === ''}
+                    onChange={(e) => removePass(e.target.checked)}
+                  />{' '}
+                  NO Password
+                </div>
+                <div
+                  className="row"
+                  style={{ textAlign: 'center', marginTop: '20px' }}
+                >
+                  <div className="col">
+                    <button
+                      className="btn btn-outline-success"
+                      disabled={isChanged()}
+                      onClick={submitChanges}
+                    >
+                      Apply
+                    </button>
                   </div>
-                  <div
-                    className="row"
-                    style={{ textAlign: 'center', marginTop: '20px' }}
-                  >
-                    <div className="col">
-                      <button
-                        className="btn btn-outline-success"
-                        disabled={isChanged()}
-                        onClick={submitChanges}
-                      >
-                        Apply
-                      </button>
-                    </div>
-                    <div className="col">
-                      <button
-                        type="button"
-                        className="btn btn-outline-danger"
-                        onClick={handleClose}
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                  <div className="col">
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger"
+                      onClick={handleClose}
+                    >
+                      Cancel
+                    </button>
                   </div>
-                  {partecipantInfo?.mod !== 'o'? null:
+                </div>
+                {partecipantInfo?.mod !== 'o' ? null : (
                   <div
                     className="col"
                     style={{ textAlign: 'center', marginTop: '-5px' }}
@@ -267,7 +277,7 @@ export default function GroupSettings(Prop: Prop) {
                       Delete Group 🚫
                     </button>
                   </div>
-                  }
+                )}
               </div>
             </div>
           </div>

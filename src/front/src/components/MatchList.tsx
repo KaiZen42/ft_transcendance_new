@@ -29,10 +29,9 @@ export default function MatchList({ userId }: { userId: number }) {
   useEffect(() => {
     if (!userId) return;
     (async () => {
-      const { data } = await axios.get(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/matches/player/${userId}`,
-        { withCredentials: true }
-      );
+      const { data } = await axios.get(`/api/matches/player/${userId}`, {
+        withCredentials: true,
+      });
       setMatches(data);
     })();
   }, [userId, username]);

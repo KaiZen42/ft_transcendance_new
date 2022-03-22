@@ -33,14 +33,10 @@ export default function ProfileInfo({
   };
 
   useEffect(() => {
-    fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/` +
-        username,
-      {
-        method: 'GET',
-        credentials: 'include',
-      }
-    ).then((res) => {
+    fetch(`/api/users/username/` + username, {
+      method: 'GET',
+      credentials: 'include',
+    }).then((res) => {
       res.json().then((data) => {
         if (!data.id) setUser(null);
         else {
@@ -54,12 +50,7 @@ export default function ProfileInfo({
 
   useEffect(() => {
     if (!user || myProfilePage || !me) return;
-    fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getFriendStatus/` +
-        me.id +
-        '?other=' +
-        user.id
-    )
+    fetch(`/api/relations/getFriendStatus/` + me.id + '?other=' + user.id)
       .then((res) => res.json())
       .then((data) => {
         if (data.status) setFriendStatus(data.status);
@@ -67,10 +58,7 @@ export default function ProfileInfo({
   }, [user, myProfilePage, me, username]);
 
   const updateUser = async (updatedUser: User) => {
-    await axios.put(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${updatedUser.id}`,
-      { ...updatedUser }
-    );
+    await axios.put(`/api/users/update/${updatedUser.id}`, { ...updatedUser });
     setUsername(updatedUser.username);
     setUser((prevUser) => ({
       ...prevUser,
@@ -84,10 +72,7 @@ export default function ProfileInfo({
       requesting: me?.id,
       receiving: user?.id,
     };
-    axios.post(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/friendRequest`,
-      data
-    );
+    axios.post(`/api/relations/friendRequest`, data);
     setFriendStatus('REQUESTED');
   };
 

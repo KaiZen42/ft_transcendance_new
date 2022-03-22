@@ -43,7 +43,7 @@ export default function FriendList({
   const fetchData = () => {
     if (friendRequests) {
       fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getRequests/${userId}`
+        `/api/relations/getRequests/${userId}`
       )
         .then((res) => res.json())
         .then((data) => {
@@ -51,7 +51,7 @@ export default function FriendList({
         });
     }
     fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/getFriends/${userId}`
+      `/api/relations/getFriends/${userId}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -84,7 +84,7 @@ export default function FriendList({
   const acceptFriend = (id: number) => {
     axios
       .put(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/acceptRequest`,
+        `/api/relations/acceptRequest`,
         { id: id }
       )
       .then(() => setUpdated(true));
@@ -93,7 +93,7 @@ export default function FriendList({
   const declineFriend = (id: number) => {
     axios
       .delete(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/relations/unfriend`,
+        `/api/relations/unfriend`,
         {
           data: { id: id },
         }

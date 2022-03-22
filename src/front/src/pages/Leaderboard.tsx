@@ -4,15 +4,12 @@ import '../styles/Leaderboard.css';
 import LeaderboardRow from '../components/LeaderboardRow';
 import { DisplayUser } from '../models/User.interface';
 
-
 export default function Leaderboard() {
   const [users, setUsers] = useState<DisplayUser[]>([]);
-  
+
   useEffect(() => {
     async function getter() {
-      let res = await fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/leader`
-      );
+      let res = await fetch(`/api/users/leader`);
       let users = await res.json();
       setUsers(users);
     }
@@ -32,7 +29,10 @@ export default function Leaderboard() {
             <div className="leaderboard-col board-col-4">WINS-LOSSES</div>
           </li>
         </ul>
-        <ul className="my-responsive-table scrollable moz-scroller"  style={{cursor: "pointer"}}>
+        <ul
+          className="my-responsive-table scrollable moz-scroller"
+          style={{ cursor: 'pointer' }}
+        >
           {users.map((user: DisplayUser, pos: number) => (
             <LeaderboardRow key={user.id} user={user} pos={pos} />
           ))}

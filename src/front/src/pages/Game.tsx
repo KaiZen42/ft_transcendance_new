@@ -339,10 +339,7 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
   useEffect(() => {
     if (watchId) return;
     async function getter() {
-      const res = await fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/user`,
-        { credentials: 'include' }
-      );
+      const res = await fetch(`/api/user`, { credentials: 'include' });
       const user = await res.json();
       setUser({ ...user, score: 0 });
       joinGame(user);
@@ -371,18 +368,13 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
   };
 
   async function updatePoints(points: number, wins: number, losses: number) {
-    fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/update/${
-        user!.id
-      }`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ points, wins, losses }),
-      }
-    )
+    fetch(`/api/users/update/${user!.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ points, wins, losses }),
+    })
       .then((response) => response.json())
       .then((data) => {
         setUpdatedUser({ ...data, score: 0 });

@@ -50,17 +50,16 @@ export default function GroupInfo(Prop: Prop) {
   });
 
   async function getUsersInChan() {
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/getFullPartInfoNyChan/${Prop.chatInfo?.roomId}`,
-      { credentials: 'include' }
-    )
+    await fetch(`/api/chat/getFullPartInfoNyChan/${Prop.chatInfo?.roomId}`, {
+      credentials: 'include',
+    })
       .then((response) => response.json())
       .then((result) => setPartecipants(result));
   }
 
   async function getPartecipantInfo() {
     await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
+      `/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
       { credentials: 'include' }
     )
       .then((response) => response.json())
@@ -70,10 +69,9 @@ export default function GroupInfo(Prop: Prop) {
   }
 
   async function getMessageNumber() {
-    await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetMessageCounter/${Prop.chatInfo?.roomId}`,
-      { credentials: 'include' }
-    )
+    await fetch(`/api/chat/GetMessageCounter/${Prop.chatInfo?.roomId}`, {
+      credentials: 'include',
+    })
       .then((response) => response.json())
       .then((result) => {
         setMsgCounter(result);
@@ -89,25 +87,19 @@ export default function GroupInfo(Prop: Prop) {
   useEffect(() => {
     getPartecipantInfo();
     getMessageNumber();
-    if (partecipants.length < 1)
-      getUsersInChan();
-    console.log("RENDER PARTE")
-    
-
-    
+    if (partecipants.length < 1) getUsersInChan();
+    console.log('RENDER PARTE');
   }, [Prop, request]);
 
-  useEffect(()=>
-  {
-    socket?.on("ChannelRequest", ()=>
-    {
-      console.log("RELOAD PARTE")
+  useEffect(() => {
+    socket?.on('ChannelRequest', () => {
+      console.log('RELOAD PARTE');
       getUsersInChan();
-    })
+    });
     return () => {
       socket?.removeListener('ChannelRequest');
     };
-  },[])
+  }, []);
 
   return (
     <div

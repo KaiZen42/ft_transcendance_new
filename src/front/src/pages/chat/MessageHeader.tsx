@@ -31,7 +31,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
 
   async function getPartecipantInfo() {
     await fetch(
-      `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${chatInfo?.roomId}/${userId}`,
+      `/api/chat/GetPartecipantByUserAndChan/${chatInfo?.roomId}/${userId}`,
       { credentials: 'include' }
     )
       .then((response) => response.json())
@@ -42,7 +42,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
     //console.log("other ", chatInfo, otherPartecipant)
     if (chatInfo?.userId !== undefined) {
       await fetch(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat/GetPartecipantByUserAndChan/${chatInfo?.roomId}/${chatInfo?.userId}`,
+        `/api/chat/GetPartecipantByUserAndChan/${chatInfo?.roomId}/${chatInfo?.userId}`,
         { credentials: 'include' }
       )
         .then((response) => response.json())
@@ -74,13 +74,12 @@ export default function MessageHeader({ chatInfo }: Prop) {
     }
   }
 
-  function userLeave()
-  {
-    const leavePkg : OpenRoomPkg = {
-      idUser : userId,
-      room : chatInfo!.roomId
-    }
-    socket?.emit("leaveRoom", leavePkg)
+  function userLeave() {
+    const leavePkg: OpenRoomPkg = {
+      idUser: userId,
+      room: chatInfo!.roomId,
+    };
+    socket?.emit('leaveRoom', leavePkg);
   }
 
   useEffect(() => {

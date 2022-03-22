@@ -65,7 +65,7 @@ export default function ProfilePopUp({
     const { checked } = e.target;
     if (checked && !user.two_fa_auth) {
       const res = await axios.post(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/generate`,
+        `/api/generate`,
         {
           id: updatedUser.id,
           avatar: updatedUser.avatar,
@@ -98,7 +98,7 @@ export default function ProfilePopUp({
   async function validateInput(): Promise<boolean> {
     if (updatedUser.username !== user.username) {
       const { data } = await axios.get(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/username/${updatedUser.username}`
+        `/api/users/username/${updatedUser.username}`
       );
       if (data.id) {
         setValid((prevValid) => ({
@@ -112,7 +112,7 @@ export default function ProfilePopUp({
     if (updatedUser.two_fa_auth && !user.two_fa_auth) {
       try {
         axios.post(
-          `http://${process.env.REACT_APP_BASE_IP}:3001/api/turn2fa`,
+          `/api/turn2fa`,
           { twoFaAuthCode: updatedUser.auth_code },
           { withCredentials: true }
         );
@@ -135,11 +135,9 @@ export default function ProfilePopUp({
     if (updatedUser.file.current!.files!.length > 0) {
       const formData = new FormData();
       formData.append('to_upload', updatedUser.file.current!.files![0]);
-      upload_url = await axios.post(
-        `http://${process.env.REACT_APP_BASE_IP}:3001/api/users/image`,
-        formData,
-        { withCredentials: true }
-      );
+      upload_url = await axios.post(`/api/users/image`, formData, {
+        withCredentials: true,
+      });
     }
     updateState({
       id: updatedUser.id,

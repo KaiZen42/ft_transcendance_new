@@ -58,6 +58,7 @@ export interface CreationChannelPkg {
   pass: string;
   name: string;
   mode: string;
+  invites: number[];
 }
 
 export interface JoinChannelPkg {

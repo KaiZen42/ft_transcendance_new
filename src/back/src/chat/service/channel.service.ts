@@ -191,13 +191,14 @@ export class ChannelService {
 
 	async join(data: JoinRoomDto): Promise<boolean>
 	{
+		const bcrypt = require('bcrypt');
 		const ch:Channel = await this.getById(+data.room);
 		//console.log("JOIN ", ch)
 		if ( ch === undefined || ch.isPrivate )
 			return false;
-		if ( ch.mode === "PRO" && ch.pass !== data.key )
+		if ( ch.mode === "PRO" &&  !bcrypt.compareSync(data.key, ch.pass))
 			return false;
-
+			
 		await this.partService.create(
 			{
 				id : 0,
@@ -211,11 +212,13 @@ export class ChannelService {
 
 
 	async create(channel: Channel, userId: number[]): Promise<Channel> {
+		var bcrypt = require('bcryptjs');
+			
 		const ch: Channel = await this.channelDB.save({
 			id:	channel.id,
 			name : channel.name,
 			mode : channel.mode,
-			pass : channel.pass,
+			pass : channel.pass !== undefined ?  bcrypt.hashSync(channel.pass, 2) : channel.pass,
 			isPrivate : channel.isPrivate,
 		});
 		if (userId.length > 0)
@@ -248,6 +251,8 @@ export class ChannelService {
 		async updateChannel(toUpdate: updateChannelDto)
 		{
 			//console.log(toUpdate);
+			var bcrypt = require('bcryptjs');
+			
 			if (toUpdate.pass === undefined)
 				await this.channelDB
 				.createQueryBuilder()
@@ -259,7 +264,7 @@ export class ChannelService {
 				await this.channelDB
 				.createQueryBuilder()
 				.update(Channel)
-				.set({name: toUpdate.name, mode: toUpdate.mode, pass: toUpdate.pass})
+				.set({name: toUpdate.name, mode: toUpdate.mode, pass: bcrypt.hashSync(toUpdate.pass, 2)})
 				.where("Channel.id = :uId", {uId: toUpdate.id})
 				.execute()
 			

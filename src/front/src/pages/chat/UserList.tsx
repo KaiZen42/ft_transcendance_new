@@ -40,6 +40,7 @@ export function UserList() {
       pass: '',
       name: '',
       mode: 'PRI',
+      invites: []
     });
   }
 

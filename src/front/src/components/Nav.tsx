@@ -15,7 +15,6 @@ interface Friend {
 
 export default function Nav({ noImage }: { noImage?: boolean }) {
   const [user, setUser] = useState<User>();
-  const [invisible, setInvisible] = useState(false);
   const navigate = useNavigate();
   const socket = useContext(Context).socket;
   const [friend, setFriend] = useState<Friend>();
@@ -65,13 +64,7 @@ export default function Nav({ noImage }: { noImage?: boolean }) {
           </li>
           <li>
             <NavLink to={'/chat'}>
-              <i className="bi bi-chat header--icon">
-                <Badge
-                  color="secondary"
-                  badgeContent="1"
-                  invisible={invisible}
-                ></Badge>
-              </i>
+              <i className="bi bi-chat header--icon" />
             </NavLink>
           </li>
         </ul>

@@ -61,12 +61,9 @@ export class UserController {
   ) {
     const cookie = request.cookies['token'];
     const data = await this.jwt.verifyAsync(cookie);
-    this.user.addImage(
-      data['id'],
-      `http://${process.env.BASE_IP}:3001/api/users/${newImage.path}`,
-    );
+    this.user.addImage(data['id'], `/api/users/${newImage.path}`);
     return {
-      url: `http://${process.env.BASE_IP}:3001/api/users/${newImage.path}`,
+      url: `/api/users/${newImage.path}`,
     };
   }
 

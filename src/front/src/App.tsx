@@ -12,7 +12,7 @@ import Game from './pages/Game';
 import { createContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/api/chat`;
+const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:5000/chat`;
 
 export interface context {
   socket: Socket | undefined;
@@ -54,6 +54,8 @@ export default function App() {
   }
 
   useEffect(() => {
+    console.log(contextData.online);
+
     window.onbeforeunload = quit;
     if (contextData.socket === undefined) return getUser();
     if (contextData.online.length < 1)
@@ -86,7 +88,6 @@ export default function App() {
           const index = pred.online.findIndex((el) => el === id || el === -id);
 
           if (index !== -1) pred.online.splice(index, 1);
-          console.log('OFF id: ', id, { ...pred });
           return { ...pred };
         });
     });
@@ -97,7 +98,6 @@ export default function App() {
         setcontextData((pred) => {
           const index = pred.online.findIndex((el) => el === id);
           pred.online[index] = -pred.online[index];
-          console.log('IN GAME id: ', id, { ...pred });
           return { ...pred };
         });
     });
@@ -108,7 +108,6 @@ export default function App() {
         setcontextData((pred) => {
           const index = pred.online.findIndex((el) => el === -id);
           pred.online[index] = -pred.online[index];
-          console.log('NOT IN GAME id: ', id, { ...pred });
           return { ...pred };
         });
     });

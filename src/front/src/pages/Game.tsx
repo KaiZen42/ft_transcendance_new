@@ -27,7 +27,7 @@ interface GameFriend {
 export default function Pong({ inverted }: { inverted?: boolean }) {
   const contextSocket: Socket = useContext(Context).socket!;
   const userId: number = useContext(Context).userId!;
-  const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:3001/pong`;
+  const ENDPOINT = `http://${process.env.REACT_APP_BASE_IP}:5001/pong`;
 
   const [user, setUser] = useState<UserWL>();
   const [updatedUser, setUpdatedUser] = useState<UserWL>();

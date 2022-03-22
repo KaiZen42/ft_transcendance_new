@@ -19,7 +19,7 @@ import {
 import { MatchService } from './match.service';
 import { PongService } from './pong.service';
 
-@WebSocketGateway({ cors: true, namespace: 'pong' })
+@WebSocketGateway(4002, { cors: true, namespace: 'pong' })
 export default class PongGateway implements OnGatewayDisconnect {
   constructor(
     private readonly game: PongService,

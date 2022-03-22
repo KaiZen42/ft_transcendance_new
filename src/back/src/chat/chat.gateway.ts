@@ -37,7 +37,7 @@ interface SocketMap {
   [id: number]: string;
 }
 
-@WebSocketGateway({ cors: true, namespace: 'api/chat' })
+@WebSocketGateway(4001, { cors: true, namespace: 'chat' })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {

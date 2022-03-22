@@ -8,12 +8,12 @@ services:
     container_name: nginx
     ports:
       - "80:80"
-      - "4050:4050"
-      - "4051:4051"
+      - "5000:5000"
+      - "5001:5001"
     expose:
       - "80"
-      - "4050"
-      - "4051"
+      - "5000"
+      - "5001"
     networks:
       - transcendence_network
     depends_on:
@@ -29,6 +29,8 @@ services:
     image: react
     ports:
       - "3000:3000"
+    expose:
+      - "3000"
     environment:
       REACT_APP_CLIENT_ID: "${CLIENT_ID}"
       REACT_APP_REDIRECT_URI: "${REDIRECT_URI}"
@@ -47,8 +49,10 @@ services:
       dockerfile: nest-Dockerfile
     container_name: back_nest
     restart: always
-    ports:
-      - "3001:3001"
+    expose:
+      - "4000"
+      - "4001"
+      - "4002"
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"
@@ -82,26 +86,8 @@ services:
       PG_DATA: /var/lib/postgresql/data
     networks:
       - transcendence_network
-    #volumes:
-    #- ./src/database:/var/run/postgresql
-    # - ./src/database/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
     env_file:
       - .env
-
-  # pgadmin:
-  #   container_name: pgadmin4
-  #   image: dpage/pgadmin4
-  #   restart: always
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: root
-  #   ports:
-  #     - "5050:80"
-  #   networks:
-  #     - transcendence_network
-
-# volumes:
-# database:
 
 networks:
   transcendence_network:

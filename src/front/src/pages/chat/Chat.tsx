@@ -22,7 +22,7 @@ import { ChatInfo } from '../../models/Chat.interface';
 import { JoinGroup } from './GroupComponent/JoinGroup';
 import { context, Context } from '../../App';
 import { channel } from 'diagnostics_channel';
-const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:3001/chat`;
+const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:4000/chat`;
 
 export function Chat(/* {user} : Prop */) {
   const cont: context = useContext(Context);

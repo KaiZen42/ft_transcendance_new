@@ -25,7 +25,7 @@ export default function Dashboard() {
               className="flex-row sp-even"
               style={{ width: '25%', marginTop: '1rem' }}
             >
-              <p>online players: {onlines.length}</p>
+              <p>online players: {onlines.filter((online) => online).length}</p>
               <p>in game: {onlines.filter((online) => online < 0).length}</p>
             </div>
           </div>

@@ -113,14 +113,15 @@ export default function GroupInfo(Prop: Prop) {
     >
       <div className="col-ms-10">
         <div className="mb-sm-3 mb-md-0 contacts_card group-info">
-          <div className="card-header">
+          <div className="card-header" style={{height: 'fit-content'}}>
             <span className="close_btn">
               <i
                 className="fas fa-times fa-lg"
                 onClick={(e) => Prop.setVisibility(!Prop.isVisible)}
               ></i>
             </span>
-            <div className="card-body contacts_body row">
+          </div>
+          <div className="card-body contacts_body row scrollable">
               <div className="group-info-box">
                 <div className="info-username-image">
                   <img
@@ -129,7 +130,7 @@ export default function GroupInfo(Prop: Prop) {
                     className="profile-info-img"
                     style={{ marginTop: '10px' }}
                   />
-                  <div className="profile-info-text username">
+                  <div className="profile-info-text username" style={{display: 'flex'}}>
                     {Prop.chatInfo?.username}
                   </div>
                   <p className="profile-info-text">
@@ -149,7 +150,7 @@ export default function GroupInfo(Prop: Prop) {
                   </p>
                 </div>
               </div>
-              <div className="group-info-box">
+              <div className="group-info-box">``
                 <div className="info-username-image">
                   <p className="profile-info-text username">Partecipants</p>
                   <div className="card-body contacts_body">
@@ -179,7 +180,6 @@ export default function GroupInfo(Prop: Prop) {
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
       {request === undefined ? null : (

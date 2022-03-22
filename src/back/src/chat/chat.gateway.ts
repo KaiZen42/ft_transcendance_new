@@ -33,6 +33,7 @@ import { ChannelService } from './service/channel.service';
 import { MessageService } from './service/message.service';
 import { PartecipantService } from './service/partecipant.service';
 
+
 interface SocketMap {
   [id: number]: string;
 }
@@ -79,15 +80,9 @@ export class ChatGateway
       mex.userId.id,
       +mex.room,
     );
+   
 
     const ch = await this.channelService.getById(+mex.room);
-    //TODO: add mute option
-    console.log(
-      'check time ',
-      Math.trunc(new Date().getTime() / 6000),
-      '  -  ',
-      sender.muted,
-    );
     console.log('wait = ');
     if (sender.mod === 'b') {
       mex.userId.id = -1;
@@ -130,6 +125,7 @@ export class ChatGateway
     socket: Socket,
     data: creationDto,
   ): Promise<WsResponse<string>> {
+    const bcrypt = require('bcrypt');
     this.logger.log(`CREATE ROOM FORM DATA `, data);
     if (data.otherUser !== null && data.otherUser !== undefined) {
       const existChan = await this.channelService.getPrivateChanByUsersId(
@@ -141,12 +137,13 @@ export class ChatGateway
         return; //{event: "viewedRoom", data: "" + chan.id} ;
       }
     }
+    
     const chan: Channel = new Channel();
     chan.isPrivate = data.otherUser !== undefined;
     chan.name = chan.isPrivate
       ? `${data.idUser}` + `${data.otherUser}`
       : data?.name;
-    chan.pass = data?.pass;
+    chan.pass = data === undefined || data.pass === undefined ? undefined : await bcrypt.hash(data.pass, 2);
     chan.mode = data.mode;
 
     chan.id = (
@@ -164,6 +161,13 @@ export class ChatGateway
         idUser: data.otherUser,
         room: '' + chan.id,
       });
+    else
+    {
+      data.invites.map(i => 
+        {
+          
+        })
+    }
 
     this.logger.log(
       `Channel created (${chan.isPrivate}): ID: ${chan.id} name ${chan.name} whith ${data.idUser} | ${data.otherUser}`,
@@ -442,5 +446,9 @@ export class ChatGateway
         mode: data.mode,
       });
     }
+  }
+
+  async InviteUser(client: Socket, data: creationDto) {
+    
   }
 }

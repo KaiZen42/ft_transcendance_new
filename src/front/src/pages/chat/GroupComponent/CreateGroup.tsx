@@ -75,6 +75,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       pass: privateGroup ? '' : groupPass,
       name: groupName,
       mode: privateGroup ? 'PRI' : groupPass === '' ? 'PUB' : 'PRO',
+      invites: invite.map(a => a.id)
     };
     socket?.emit('createRoom', roomBuilder);
     setVisibility('hidden');

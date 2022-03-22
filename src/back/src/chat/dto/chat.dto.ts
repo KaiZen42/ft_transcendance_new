@@ -35,7 +35,9 @@ export class JoinRoomDto {
   
 	name : string;
 
-	mode : string
+	mode : string;
+
+	invites: number[];
   }
   
   export class openRoomDto {
@@ -134,6 +136,3 @@ export class channelResponseDto
 	mode: string;
 	pass: string | undefined;
   }
-
-
-  

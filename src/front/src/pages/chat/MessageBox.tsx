@@ -18,21 +18,17 @@ export default function MessageBox({ room }: Prop) {
   const userId = useContext(Context).userId;
   const socket = useContext(Context).socket;
   const [chats, setChats] = useState<MessagePkg[]>([]);
-  console.log('Render mex box of ' + room);
 
   const messageListener = (message: MessagePkg) => {
-    //let newChat = chats;
-    //newChat.push(message);
-    console.log('ARRIVED: ', message);
+
     if (message.room == room)
       setChats((prevChat) => {
         return [...prevChat, message];
       });
-    console.log(chats);
+
   };
 
   useEffect(() => {
-    console.log('ACTUAL ROOM ', room);
   }, [socket, room]);
 
   useEffect(() => {

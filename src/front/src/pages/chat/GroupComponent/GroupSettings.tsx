@@ -120,7 +120,6 @@ export default function GroupSettings(Prop: Prop) {
 
   async function deleteGroup() {
     if (partecipantInfo?.mod === 'o') {
-      console.log('DELETE CHAN');
       const req: ViewRoomPkg = {
         room: Prop.chatInfo!.roomId.toString(),
         idUser: userId,

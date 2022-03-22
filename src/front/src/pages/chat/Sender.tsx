@@ -16,7 +16,6 @@ export function Sender({ packet, room} : Prop) {
 	const socket = useContext(Context).socket
 	function handleSubmit(event: any){
 		event.preventDefault();
-		console.log("MESASGE", msg);
 		if(packet !== undefined 
 			&& msg !== "" 
 			&& msg  !== undefined)
@@ -24,8 +23,6 @@ export function Sender({ packet, room} : Prop) {
 			packet.data = msg;
 			packet.room = room;
 			socket?.emit('channelMessage', packet);
-			console.log("SEND TO SERVER:" , room);
-			console.log(msg);
 		}
 		setMessage("");
 	}

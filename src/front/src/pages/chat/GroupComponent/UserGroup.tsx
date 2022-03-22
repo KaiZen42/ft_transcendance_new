@@ -87,7 +87,6 @@ export default function UserGroup({part, on, myInfo, setRequest}: Prop)
 						<i className="fas fa-level-up-alt" 	onClick={(e) =>  confirm("upgrade", user.username)}></i>
 						: <i className="fas fa-level-down-alt" 	onClick={(e) => confirm("downgrade", user.username)}></i>)
 				}
-				{console.log("MUTED?", part.muted)}
 				{
 					(part.muted === 0 ? 
 						<i className="fas fa-comment-slash"	onClick={(e) =>  confirm("mute", user.username)}></i>

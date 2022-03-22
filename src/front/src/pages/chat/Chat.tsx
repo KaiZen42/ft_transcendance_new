@@ -62,7 +62,6 @@ export function Chat(/* {user} : Prop */) {
   useEffect(() => {
     socket?.on('viewedRoom', (roomView: string) => {
       setRoom(roomView);
-      console.log('active room ;', room);
       if (roomView === '' && chatInfo !== undefined) {
         const preInfo = chatInfo;
         preInfo.roomId = '';
@@ -78,7 +77,6 @@ export function Chat(/* {user} : Prop */) {
   useEffect(() => {
     if (socket !== undefined) {
       socket.on('createRoom', (newRoom: string) => {
-        console.log('active room ;', room);
         setRoom(newRoom);
       });
     }

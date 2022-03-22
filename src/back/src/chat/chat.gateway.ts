@@ -190,23 +190,21 @@ export class ChatGateway
   async joinRoom(
     client: Socket,
     data: JoinRoomDto,
-  ): Promise<WsResponse<boolean>> {
+  ): Promise<WsResponse<number>> {
     const user = await this.partService.getPartecipantByUserAndChan(
       data.idUser,
       +data.room,
     );
     if (user !== undefined && user.mod !== 'b') {
       this.server.to(client.id).emit('createRoom', data.room);
-      return { event: 'joinedStatus', data: true };
+      return { event: 'joinedStatus', data: -1 };
     } else if (user === undefined && (await this.channelService.join(data))) {
-      console.log("DAJE: ")
       this.logger.log(`JOIN TO ${data.room} SUCCESS`);
-      //client.join(data.room);
       this.server.to(client.id).emit('createRoom', data.room);
-      return { event: 'joinedStatus', data: true };
+      return { event: 'joinedStatus', data: 1 };
     }
     this.logger.log(`JOIN TO ${data.room} FAIL`);
-    return { event: 'joinedStatus', data: false };
+    return { event: 'joinedStatus', data: 0 };
   }
 
   @SubscribeMessage('leaveRoom')

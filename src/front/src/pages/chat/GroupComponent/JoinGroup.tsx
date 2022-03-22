@@ -57,14 +57,16 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
 
   useEffect(() => {
     socket?.on('joinedStatus', (status) => {
-      if (status) {
+      if (status === 1) {
         setPassVisibility('hidden');
-        console.log('join success');
         setVisibility('hidden');
-      } else {
-        console.log('Join Fail');
-        if (passVisibility === 'visibble') setErrorVisibility('visible');
-        else setErrorVisibility('internal');
+      } 
+      else if (status === 0) {
+          setErrorVisibility('visible')
+      }
+      else if (status === -1)
+      {
+        setErrorVisibility('internal');
       }
     });
     return () => {

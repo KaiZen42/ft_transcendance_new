@@ -30,7 +30,6 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
         { credentials: 'include' }
       );
       data.json().then((res) => {
-        console.log(res);
         setUsers(
           res.sort((a: User, b: User) => a.username.localeCompare(b.username))
         );
@@ -42,7 +41,6 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
 
   function addUser(e: any, user: User) {
     const id = invite.findIndex((us) => us.id == user.id);
-    console.log('check', e.target.checked);
 
     if (e.target.checked)
       setInvite((pred) => {
@@ -86,7 +84,6 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   }
 
   useEffect(() => {
-    console.log('INVITED USER ', invite);
   }, [invite]);
 
   return (

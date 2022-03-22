@@ -31,7 +31,6 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   //const [openRoomPkg, setOpenPkg] = useState();
 
   function chatInfo(current: ChannelInfo | undefined) {
-    console.log('NON ENTRARE IN INFO');
     if (current?.isPrivate) {
       setChatInfo({
         userId: selectUser(current)?.id,
@@ -78,7 +77,6 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   }
 
   async function getRoom(chanId: string) {
-    console.log('NON ENTRARE IN GET ROOM ', chanId);
     await fetch(`/api/chat/ChannelsInfoId/${chanId}`, {
       credentials: 'include',
     })
@@ -173,7 +171,6 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     });
 
     socket?.on('memberUpdate', (res: channelResponsePkj) => {
-      console.log('UPDATE: ', res);
       if (
         res.reciver === userId &&
         (res.type === 'ban' || res.type === 'kick')
@@ -239,7 +236,6 @@ export function ChannelList({ room, setChatInfo }: Prop) {
           </div>
         </div>
         <div className="card-body contacts_body">
-          {console.log('CHANNS', channels)}
           <ul className="contacts">
             {channels.map((chan: ChannelInfo, i) => {
               if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
@@ -250,7 +246,6 @@ export function ChannelList({ room, setChatInfo }: Prop) {
                       selectUser(chan).id === el || selectUser(chan).id === -el
                   )
                 : undefined;
-              //console.log("is on" ,  selectUser(chan).id , " ? " + on, onlines )
               return (
                 <li
                   className={selected && activeID === chan.id ? 'active' : ''}

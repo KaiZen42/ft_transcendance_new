@@ -54,7 +54,6 @@ export default function App() {
   }
 
   useEffect(() => {
-    console.log(contextData.online);
 
     window.onbeforeunload = quit;
     if (contextData.socket === undefined) return getUser();

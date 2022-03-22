@@ -53,7 +53,6 @@ export default function MessageHeader({ chatInfo }: Prop) {
   }
 
   function blockUser() {
-    console.log('BLOCK/UNBLOCK ', chatInfo, otherPartecipant);
     if (
       chatInfo !== undefined &&
       chatInfo.userId !== undefined &&
@@ -88,7 +87,6 @@ export default function MessageHeader({ chatInfo }: Prop) {
         onlines.find((el) => chatInfo.userId === el || chatInfo.userId === -el)
       );
     }
-    console.log('RENDER HEADER: ', on, chatInfo, onlines, ' click ' + click);
     //--------click event listener---------
     document.getElementById('parent')?.addEventListener('click', clicker);
     return () => {
@@ -105,7 +103,6 @@ export default function MessageHeader({ chatInfo }: Prop) {
   }
 
   useEffect(() => {
-    console.log('INIT ', click);
 
     getPartecipantInfo();
   }, [chatInfo]);

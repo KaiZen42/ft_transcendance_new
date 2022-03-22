@@ -143,15 +143,23 @@ export class ChatGateway
     chan.name = chan.isPrivate
       ? `${data.idUser}` + `${data.otherUser}`
       : data?.name;
-    chan.pass = data === undefined || data.pass === undefined ? undefined : await bcrypt.hash(data.pass, 2);
+    chan.pass = data.pass;
     chan.mode = data.mode;
 
-    chan.id = (
-      await this.channelService.create(chan, [
-        data.idUser,
-        chan.isPrivate ? data.otherUser : null,
-      ])
-    ).id;
+    if (chan.isPrivate)
+      chan.id = (
+        await this.channelService.create(chan, [
+          data.idUser,
+          data.otherUser
+        ])
+      ).id;
+    else
+      chan.id = (
+        await this.channelService.create(chan, [
+          data.idUser,
+          ...data.invites
+        ])
+      ).id;
 
     socket.join('' + chan.id);
 
@@ -165,7 +173,10 @@ export class ChatGateway
     {
       data.invites.map(i => 
         {
-          
+          this.server.emit('createdPrivateRoom', {
+            idUser: i,
+            room: '' + chan.id,
+          });
         })
     }
 
@@ -188,6 +199,7 @@ export class ChatGateway
       this.server.to(client.id).emit('createRoom', data.room);
       return { event: 'joinedStatus', data: true };
     } else if (user === undefined && (await this.channelService.join(data))) {
+      console.log("DAJE: ")
       this.logger.log(`JOIN TO ${data.room} SUCCESS`);
       //client.join(data.room);
       this.server.to(client.id).emit('createRoom', data.room);

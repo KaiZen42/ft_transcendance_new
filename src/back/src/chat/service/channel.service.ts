@@ -196,6 +196,7 @@ export class ChannelService {
 		//console.log("JOIN ", ch)
 		if ( ch === undefined || ch.isPrivate )
 			return false;
+		
 		if ( ch.mode === "PRO" &&  !bcrypt.compareSync(data.key, ch.pass))
 			return false;
 			
@@ -213,7 +214,8 @@ export class ChannelService {
 
 	async create(channel: Channel, userId: number[]): Promise<Channel> {
 		var bcrypt = require('bcryptjs');
-			
+		
+		console.log("PASS, ", channel.pass)
 		const ch: Channel = await this.channelDB.save({
 			id:	channel.id,
 			name : channel.name,
@@ -240,6 +242,18 @@ export class ChannelService {
 					muted: 0,
 					mod: "m",
 				});
+		else
+			userId.map(async (u) => {
+				if (u !== userId[0])
+					await this.partService.create(
+						{
+							id : 0,
+							userId: u,
+							channelId: ch.id,
+							muted: 0,
+							mod: "m",
+						});
+			})
 		//console.log(ch);
 		return ch;
 		}

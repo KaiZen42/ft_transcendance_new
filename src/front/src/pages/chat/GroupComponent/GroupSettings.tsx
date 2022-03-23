@@ -1,24 +1,12 @@
-import { Avatar, Checkbox, Stack } from '@mui/material';
+import { Checkbox } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
 import {
-  channelRequestPkj,
   ChatInfo,
-  JoinChannelPkg,
-  ShortChannel,
   updateChannelPkj,
   ViewRoomPkg,
 } from '../../../models/Chat.interface';
-import CheckPass from './CheckPass';
 import { Context } from '../../../App';
-import { User } from '../../../models/User.interface';
-import { PropaneSharp } from '@mui/icons-material';
-import StyledBadge from '../../../styles/StyleBage';
-import { stringify } from 'querystring';
-import { NavLink } from 'react-router-dom';
 import { Partecipant } from '../../../models/Chat.interface';
-import GroupInfo from './GroupInfo';
-import { userInfo } from 'os';
-import { channel } from 'diagnostics_channel';
 
 interface Prop {
   isVisible: boolean;
@@ -36,13 +24,8 @@ interface UpdateGroup {
 export default function GroupSettings(Prop: Prop) {
   const userId = useContext(Context).userId;
   const socket = useContext(Context).socket;
-  const onlines = useContext(Context).online;
 
-  const [partecipants, setPartecipants] = useState<User[]>([]);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>();
-  const [editUsername, setEditUsername] = useState(false);
-  const [msgCounter, setMsgCounter] = useState(0);
   const [updatedGroup, setUpdatedGroup] = useState<UpdateGroup>({
     id: Prop.chatInfo?.roomId,
     name: Prop.chatInfo?.username,
@@ -52,17 +35,6 @@ export default function GroupSettings(Prop: Prop) {
   const [privateChan, setPrivateChan] = useState(
     Prop.chatInfo?.mode === 'PRI' ? true : false
   );
-
-  async function getPartecipantInfo() {
-    await fetch(
-      `/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
-      { credentials: 'include' }
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        setPartecipantInfo(result);
-      });
-  }
 
   function setToPriv(priv: boolean) {
     setUpdatedGroup({
@@ -141,7 +113,15 @@ export default function GroupSettings(Prop: Prop) {
   }
 
   useEffect(() => {
-    getPartecipantInfo();
+    fetch(
+      `/api/chat/GetPartecipantByUserAndChan/${Prop.chatInfo?.roomId}/${userId}`,
+      { credentials: 'include' }
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        setPartecipantInfo(result);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

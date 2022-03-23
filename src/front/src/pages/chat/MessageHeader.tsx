@@ -1,6 +1,4 @@
-import { Block, RestorePageOutlined, Room } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
-import { constants } from 'buffer';
 import { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Context } from '../../App';
@@ -39,7 +37,6 @@ export default function MessageHeader({ chatInfo }: Prop) {
         setPartecipantInfo(result);
       });
 
-    //console.log("other ", chatInfo, otherPartecipant)
     if (chatInfo?.userId !== undefined) {
       await fetch(
         `/api/chat/GetPartecipantByUserAndChan/${chatInfo?.roomId}/${chatInfo?.userId}`,

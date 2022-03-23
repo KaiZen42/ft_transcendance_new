@@ -18,9 +18,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const [users, setUsers] = useState<User[]>([]);
   const [invite, setInvite] = useState<User[]>([]);
   const [privateGroup, setPrivateStatus] = useState(false);
-  const [ch, setCreationChannel] = useState<CreationChannelPkg>();
   const [groupPass, setGroupPass] = useState('');
-  const [missingName, setMissingName] = useState(false);
 
   const nameSubmit = async (event: any) => {
     if (event.target.value) {
@@ -40,7 +38,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   };
 
   function addUser(e: any, user: User) {
-    const id = invite.findIndex((us) => us.id == user.id);
+    const id = invite.findIndex((us) => us.id === user.id);
 
     if (e.target.checked)
       setInvite((pred) => {
@@ -63,17 +61,14 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   }
 
   function createGroup() {
-    if (groupName === '') {
-      setMissingName(true);
-      return;
-    }
+    if (groupName === '') return;
     const roomBuilder: CreationChannelPkg = {
       idUser: userId,
       otherUser: undefined,
       pass: privateGroup ? '' : groupPass,
       name: groupName,
       mode: privateGroup ? 'PRI' : groupPass === '' ? 'PUB' : 'PRO',
-      invites: invite.map(a => a.id)
+      invites: invite.map((a) => a.id),
     };
     socket?.emit('createRoom', roomBuilder);
     setVisibility('hidden');
@@ -83,8 +78,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
     setVisibility('hidden');
   }
 
-  useEffect(() => {
-  }, [invite]);
+  useEffect(() => {}, [invite]);
 
   return (
     <div
@@ -184,7 +178,6 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                       <li key={user.id}>
                         <div
                           className="d-flex bd-highlight"
-                          /* onClick={(e) => addUser(e, user)} */
                           style={{ cursor: 'pointer' }}
                         >
                           <div className="img_cont">
@@ -214,7 +207,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                           </div>
                           <Checkbox
                             checked={
-                              invite.findIndex((us) => us.id == user.id) === -1
+                              invite.findIndex((us) => us.id === user.id) === -1
                                 ? false
                                 : true
                             }

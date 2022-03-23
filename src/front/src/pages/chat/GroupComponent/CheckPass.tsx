@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import socketIOClient, { Socket } from 'socket.io-client';
+import { useState, useEffect, useContext } from 'react';
 import { Context } from '../../../App';
 import { JoinChannelPkg } from '../../../models/Chat.interface';
 
@@ -31,9 +30,9 @@ export default function CheckPass({
       style={{
         visibility: isVisible === 'hidden' ? 'hidden' : 'visible',
         opacity: '1',
-		marginLeft: '20%',
-		marginTop:'50%',
-		marginRight: '20%'
+        marginLeft: '20%',
+        marginTop: '50%',
+        marginRight: '20%',
       }}
     >
       <div className="mb-sm-3 contacts_card" onKeyDown={enterSubmit}>
@@ -61,14 +60,16 @@ export default function CheckPass({
                 </span>
               </div>
             </div>
-            <div className="glow" hidden={errorVisibility === 'hidden'} style={{color: 'red'}}>
+            <div
+              className="glow"
+              hidden={errorVisibility === 'hidden'}
+              style={{ color: 'red' }}
+            >
               Wrong Password
             </div>
           </div>
-		  </div>
+        </div>
       </div>
     </div>
   );
 }
-
-

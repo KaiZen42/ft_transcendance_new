@@ -1,36 +1,22 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import io, { Socket } from 'socket.io-client';
+import { useState, useEffect, useContext } from 'react';
+import { Socket } from 'socket.io-client';
 import { Sender } from './Sender';
 import Wrapper from '../../components/Wrapper';
 import MessageBox from './MessageBox';
-import { User } from '../../models/User.interface';
-import axios from 'axios';
-import {
-  MessageInfoPkg,
-  MessagePkg,
-  OpenRoomPkg,
-  ViewRoomPkg,
-} from '../../models/Chat.interface';
-import { response } from 'express';
+import { MessagePkg } from '../../models/Chat.interface';
 import { UserList } from './UserList';
-import { Box, grid } from '@mui/system';
-import { Grid } from '@mui/material';
 import './testChat.css';
 import { ChannelList } from './ChannelList';
 import MessageHeader from './MessageHeader';
 import { ChatInfo } from '../../models/Chat.interface';
-import { JoinGroup } from './GroupComponent/JoinGroup';
 import { context, Context } from '../../App';
-import { channel } from 'diagnostics_channel';
-const WS_SERVER = `http://${process.env.REACT_APP_BASE_IP}:4000/chat`;
 
-export function Chat(/* {user} : Prop */) {
+export function Chat() {
   const cont: context = useContext(Context);
   const [pkg, setPkg] = useState<MessagePkg>();
   const [socket, setSocket] = useState<Socket>();
   const [room, setRoom] = useState('');
   const [chatInfo, setChatInfo] = useState<ChatInfo>();
-  const [openJoin, setOpenJoin] = useState(false);
 
   function getUser() {
     fetch(`/api/user`, {
@@ -56,6 +42,7 @@ export function Chat(/* {user} : Prop */) {
     if (pkg === undefined) getUser();
     if (socket === undefined && cont.socket !== undefined)
       setSocket(cont.socket);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pkg, socket, room]);
 
   //-----------VIEW LISTENER

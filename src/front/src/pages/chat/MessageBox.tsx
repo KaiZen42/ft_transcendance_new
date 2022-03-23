@@ -1,35 +1,24 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import io, { Socket } from 'socket.io-client';
-import { Sender } from './Sender';
-import Wrapper from '../../components/Wrapper';
+import { useState, useEffect, useContext } from 'react';
 import { channelResponsePkj, MessagePkg } from '../../models/Chat.interface';
-import MessageHeader from './MessageHeader';
-import { maxHeaderSize } from 'http';
-import { emitKeypressEvents } from 'readline';
 import { Context } from '../../App';
-import { time } from 'console';
 
 interface Prop {
   room: string;
 }
 
-let key: number = 0;
 export default function MessageBox({ room }: Prop) {
   const userId = useContext(Context).userId;
   const socket = useContext(Context).socket;
   const [chats, setChats] = useState<MessagePkg[]>([]);
 
   const messageListener = (message: MessagePkg) => {
-
-    if (message.room == room)
+    if (message.room === room)
       setChats((prevChat) => {
         return [...prevChat, message];
       });
-
   };
 
-  useEffect(() => {
-  }, [socket, room]);
+  useEffect(() => {}, [socket, room]);
 
   useEffect(() => {
     if (chats.length === 0 || chats[0].room !== room) {
@@ -39,7 +28,7 @@ export default function MessageBox({ room }: Prop) {
           setChats(result);
         });
     }
-    //TODO: capire perche stampa 3 volte
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room]);
 
   useEffect(() => {
@@ -62,6 +51,7 @@ export default function MessageBox({ room }: Prop) {
       socket?.removeListener('messageUpdate');
       socket?.removeListener('message');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room]);
 
   const handleTime = (dataD: Date) => {
@@ -119,27 +109,3 @@ export default function MessageBox({ room }: Prop) {
     </div>
   );
 }
-
-{
-  /* <div>
-			<p>MESSAGES:</p>
-			
-			{ chats.map(msg => (<p key={key++}> {msg.userId.username}: {msg.data} </p>))}
-		</div> */
-}
-
-/* 	<div className="d-flex justify-content-start mb-4">
-			<div className="img_cont_msg"></div>
-			<div className="msg_cotainer">
-				Hi, how are you samim?
-				<span className="msg_time">8:40 AM, Today</span>
-			</div>
-		</div>
-		
-		<div className="d-flex justify-content-end mb-4">
-			<div className="msg_cotainer_send">
-				Hi Khalid i am good tnx how about you?
-				<span className="msg_time_send">8:55 AM, Today</span>
-			</div>
-			<div className="img_cont_msg"></div>
-		</div> */

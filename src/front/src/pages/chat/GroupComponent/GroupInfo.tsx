@@ -1,19 +1,10 @@
-import { Avatar, Stack } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
 import {
   channelRequestPkj,
   ChatInfo,
   FullPartecipant,
-  JoinChannelPkg,
-  ShortChannel,
 } from '../../../models/Chat.interface';
-import CheckPass from './CheckPass';
 import { Context } from '../../../App';
-import { User } from '../../../models/User.interface';
-import { PropaneSharp } from '@mui/icons-material';
-import StyledBadge from '../../../styles/StyleBage';
-import { stringify } from 'querystring';
-import { NavLink } from 'react-router-dom';
 import { Partecipant } from '../../../models/Chat.interface';
 import UserGroup from './UserGroup';
 import ConfirmRequest from './ConfirmRequest';
@@ -22,12 +13,6 @@ interface Prop {
   isVisible: boolean;
   setVisibility: Function;
   chatInfo: ChatInfo | undefined;
-}
-
-interface UpdateGroup {
-  name: string;
-  mode: string;
-  pass: string;
 }
 
 export default function GroupInfo(Prop: Prop) {
@@ -39,15 +24,8 @@ export default function GroupInfo(Prop: Prop) {
     undefined
   );
   const [partecipants, setPartecipants] = useState<FullPartecipant[]>([]);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>();
-  const [editUsername, setEditUsername] = useState(false);
   const [msgCounter, setMsgCounter] = useState(0);
-  const [updatedGroup, setUpdatedGroup] = useState<UpdateGroup>({
-    name: '',
-    mode: '',
-    pass: '',
-  });
 
   async function getUsersInChan() {
     await fetch(`/api/chat/getFullPartInfoNyChan/${Prop.chatInfo?.roomId}`, {
@@ -88,6 +66,7 @@ export default function GroupInfo(Prop: Prop) {
     getPartecipantInfo();
     getMessageNumber();
     if (partecipants.length < 1) getUsersInChan();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Prop, request]);
 
   useEffect(() => {
@@ -97,6 +76,7 @@ export default function GroupInfo(Prop: Prop) {
     return () => {
       socket?.removeListener('ChannelRequest');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -111,7 +91,7 @@ export default function GroupInfo(Prop: Prop) {
     >
       <div className="col-ms-10">
         <div className="mb-sm-3 mb-md-0 contacts_card group-info">
-          <div className="card-header" style={{height: 'fit-content'}}>
+          <div className="card-header" style={{ height: 'fit-content' }}>
             <span className="close_btn">
               <i
                 className="fas fa-times fa-lg"
@@ -120,64 +100,67 @@ export default function GroupInfo(Prop: Prop) {
             </span>
           </div>
           <div className="card-body contacts_body row scrollable">
-              <div className="group-info-box">
-                <div className="info-username-image">
-                  <img
-                    alt="profile"
-                    src={'./group_icon.png'}
-                    className="profile-info-img"
-                    style={{ marginTop: '10px' }}
-                  />
-                  <div className="profile-info-text username" style={{display: 'flex'}}>
-                    {Prop.chatInfo?.username}
-                  </div>
-                  <p className="profile-info-text">
-                    MODE:{' '}
-                    {Prop.chatInfo?.mode === 'PUB'
-                      ? ' Public Group'
-                      : Prop.chatInfo?.mode === 'PRI'
-                      ? ' Private Group'
-                      : ' Protected Group'}
-                  </p>
-                  <p className="profile-info-text">
-                    Messages: {msgCounter + ' messages'}
-                  </p>
-                  <p className="profile-info-text">
-                    Partecipants: {partecipants.length}{' '}
-                    {partecipants.length === 1 ? ' User' : ' Users'}
-                  </p>
+            <div className="group-info-box">
+              <div className="info-username-image">
+                <img
+                  alt="profile"
+                  src={'./group_icon.png'}
+                  className="profile-info-img"
+                  style={{ marginTop: '10px' }}
+                />
+                <div
+                  className="profile-info-text username"
+                  style={{ display: 'flex' }}
+                >
+                  {Prop.chatInfo?.username}
                 </div>
+                <p className="profile-info-text">
+                  MODE:{' '}
+                  {Prop.chatInfo?.mode === 'PUB'
+                    ? ' Public Group'
+                    : Prop.chatInfo?.mode === 'PRI'
+                    ? ' Private Group'
+                    : ' Protected Group'}
+                </p>
+                <p className="profile-info-text">
+                  Messages: {msgCounter + ' messages'}
+                </p>
+                <p className="profile-info-text">
+                  Partecipants: {partecipants.length}{' '}
+                  {partecipants.length === 1 ? ' User' : ' Users'}
+                </p>
               </div>
-              <div className="group-info-box">``
-                <div className="info-username-image">
-                  <p className="profile-info-text username">Partecipants</p>
-                  <div className="card-body contacts_body">
-                    <ul className="contacts scrollable-search">
-                      {partecipants === undefined ||
-                      partecipantInfo === undefined
-                        ? null
-                        : partecipants.map((part: FullPartecipant) => {
-                            const on = onlines.find(
-                              (el) =>
-                                part.userId.id === el || part.userId.id === -el
-                            );
-                            return partecipantInfo === undefined ? null : (
-                              <li key={part.userId.id}>
-                                <UserGroup
-                                  part={part}
-                                  on={on}
-                                  myInfo={partecipantInfo!}
-                                  setRequest={setRequest}
-                                ></UserGroup>
-                                )
-                              </li>
-                            );
-                          })}
-                    </ul>
-                  </div>
+            </div>
+            <div className="group-info-box">
+              ``
+              <div className="info-username-image">
+                <p className="profile-info-text username">Partecipants</p>
+                <div className="card-body contacts_body">
+                  <ul className="contacts scrollable-search">
+                    {partecipants === undefined || partecipantInfo === undefined
+                      ? null
+                      : partecipants.map((part: FullPartecipant) => {
+                          const on = onlines.find(
+                            (el) =>
+                              part.userId.id === el || part.userId.id === -el
+                          );
+                          return partecipantInfo === undefined ? null : (
+                            <li key={part.userId.id}>
+                              <UserGroup
+                                part={part}
+                                on={on}
+                                myInfo={partecipantInfo!}
+                                setRequest={setRequest}
+                              ></UserGroup>
+                              )
+                            </li>
+                          );
+                        })}
+                  </ul>
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </div>
       {request === undefined ? null : (

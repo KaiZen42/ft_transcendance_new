@@ -33,6 +33,7 @@ export default function MessageBox({ room }: Prop) {
 
   useEffect(() => {
     socket?.on('messageUpdate', (res: channelResponsePkj) => {
+      if (res.room !== +room) return
       const serverMex: MessagePkg = {
         data: `${res.reciverName} was ${
           res.type === 'ban'

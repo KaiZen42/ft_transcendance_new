@@ -34,7 +34,7 @@ export default function MessageBox({ room }: Prop) {
   useEffect(() => {
     socket?.on('messageUpdate', (res: channelResponsePkj) => {
       const serverMex: MessagePkg = {
-        data: `${res.reciverName} has ${res.type}ed`,
+        data: `${res.reciverName} was ${res.type}ed`,
         id: -1,
         userId: { id: -1, username: 'server' },
         room: '',
@@ -86,6 +86,9 @@ export default function MessageBox({ room }: Prop) {
                 : 'test d-flex justify-content-end mb-4'
             }
           >
+            <div itemType="text" style={{ color: 'white', fontSize: '10px' }}>
+              {msg.userId.username}
+            </div>
             <div className="img_cont_msg"></div>
             <div
               className={

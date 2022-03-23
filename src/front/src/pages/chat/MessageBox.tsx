@@ -93,7 +93,10 @@ export default function MessageBox({ room }: Prop) {
                 : 'test d-flex justify-content-end mb-4'
             }
           >
-            <div className="img_cont_msg"></div>
+            <div itemType='text' style={{color:'white', fontSize: '10px'}}>
+            {msg.userId.username}
+            </div>
+            <div className="img_cont_msg" ></div>
             <div
               className={
                 msg.userId.id !== userId

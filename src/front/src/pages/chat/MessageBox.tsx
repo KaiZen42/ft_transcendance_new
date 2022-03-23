@@ -20,16 +20,13 @@ export default function MessageBox({ room }: Prop) {
   const [chats, setChats] = useState<MessagePkg[]>([]);
 
   const messageListener = (message: MessagePkg) => {
-
     if (message.room == room)
       setChats((prevChat) => {
         return [...prevChat, message];
       });
-
   };
 
-  useEffect(() => {
-  }, [socket, room]);
+  useEffect(() => {}, [socket, room]);
 
   useEffect(() => {
     if (chats.length === 0 || chats[0].room !== room) {
@@ -45,7 +42,7 @@ export default function MessageBox({ room }: Prop) {
   useEffect(() => {
     socket?.on('messageUpdate', (res: channelResponsePkj) => {
       const serverMex: MessagePkg = {
-        data: `${res.reciverName} has ${res.type}ed`,
+        data: `${res.reciverName} was ${res.type}ed`,
         id: -1,
         userId: { id: -1, username: 'server' },
         room: '',

@@ -119,7 +119,7 @@ export class PongService {
       ball.velocityY = ball.speed * Math.sin(angleRad);
 
       // increase speed
-      ball.speed += 0.5;
+      if (ball.speed < 17.5) ball.speed += 0.5;
     }
     return 0;
   }
@@ -135,10 +135,14 @@ export class PongService {
 
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
-
-    if (ball.y + ball.radius > state.fieldHeight || ball.y - ball.radius < 0)
+    if (ball.y + ball.radius > state.fieldHeight) {
+      ball.y -= ball.radius;
       ball.velocityY *= -1;
-
+    }
+    if (ball.y - ball.radius < 0) {
+      ball.y += ball.radius;
+      ball.velocityY *= -1;
+    }
     this.updatePlayers(state.players, moves, state.fieldHeight);
 
     if (inverted) return this.invertedLoop(state, ball);
@@ -160,11 +164,8 @@ export class PongService {
       ball.velocityX = direction * ball.speed * Math.cos(angleRad);
       ball.velocityY = ball.speed * Math.sin(angleRad);
 
-      console.log('VELOCITY: x', ball.velocityX, ' y', ball.velocityY);
-      console.log('POS: x', ball.x, ' y', ball.y);
-
       // increase speed
-      ball.speed += 0.5;
+      if (ball.speed < 17.5) ball.speed += 0.5;
     }
 
     const madePoint = ball.x < state.fieldWidth / 2 ? 1 : 0;

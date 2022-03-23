@@ -8,7 +8,7 @@ interface Prop {
 }
 
 export default function ConfirmRequest({ req, setReq }: Prop) {
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(1);
 
   const cont = useContext(Context);
 
@@ -54,15 +54,12 @@ export default function ConfirmRequest({ req, setReq }: Prop) {
                 <input
                   id="groupname"
                   name="Change Group Name"
-                  type="number"
+                  type="text"
                   className="form-control"
                   onChange={(e) => {
-                    e.target.value.length > 3
-                      ? setTime(time)
-                      : setTime(+e.target.value);
+                    if (e.target.value.length <= 3) setTime(+e.target.value);
                   }}
                   value={time}
-                  defaultValue={1}
                 />
               </div>
             )}

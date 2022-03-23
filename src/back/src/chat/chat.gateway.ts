@@ -369,9 +369,6 @@ export class ChatGateway
       case 'downgrade':
         await this.partService.update(reciver.id, { mod: 'm' });
         break;
-      case 'downgrade':
-        await this.partService.update(reciver.id, { mod: 'm' });
-        break;
       case 'mute':
         let d: number = Math.trunc(new Date().getTime() / 6000);
         await this.partService.update(reciver.id, { muted: d + req.time * 10 });

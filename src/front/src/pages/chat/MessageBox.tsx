@@ -34,7 +34,25 @@ export default function MessageBox({ room }: Prop) {
   useEffect(() => {
     socket?.on('messageUpdate', (res: channelResponsePkj) => {
       const serverMex: MessagePkg = {
-        data: `${res.reciverName} was ${res.type}ed`,
+        data: `${res.reciverName} was ${
+          res.type === 'ban'
+            ? 'banned'
+            : res.type === 'Block'
+            ? 'blocked'
+            : res.type === 'mute'
+            ? 'muted'
+            : res.type === 'Unblock'
+            ? 'unblocked'
+            : res.type === 'unmute'
+            ? 'unmuted'
+            : res.type === 'kick'
+            ? 'kicked'
+            : res.type === 'upgrade'
+            ? 'upgraded to Admin'
+            : res.type === 'downgrade'
+            ? 'downgraded to normal User'
+            : null
+        }`,
         id: -1,
         userId: { id: -1, username: 'server' },
         room: '',
@@ -86,10 +104,14 @@ export default function MessageBox({ room }: Prop) {
                 : 'test d-flex justify-content-end mb-5'
             }
           >
-            <span className={msg.userId.id !== userId ? 'msg-name-usr' : 'msg-name-otherusr'} /* style={{color:'white', fontSize: '10px'}} */>
-            {msg.userId.username}
+            <span
+              className={
+                msg.userId.id !== userId ? 'msg-name-usr' : 'msg-name-otherusr'
+              } /* style={{color:'white', fontSize: '10px'}} */
+            >
+              {msg.userId.username}
             </span>
-            <div className="img_cont_msg" ></div>
+            <div className="img_cont_msg"></div>
             <div
               className={
                 msg.userId.id !== userId

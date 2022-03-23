@@ -27,10 +27,9 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const nameSubmit = (str: string) => {
     if (str) {
       (async () => {
-        const data = await fetch(
-          `/api/chat/ChannelByName/${str}`,
-          { credentials: 'include' }
-        );
+        const data = await fetch(`/api/chat/ChannelByName/${str}`, {
+          credentials: 'include',
+        });
         const result = data.json();
         result.then((res) => {
           setChannels(res);
@@ -93,10 +92,10 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                 name=""
                 className="form-control search"
                 onChange={(e) => {
-                  if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)){
-                    setGroupName(e.target.value)
+                  if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)) {
+                    setGroupName(e.target.value);
                     nameSubmit(e.target.value);
-                  };
+                  }
                 }}
                 value={groupName}
               />

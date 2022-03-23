@@ -2,7 +2,7 @@ import { Block, RestorePageOutlined, Room } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import { constants } from 'buffer';
 import { useContext, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Context } from '../../App';
 import {
   channelRequestPkj,
@@ -103,9 +103,10 @@ export default function MessageHeader({ chatInfo }: Prop) {
   }
 
   useEffect(() => {
-
     getPartecipantInfo();
   }, [chatInfo]);
+
+  const navigate = useNavigate();
 
   return (
     <div className="card-header msg_head">
@@ -170,17 +171,13 @@ export default function MessageHeader({ chatInfo }: Prop) {
           ) : click === true ? (
             <div className="action_menu" style={{ zIndex: 1 }}>
               <ul>
-                <NavLink
-                  to={
-                    chatInfo?.avatar === undefined
-                      ? ''
-                      : '/users/' + chatInfo?.username
+                <li
+                  onClickCapture={() =>
+                    navigate('/users/' + chatInfo?.username)
                   }
                 >
-                  <li>
-                    <i className="fas fa-user"></i> User Profile
-                  </li>
-                </NavLink>
+                  <i className="fas fa-user"></i> User Profile
+                </li>
                 <li onClickCapture={(e) => blockUser()}>
                   <i className="fas fa-ban"></i>{' '}
                   {otherPartecipant !== undefined &&

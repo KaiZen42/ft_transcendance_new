@@ -194,15 +194,24 @@ export class ChatGateway
       data.idUser,
       +data.room,
     );
-    if (user !== undefined && user.mod !== 'b') {
+    console.log(user)
+    if (user !== undefined && user.mod === 'b') {
       this.server.to(client.id).emit('createRoom', data.room);
+      this.logger.log(`[${data.idUser}] JOIN TO ${data.room} FAIL BECAUSE BAN`);
       return { event: 'joinedStatus', data: -1 };
-    } else if (user === undefined && (await this.channelService.join(data))) {
-      this.logger.log(`JOIN TO ${data.room} SUCCESS`);
+    } 
+    else if (user !== undefined && user.mod !== 'b')
+    {
+      this.logger.log(`[${data.idUser}] JOIN TO ${data.room} ALREADY IN CHAN`);
       this.server.to(client.id).emit('createRoom', data.room);
       return { event: 'joinedStatus', data: 1 };
     }
-    this.logger.log(`JOIN TO ${data.room} FAIL`);
+    else if (user === undefined && (await this.channelService.join(data))) {
+      this.logger.log(`[${data.idUser}] JOIN TO ${data.room} SUCCESS`);
+      this.server.to(client.id).emit('createRoom', data.room);
+      return { event: 'joinedStatus', data: 1 };
+    }
+    this.logger.log(`[${data.idUser}] JOIN TO ${data.room} FAIL`);
     return { event: 'joinedStatus', data: 0 };
   }
 

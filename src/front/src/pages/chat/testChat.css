@@ -391,6 +391,22 @@
     font-size: 10px;
 }
 
+.msg-name-usr {
+    position: absolute;
+    top: -1rem;
+    left: 3.7rem;
+    color: rgba(255, 255, 255, 0.883);
+    font-size: 10px;
+}
+
+.msg-name-otherusr {
+    position: absolute;
+    top: -1rem;
+    right: 0.5rem;
+    color: rgba(255, 255, 255, 0.883);
+    font-size: 10px;
+}
+
 .msg_head {
     position: relative;
 }

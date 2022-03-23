@@ -89,13 +89,13 @@ export default function MessageBox({ room }: Prop) {
             key={i}
             className={
               msg.userId.id !== userId
-                ? 'test d-flex justify-content-start mb-4'
-                : 'test d-flex justify-content-end mb-4'
+                ? 'test d-flex justify-content-start mb-5'
+                : 'test d-flex justify-content-end mb-5'
             }
           >
-            <div itemType='text' style={{color:'white', fontSize: '10px'}}>
+            <span className={msg.userId.id !== userId ? 'msg-name-usr' : 'msg-name-otherusr'} /* style={{color:'white', fontSize: '10px'}} */>
             {msg.userId.username}
-            </div>
+            </span>
             <div className="img_cont_msg" ></div>
             <div
               className={

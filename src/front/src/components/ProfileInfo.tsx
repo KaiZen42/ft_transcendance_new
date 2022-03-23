@@ -54,6 +54,7 @@ export default function ProfileInfo({
       .then((res) => res.json())
       .then((data) => {
         if (data.status) setFriendStatus(data.status);
+        else setFriendStatus('');
       });
   }, [user, myProfilePage, me, username]);
 

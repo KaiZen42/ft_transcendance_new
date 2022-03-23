@@ -32,8 +32,8 @@ export class PongService {
         y: FIELD_HEIGHT / 2,
         radius: BALL_RADIUS,
         speed: 7,
-        velocityX: 7,
-        velocityY: 7,
+        velocityX: 6,
+        velocityY: 6,
         color: 0,
       },
       fieldWidth: FIELD_WIDTH,
@@ -88,7 +88,8 @@ export class PongService {
     ball.x = FIELD_WIDTH / 2;
     ball.y = FIELD_HEIGHT / 2;
     ball.speed = 7;
-    ball.velocityX *= -1;
+    ball.velocityY = 7;
+    ball.velocityX = ball.velocityX > 0 ? -6 : 6;
     ball.color = 0;
   }
 
@@ -158,6 +159,9 @@ export class PongService {
 
       ball.velocityX = direction * ball.speed * Math.cos(angleRad);
       ball.velocityY = ball.speed * Math.sin(angleRad);
+
+      console.log('VELOCITY: x', ball.velocityX, ' y', ball.velocityY);
+      console.log('POS: x', ball.x, ' y', ball.y);
 
       // increase speed
       ball.speed += 0.5;

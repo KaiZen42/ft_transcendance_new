@@ -116,7 +116,7 @@ export default class PongGateway implements OnGatewayDisconnect {
   @SubscribeMessage('keyDown')
   handleKeyDown(@MessageBody() key: string, @ConnectedSocket() client: Socket) {
     const roomId = this.clientRooms[client.id];
-    if (!roomId) return;
+    if (!roomId || !this.rooms[roomId]) return;
     if (key === 'ArrowUp')
       this.rooms[roomId].moves[client.data.number].up = true;
     else this.rooms[roomId].moves[client.data.number].down = true;
@@ -125,7 +125,7 @@ export default class PongGateway implements OnGatewayDisconnect {
   @SubscribeMessage('keyUp')
   handleKeyUp(@MessageBody() key: string, @ConnectedSocket() client: Socket) {
     const roomId = this.clientRooms[client.id];
-    if (!roomId) return;
+    if (!roomId || !this.rooms[roomId]) return;
     if (key === 'ArrowUp')
       this.rooms[roomId].moves[client.data.number].up = false;
     else this.rooms[roomId].moves[client.data.number].down = false;

@@ -151,8 +151,7 @@ export default function GroupInfo(Prop: Prop) {
                                 on={on}
                                 myInfo={partecipantInfo!}
                                 setRequest={setRequest}
-                              ></UserGroup>
-                              )
+                              />
                             </li>
                           );
                         })}

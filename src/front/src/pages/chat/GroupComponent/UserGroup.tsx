@@ -69,31 +69,37 @@ export default function UserGroup({ part, on, myInfo, setRequest }: Prop) {
           <i
             className="fas fa-ban"
             onClick={(e) => confirm('ban', user.username)}
+            title="Ban"
           ></i>
           <i
             className="fab fa-korvue"
             onClick={(e) => confirm('kick', user.username)}
+            title="Kick"
           ></i>
           {part.mod === 'm' ? (
             <i
               className="fas fa-level-up-alt"
               onClick={(e) => confirm('upgrade', user.username)}
+              title="Upgrade"
             ></i>
           ) : (
             <i
               className="fas fa-level-down-alt"
               onClick={(e) => confirm('downgrade', user.username)}
+              title="Downgrade"
             ></i>
           )}
           {part.muted === 0 ? (
             <i
               className="fas fa-comment-slash"
               onClick={(e) => confirm('mute', user.username)}
+              title="Mute"
             ></i>
           ) : (
             <i
               className="fas fa-comment"
               onClick={(e) => confirm('unmute', user.username)}
+              title="Unute"
             ></i>
           )}
         </span>

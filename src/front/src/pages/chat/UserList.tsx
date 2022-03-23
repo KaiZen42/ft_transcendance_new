@@ -14,11 +14,11 @@ export function UserList() {
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();
   const [searchName, setSearchName] = useState('');
 
-  const nameSubmit = () => {
-    if (searchName) {
+  const nameSubmit = (name: string) => {
+    if (name) {
       (async () => {
         const data = await fetch(
-          `/api/users/likeusername/${searchName}`,
+          `/api/users/likeusername/${name}`,
           { credentials: 'include' }
         );
         const result = data.json();
@@ -63,7 +63,7 @@ export function UserList() {
               className="form-control search"
               onChange={(e) => {if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)){
                 setSearchName(e.target.value)
-                nameSubmit();
+                nameSubmit(e.target.value);
               };}}
               value={searchName}
             />

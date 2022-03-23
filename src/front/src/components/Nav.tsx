@@ -24,6 +24,10 @@ export default function Nav({ noImage }: { noImage?: boolean }) {
       setUser(data);
     })();
     socket?.on('friendlyMatch', handleFriendlyMatch);
+
+    return () => {
+      socket?.removeListener('friendlyMatch');
+    };
   }, [socket, noImage]);
 
   const handleFriendlyMatch = (friend: { id: number; username: string }) => {

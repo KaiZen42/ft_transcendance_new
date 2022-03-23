@@ -42,17 +42,13 @@ export default function FriendList({
 
   const fetchData = () => {
     if (friendRequests) {
-      fetch(
-        `/api/relations/getRequests/${userId}`
-      )
+      fetch(`/api/relations/getRequests/${userId}`)
         .then((res) => res.json())
         .then((data) => {
           setRequests(data);
         });
     }
-    fetch(
-      `/api/relations/getFriends/${userId}`
-    )
+    fetch(`/api/relations/getFriends/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setFriends(
@@ -83,21 +79,15 @@ export default function FriendList({
 
   const acceptFriend = (id: number) => {
     axios
-      .put(
-        `/api/relations/acceptRequest`,
-        { id: id }
-      )
+      .put(`/api/relations/acceptRequest`, { id: id })
       .then(() => setUpdated(true));
   };
 
   const declineFriend = (id: number) => {
     axios
-      .delete(
-        `/api/relations/unfriend`,
-        {
-          data: { id: id },
-        }
-      )
+      .delete(`/api/relations/unfriend`, {
+        data: { id: id },
+      })
       .then(() => setUpdated(true));
   };
 

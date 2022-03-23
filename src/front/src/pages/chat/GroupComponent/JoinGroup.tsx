@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react';
 import { JoinChannelPkg, ShortChannel } from '../../../models/Chat.interface';
 import CheckPass from './CheckPass';
 import { Context } from '../../../App';
-import e from 'express';
 
 interface Prop {
   isVisible: string;
@@ -16,9 +15,8 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const [channels, setChannels] = useState<ShortChannel[]>([]);
   const [passVisibility, setPassVisibility] = useState('hidden');
   const [errorVisibility, setErrorVisibility] = useState('hidden');
-  const [groupName, setGroupName] = useState('');
-
-  const [joinReq, setReq] = useState<JoinChannelPkg>({
+  const [banVisibility, setBanVisibility] = useState('hidden');
+  const [groupName, setGroupName] = useState('');  const [joinReq, setReq] = useState<JoinChannelPkg>({
     idUser: userId,
     room: '',
     key: '',
@@ -44,9 +42,10 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
     const req = joinReq;
     req.room = '' + chan.id;
     setReq(req);
+    setErrorVisibility('hidden')
     if (chan.mode === 'PRO') return setPassVisibility('visible');
-    socket?.emit('joinRoom', req);
     setPassVisibility('hidden');
+    socket?.emit('joinRoom', req);
   }
 
   function handleKeyDown(e: any) {
@@ -57,13 +56,19 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
 
   useEffect(() => {
     socket?.on('joinedStatus', (status) => {
+      console.log("STATUS ", status);
       if (status === 1) {
         setPassVisibility('hidden');
+        setErrorVisibility('hidden')
         setVisibility('hidden');
       } else if (status === 0) {
+        setPassVisibility('visible');
         setErrorVisibility('visible');
+        setBanVisibility('hidden');
       } else if (status === -1) {
-        setErrorVisibility('internal');
+        setPassVisibility('hidden');
+        setErrorVisibility('hidden');
+        setBanVisibility('visible');
       }
     });
     return () => {
@@ -157,17 +162,17 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
           />
         )}
       </div>
-      {errorVisibility !== 'internal' ? null : (
+      {banVisibility !== 'visible' ? null : (
         <div
           className="card-footer"
           style={{
-            visibility: errorVisibility !== 'internal' ? 'hidden' : 'visible',
+            visibility: banVisibility,
             opacity: '1',
           }}
         >
           <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
             <div className="card-header flexibility">
-              <div className="glow">YOU ARE BANNED FROM THIS CHANNEL</div>
+              <div className="glow">YOU ARE BANNED OR DOING SOMETHINGS WRONG</div>
             </div>
           </div>
         </div>

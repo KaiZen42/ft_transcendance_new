@@ -28,8 +28,6 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   const [visibleJoin, setVisibleJoin] = useState('hidden');
   const [visibleCreate, setVisibleCreate] = useState('hidden');
 
-  //const [openRoomPkg, setOpenPkg] = useState();
-
   function chatInfo(current: ChannelInfo | undefined) {
     if (current?.isPrivate) {
       setChatInfo({
@@ -99,13 +97,14 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     if (
       room !== undefined &&
       room !== '' &&
-      !channels.find((ch) => ch.id.toString() == room)
+      !channels.find((ch) => ch.id.toString() === room)
     ) {
       getRoom(room);
     }
     //---------CONDITION 3 LOAD EXIST ROOM----------
     else if (room !== undefined && room !== '')
-      chatInfo(channels.find((ch) => ch.id.toString() == room));
+      chatInfo(channels.find((ch) => ch.id.toString() === room));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, room]);
 
   //----------------------remove ROOM
@@ -140,18 +139,19 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       socket?.removeListener('QuitRoom');
       socket?.removeListener('ChangedRoomSettings');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels]);
 
   useEffect(() => {
     //---------CONDITION 1 FIRST RENDER----------
-    if (channels.length == 0) getRooms();
+    if (channels.length === 0) getRooms();
 
     //---------SOCKET ON-------------
 
     socket?.on('notification', (msgInfo: MessageInfoPkg) => {
       if (room !== msgInfo.room) {
         let ch = channels.find((chan) => {
-          return chan.name == msgInfo.room;
+          return chan.name === msgInfo.room;
         });
         if (ch !== undefined) ch.notification++;
       }
@@ -160,7 +160,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       // setRoom(prvRoom.room);
       if (
         userId === prvRoom.idUser &&
-        !channels.find((ch) => ch.id.toString() == room)
+        !channels.find((ch) => ch.id.toString() === room)
       ) {
         getRoom(prvRoom.room);
       }
@@ -185,6 +185,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       socket?.removeListener('memberUpdate');
       socket?.removeListener('deleted');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function selectUser(info: ChannelInfo) {
@@ -206,6 +207,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     return () => {
       document.getElementById('parent')?.removeEventListener('click', clicker);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [click]);
 
   return (
@@ -238,7 +240,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
         <div className="card-body contacts_body">
           <ul className="contacts">
             {channels.map((chan: ChannelInfo, i) => {
-              if (channels.findIndex((ch) => ch.id == chan.id) !== i) return;
+              if (channels.findIndex((ch) => ch.id === chan.id) !== i) return;
               if (chan.notification === undefined) chan.notification = 0;
               const on = chan.isPrivate
                 ? onlines.find(

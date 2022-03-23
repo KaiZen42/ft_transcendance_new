@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react';
 import { JoinChannelPkg, ShortChannel } from '../../../models/Chat.interface';
 import CheckPass from './CheckPass';
 import { Context } from '../../../App';
-import { AlignHorizontalCenter } from '@mui/icons-material';
 
 interface Prop {
   isVisible: string;
@@ -60,18 +59,16 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
       if (status === 1) {
         setPassVisibility('hidden');
         setVisibility('hidden');
-      } 
-      else if (status === 0) {
-          setErrorVisibility('visible')
-      }
-      else if (status === -1)
-      {
+      } else if (status === 0) {
+        setErrorVisibility('visible');
+      } else if (status === -1) {
         setErrorVisibility('internal');
       }
     });
     return () => {
       socket?.removeListener('joinedStatus');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joinReq]);
 
   return (

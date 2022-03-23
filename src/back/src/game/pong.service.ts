@@ -31,9 +31,9 @@ export class PongService {
         x: FIELD_WIDTH / 2,
         y: FIELD_HEIGHT / 2,
         radius: BALL_RADIUS,
-        speed: 5,
-        velocityX: 5,
-        velocityY: 5,
+        speed: 7,
+        velocityX: 7,
+        velocityY: 7,
         color: 0,
       },
       fieldWidth: FIELD_WIDTH,
@@ -87,7 +87,7 @@ export class PongService {
   resetBall(ball: GameState['ball']) {
     ball.x = FIELD_WIDTH / 2;
     ball.y = FIELD_HEIGHT / 2;
-    ball.speed = 5;
+    ball.speed = 7;
     ball.velocityX *= -1;
     ball.color = 0;
   }
@@ -118,7 +118,7 @@ export class PongService {
       ball.velocityY = ball.speed * Math.sin(angleRad);
 
       // increase speed
-      ball.speed += 0.1;
+      ball.speed += 0.5;
     }
     return 0;
   }
@@ -160,7 +160,7 @@ export class PongService {
       ball.velocityY = ball.speed * Math.sin(angleRad);
 
       // increase speed
-      ball.speed += 0.1;
+      ball.speed += 0.5;
     }
 
     const madePoint = ball.x < state.fieldWidth / 2 ? 1 : 0;

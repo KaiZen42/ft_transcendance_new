@@ -4,7 +4,6 @@ import axios from 'axios';
 import { User } from '../models/User.interface';
 import { NavLink } from 'react-router-dom';
 import '../styles/Nav.css';
-import { Badge } from '@mui/material';
 import { Context } from '../App';
 import FriendlyMatchPopUp from './FriendlyMatchPopUp';
 

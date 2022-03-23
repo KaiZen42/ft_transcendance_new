@@ -7,7 +7,6 @@ import ProfileInfo from '../components/ProfileInfo';
 import Wrapper from '../components/Wrapper';
 import { User } from '../models/User.interface';
 import '../styles/Profile.css';
-import Error404 from './404';
 
 export default function Profile() {
   const { username } = useParams<'username'>();

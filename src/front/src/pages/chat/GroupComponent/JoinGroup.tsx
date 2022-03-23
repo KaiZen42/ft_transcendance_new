@@ -66,7 +66,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
         setErrorVisibility('visible');
         setBanVisibility('hidden');
       } else if (status === -1) {
-        setPassVisibility('hidden');
+        setPassVisibility('visible');
         setErrorVisibility('hidden');
         setBanVisibility('visible');
       }
@@ -158,11 +158,14 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
             isVisible={passVisibility}
             setVisibility={setPassVisibility}
             errorVisibility={errorVisibility}
+            setErrorVisibility={setErrorVisibility}
             request={joinReq}
+            banVisibility={banVisibility}
+            setBanVisibility={setBanVisibility}
           />
         )}
       </div>
-      {banVisibility !== 'visible' ? null : (
+      {/* {banVisibility !== 'visible' ? null : (
         <div
           className="card-footer"
           style={{
@@ -176,7 +179,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

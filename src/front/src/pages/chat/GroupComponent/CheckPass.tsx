@@ -7,6 +7,9 @@ interface Prop {
   isVisible: string;
   errorVisibility: string;
   request: JoinChannelPkg;
+  banVisibility: string;
+  setBanVisibility: Function;
+  setErrorVisibility: Function;
 }
 
 export default function CheckPass({
@@ -14,6 +17,9 @@ export default function CheckPass({
   setVisibility,
   errorVisibility,
   request,
+  banVisibility,
+  setBanVisibility,
+  setErrorVisibility,
 }: Prop) {
   const [pass, setPass] = useState('');
   const socket = useContext(Context).socket;
@@ -23,7 +29,7 @@ export default function CheckPass({
       socket?.emit('joinRoom', request);
     }
   }
-  useEffect(() => {}, []);
+  useEffect(() => {}, [banVisibility]);
 
   return (
     <div
@@ -55,18 +61,24 @@ export default function CheckPass({
                 <span className="input-group-text close_btn">
                   <i
                     className="fas fa-times fa-lg"
-                    onClick={(e) => setVisibility('hidden')}
+                    onClick={(e) => {setVisibility('hidden'); setBanVisibility('hidden'); setErrorVisibility('hidden')}}
                   ></i>
                 </span>
               </div>
             </div>
+            {banVisibility === 'visible' && errorVisibility === 'hidden' ? <div
+              className="glow"
+              style={{ color: 'red' }}
+            >
+              YOU ARE BANNED
+              {console.log(banVisibility, errorVisibility)}
+            </div> : banVisibility === 'hidden' && errorVisibility === 'visible' ? 
             <div
               className="glow"
-              hidden={errorVisibility === 'hidden'}
               style={{ color: 'red' }}
             >
               Wrong Password
-            </div>
+            </div> : null }
           </div>
         </div>
       </div>

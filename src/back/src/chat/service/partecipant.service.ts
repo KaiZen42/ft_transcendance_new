@@ -14,14 +14,17 @@ import {
   Repository,
 } from 'typeorm';
 import { Channel } from '../models/channel.entity';
+import { Message } from '../models/message.entity';
 import { Partecipant } from '../models/partecipant.entity';
 import { ChannelService } from './channel.service';
+import { MessageService } from './message.service';
 
 @Injectable()
 export class PartecipantService {
   constructor(
     @InjectRepository(Partecipant)
     private readonly partecipantDB: Repository<Partecipant>,
+    private readonly messageService: MessageService,
   ) {}
 
   async getAll(): Promise<Partecipant[]> {
@@ -59,6 +62,8 @@ export class PartecipantService {
       res = await this.partecipantDB.findOne({ where: { channelId , mod: Not("b")} });
       if (res !== undefined)
         await this.update(res.id, {mod: "a"})
+      else
+        await this.messageService.deleteByChan(channelId)
     }
     //console.log('ret:', res);
     return res;

@@ -47,7 +47,7 @@ export function Sender({ packet, room} : Prop) {
 						name="mex"
 						className="form-control type_msg"
 						placeholder="Type your message..."
-						onChange={e => setMessage(e.target.value)}
+						onChange={e => e.target.value.length < 300 ? setMessage(e.target.value) : null}
 						onKeyDown={enterSubmit}
 						value={msg}
 					/>

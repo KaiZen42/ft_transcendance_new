@@ -83,7 +83,6 @@ export class ChatGateway
    
 
     const ch = await this.channelService.getById(+mex.room);
-    console.log('wait = ');
     if (sender.mod === 'b') {
       mex.userId.id = -1;
       mex.data =
@@ -210,11 +209,9 @@ export class ChatGateway
   @SubscribeMessage('leaveRoom')
   async leaveRoom(client: Socket, data: number | openRoomDto) {
     if (typeof data === 'number') {
-      //console.log('LEAVE BECAUSE YES ', data);
       client.leave(data + '');
       this.server.to(client.id).emit('QuitRoom', data);
     } else {
-      //console.log('LEAVE BECAUSE LEAVE', data);
       await this.partService.delete(
         (
           await this.partService.getPartecipantByUserAndChan(
@@ -262,7 +259,6 @@ export class ChatGateway
   @SubscribeMessage('WhoOnline')
   WhoOnline(client: Socket, userId: number): WsResponse<number[]> {
     this.online(client, userId);
-    //console.log('onlines', Object.values(this.onlines));
     return { event: 'areOnline', data: Object.values(this.onlines) };
   }
 
@@ -281,7 +277,6 @@ export class ChatGateway
   @SubscribeMessage('BlockUser')
   async blockUsser(client: Socket, data: channelRequestDto) {
     const ch = await this.channelService.getById(data.channelId);
-    //console.log('BLOCK');
     if (ch.isPrivate) {
       const sender = await this.partService.getPartecipantByUserAndChan(
         data.sender,
@@ -379,8 +374,6 @@ export class ChatGateway
         break;
       case 'mute':
         let d: number = Math.trunc(new Date().getTime() / 6000);
-        console.log('now ', d);
-        console.log('mute for ', d + req.time * 10);
         await this.partService.update(reciver.id, { muted: d + req.time * 10 });
         break;
       case 'unmute':
@@ -397,7 +390,6 @@ export class ChatGateway
     };
     this.server.to(req.channelId.toString()).emit('memberUpdate', response);
     this.server.to(req.channelId.toString()).emit('messageUpdate', response);
-    console.log('AO');
     return { event: 'ChannelRequest' };
   }
   //this.server.to(req.channelId.toString()).emit('memberNotification', response);
@@ -458,7 +450,4 @@ export class ChatGateway
     }
   }
 
-  async InviteUser(client: Socket, data: creationDto) {
-    
-  }
 }

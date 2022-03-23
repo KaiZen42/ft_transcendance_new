@@ -29,7 +29,8 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   const [visibleCreate, setVisibleCreate] = useState('hidden');
 
   function chatInfo(current: ChannelInfo | undefined) {
-    if (current?.isPrivate) {
+    if (!current) return;
+    if (current.isPrivate) {
       setChatInfo({
         userId: selectUser(current)?.id,
         username: selectUser(current)?.username,
@@ -48,7 +49,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     }
   }
 
-  const selectChannel = (event: any, id: number, chan: ChannelInfo) => {
+  const selectChannel = (id: number, chan: ChannelInfo) => {
     const viewRoom: OpenRoomPkg = {
       idUser: userId,
       room: '' + id,
@@ -102,8 +103,9 @@ export function ChannelList({ room, setChatInfo }: Prop) {
       getRoom(room);
     }
     //---------CONDITION 3 LOAD EXIST ROOM----------
-    else if (room !== undefined && room !== '')
+    else if (room !== undefined && room !== '') {
       chatInfo(channels.find((ch) => ch.id.toString() === room));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, room]);
 
@@ -240,7 +242,8 @@ export function ChannelList({ room, setChatInfo }: Prop) {
         <div className="card-body contacts_body">
           <ul className="contacts">
             {channels.map((chan: ChannelInfo, i) => {
-              if (channels.findIndex((ch) => ch.id === chan.id) !== i) return;
+              if (channels.findIndex((ch) => ch.id === chan.id) !== i)
+                return <></>;
               if (chan.notification === undefined) chan.notification = 0;
               const on = chan.isPrivate
                 ? onlines.find(
@@ -256,7 +259,9 @@ export function ChannelList({ room, setChatInfo }: Prop) {
                 >
                   <div
                     className="d-flex"
-                    onClick={(e) => selectChannel(e, chan.id, chan)}
+                    onClick={() => {
+                      selectChannel(chan.id, chan);
+                    }}
                     style={{ cursor: 'pointer' }}
                   >
                     {chan.isPrivate ? (

@@ -35,7 +35,8 @@ export default function MessageHeader({ chatInfo }: Prop) {
       .then((response) => response.json())
       .then((result) => {
         setPartecipantInfo(result);
-      });
+      })
+      .catch(() => {});
 
     if (chatInfo?.userId !== undefined) {
       await fetch(
@@ -44,8 +45,9 @@ export default function MessageHeader({ chatInfo }: Prop) {
       )
         .then((response) => response.json())
         .then((result) => {
-          setOtherPartecipant(result);
-        });
+          setPartecipantInfo(result);
+        })
+        .catch(() => {});
     }
   }
 

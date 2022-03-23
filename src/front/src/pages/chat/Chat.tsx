@@ -48,7 +48,7 @@ export function Chat() {
   //-----------VIEW LISTENER
   useEffect(() => {
     socket?.on('viewedRoom', (roomView: string) => {
-      setRoom(roomView);
+      if (room !== roomView) setRoom(roomView);
       if (roomView === '' && chatInfo !== undefined) {
         const preInfo = chatInfo;
         preInfo.roomId = '';
@@ -59,12 +59,12 @@ export function Chat() {
     return () => {
       socket?.removeListener('viewedRoom');
     };
-  }, [pkg, socket, room, chatInfo]);
+  }, [pkg, socket, chatInfo]);
 
   useEffect(() => {
     if (socket !== undefined) {
       socket.on('createRoom', (newRoom: string) => {
-        setRoom(newRoom);
+        if (room !== newRoom) setRoom(newRoom);
       });
     }
     return () => {

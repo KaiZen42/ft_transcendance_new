@@ -116,7 +116,11 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                     name="Change Group Name"
                     type="text"
                     className="form-control"
-                    onChange={(e) => setGroupName(e.target.value)}
+                    onChange={(e) => {
+                      if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)) {
+                        setGroupName(e.target.value);
+                      }
+                    }}
                     value={groupName}
                   />
                   <div

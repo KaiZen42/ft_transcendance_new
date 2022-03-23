@@ -12,6 +12,7 @@ export function UserList() {
   const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();
+  const [searchName, setSearchName] = useState('');
 
   const nameSubmit = (event: any) => {
     if (event.target.value) {
@@ -61,7 +62,11 @@ export function UserList() {
               placeholder="Search..."
               name=""
               className="form-control search"
-              onChange={nameSubmit}
+              onChange={(e) => {if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)){
+                setSearchName(e.target.value)
+                nameSubmit(e.target.value);
+              };}}
+              value={searchName}
             />
             <div className="input-group-prepend">
               <span className="input-group-text search_btn">

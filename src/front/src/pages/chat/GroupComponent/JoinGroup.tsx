@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import { JoinChannelPkg, ShortChannel } from '../../../models/Chat.interface';
 import CheckPass from './CheckPass';
 import { Context } from '../../../App';
+import e from 'express';
 
 interface Prop {
   isVisible: string;
@@ -15,18 +16,19 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const [channels, setChannels] = useState<ShortChannel[]>([]);
   const [passVisibility, setPassVisibility] = useState('hidden');
   const [errorVisibility, setErrorVisibility] = useState('hidden');
+  const [groupName, setGroupName] = useState('');
+
   const [joinReq, setReq] = useState<JoinChannelPkg>({
     idUser: userId,
     room: '',
     key: '',
   });
 
-  const nameSubmit = (event: any) => {
-    if (event.target.value) {
-      event.preventDefault();
+  const nameSubmit = (str: string) => {
+    if (str) {
       (async () => {
         const data = await fetch(
-          `/api/chat/ChannelByName/${event.target.value}`,
+          `/api/chat/ChannelByName/${str}`,
           { credentials: 'include' }
         );
         const result = data.json();
@@ -90,7 +92,13 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                 placeholder="Search..."
                 name=""
                 className="form-control search"
-                onChange={nameSubmit}
+                onChange={(e) => {
+                  if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)){
+                    setGroupName(e.target.value)
+                    nameSubmit(e.target.value);
+                  };
+                }}
+                value={groupName}
               />
               <div className="input-group-prepend">
                 <span className="input-group-text search_btn">

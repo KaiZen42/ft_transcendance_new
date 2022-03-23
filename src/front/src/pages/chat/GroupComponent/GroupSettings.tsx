@@ -171,12 +171,13 @@ export default function GroupSettings(Prop: Prop) {
                       name="Change Group Name"
                       type="text"
                       className="form-control"
-                      onChange={(e) =>
+                      onChange={(e) =>{
+                      if(/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)){
                         setUpdatedGroup({
                           ...updatedGroup,
                           name: e.target.value,
-                        })
-                      }
+                        })}
+                      }}
                       value={updatedGroup.name}
                     />
                   </p>

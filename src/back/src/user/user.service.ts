@@ -21,7 +21,9 @@ export class UserService {
   }
 
   async getLeader(): Promise<User[]> {
-    return await this.userDB.find({ order: { points: 'DESC' } });
+    return await this.userDB.find({
+      order: { points: 'DESC', wins: 'DESC', losses: 'ASC' },
+    });
   }
 
   async getById(id: number): Promise<User> {

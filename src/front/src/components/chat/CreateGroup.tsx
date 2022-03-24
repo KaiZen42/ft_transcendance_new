@@ -209,7 +209,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                           <div className="user_info">
                             <span>{user.username}</span>
                           </div>
-                          <Checkbox
+                          <Checkbox className='checkbox' style={{color: 'white'}}
                             checked={
                               invite.findIndex((us) => us.id === user.id) === -1
                                 ? false

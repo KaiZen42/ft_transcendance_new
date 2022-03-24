@@ -110,7 +110,14 @@ export function UserList() {
                     </div>
                     <div className="user_info">
                       <span>{user.username}</span>
-                      <p>{user.username} is online</p>
+                      <p>
+                        {user.username}{' '}
+                        {on !== undefined
+                          ? on > 0
+                            ? ' is online'
+                            : 'is in game'
+                          : 'is offline'}
+                      </p>
                     </div>
                   </div>
                 </li>

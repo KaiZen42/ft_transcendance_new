@@ -211,12 +211,12 @@ export default function GroupSettings(Prop: Prop) {
                     }
                     disabled={privateChan || updatedGroup.pass === ''}
                   />
-                  <Checkbox
+                  <Checkbox style={{color: 'white'}}
                     checked={privateChan}
                     onChange={(e) => setToPriv(e.target.checked)}
                   />{' '}
                   Private
-                  <Checkbox
+                  <Checkbox style={{color: 'white'}}
                     checked={updatedGroup.pass === ''}
                     onChange={(e) => removePass(e.target.checked)}
                   />{' '}

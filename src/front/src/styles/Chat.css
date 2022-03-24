@@ -603,4 +603,8 @@ input[type='password']:hover {
     width: fit-content;
 }
 
-.info-body {}
+.checkbox label:after {
+    content: '';
+    display: table;
+    clear: both;
+}

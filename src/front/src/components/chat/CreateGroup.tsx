@@ -139,6 +139,7 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                       disabled={privateGroup}
                     />
                     <Checkbox
+                      style={{ color: 'white' }}
                       checked={privateGroup}
                       onChange={(e) => setPrivateStatus(e.target.checked)}
                     />{' '}
@@ -209,7 +210,9 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                           <div className="user_info">
                             <span>{user.username}</span>
                           </div>
-                          <Checkbox className='checkbox' style={{color: 'white'}}
+                          <Checkbox
+                            className="checkbox"
+                            style={{ color: 'white' }}
                             checked={
                               invite.findIndex((us) => us.id === user.id) === -1
                                 ? false

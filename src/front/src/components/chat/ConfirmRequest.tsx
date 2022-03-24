@@ -45,14 +45,14 @@ export default function ConfirmRequest({ req, setReq }: Prop) {
               className="form-control"
               style={{width: '70px', height: '20px', fontSize: '15px', marginLeft: '10px'}}
               onChange={(e) => {
-                if (e.target.value.length <= 3) setTime(+e.target.value);
+                if (e.target.value.length <= 3 && /^[0-9]{0,3}$/.test(e.target.value)) setTime(+e.target.value);
               }}
               value={time}
             /></span>
           </div>
         )}
       </div>
-      <li className="input-group" style={{ width: '10px', height: '10px' }}>
+      <div className="input-group" style={{ width: '10px', height: '10px' }}>
         <div className="input-group-prepend">
           <span className="input-group-text decline_btn " onClick={decline}>
             <i className="fas fa-times"></i>
@@ -65,7 +65,7 @@ export default function ConfirmRequest({ req, setReq }: Prop) {
             <i className="fas fa-check"></i>
           </span>
         </div>
-      </li>
+      </div>
     </div>
   );
 }

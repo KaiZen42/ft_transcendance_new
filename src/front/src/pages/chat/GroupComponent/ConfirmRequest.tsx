@@ -35,47 +35,35 @@ export default function ConfirmRequest({ req, setReq }: Prop) {
 
   useEffect(() => {}, [time]);
   return (
-    <div
-      className="card-footer"
-      style={{
-        opacity: '1',
-      }}
-    >
-      <div
-        className="group-search mb-sm-3 mb-md-0 contacts_card "
-        onKeyDown={keyDown}
-      >
-        <div className="card-header">
-          <div className="glow">
-            Confirm to {req?.type} {req?.reciverName}
-            {req?.type !== 'mute' ? null : (
-              <div>
-                <span> for </span>
-                <input
-                  id="groupname"
-                  name="Change Group Name"
-                  type="text"
-                  className="form-control"
-                  onChange={(e) => {
-                    if (e.target.value.length <= 3) setTime(+e.target.value);
-                  }}
-                  value={time}
-                />
-              </div>
-            )}
+    <ul style={{display: 'inline-block'}}>
+      <div className="glow">
+        Confirm to {req?.type} {req?.reciverName}
+        {req?.type !== 'mute' ? null : (
+          <div>
+            <span> for </span>
+            <input
+              id="groupname"
+              name="Change Group Name"
+              type="text"
+              className="form-control"
+              onChange={(e) => {
+                if (e.target.value.length <= 3) setTime(+e.target.value);
+              }}
+              value={time}
+            />
           </div>
-          <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text decline_btn " onClick={decline}>
-                <i className="fas fa-times"></i>
-              </span>
-              <span className="input-group-text accept_btn " onClick={confirm}>
-                <i className="fas fa-check"></i>
-              </span>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
-    </div>
+      <li className="input-group">
+        <div className="input-group-prepend">
+          <span className="input-group-text decline_btn " onClick={decline}>
+            <i className="fas fa-times"></i>
+          </span>
+          <span className="input-group-text accept_btn " onClick={confirm}>
+            <i className="fas fa-check"></i>
+          </span>
+        </div>
+      </li>
+    </ul>
   );
 }

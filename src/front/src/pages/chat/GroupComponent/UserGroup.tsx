@@ -8,15 +8,17 @@ import {
 import StyledBadge from '../../../styles/StyleBage';
 import { Context } from '../../../App';
 import { NavLink } from 'react-router-dom';
+import ConfirmRequest from './ConfirmRequest';
 
 interface Prop {
   part: FullPartecipant;
   on: number | undefined;
   myInfo: Partecipant;
   setRequest: Function;
+  request: channelRequestPkj | undefined;
 }
 
-export default function UserGroup({ part, on, myInfo, setRequest }: Prop) {
+export default function UserGroup({ part, on, myInfo, setRequest, request }: Prop) {
   const user = part.userId;
   const cont = useContext(Context);
 
@@ -104,6 +106,8 @@ export default function UserGroup({ part, on, myInfo, setRequest }: Prop) {
           )}
         </span>
       )}
+      <Stack direction={'column'}>{request !== undefined &&  request.reciver === user.id ? <ConfirmRequest req={request} setReq={setRequest} /> : null}</Stack>
+      
     </div>
   );
 }

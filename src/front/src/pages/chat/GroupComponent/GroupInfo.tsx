@@ -67,7 +67,7 @@ export default function GroupInfo(Prop: Prop) {
     getMessageNumber();
     if (partecipants.length < 1) getUsersInChan();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Prop, request]);
+  }, [Prop]);
 
   useEffect(() => {
     socket?.on('ChannelRequest', () => {
@@ -150,6 +150,7 @@ export default function GroupInfo(Prop: Prop) {
                                 part={part}
                                 on={on}
                                 myInfo={partecipantInfo!}
+                                request={request}
                                 setRequest={setRequest}
                               />
                             </li>
@@ -162,9 +163,9 @@ export default function GroupInfo(Prop: Prop) {
           </div>
         </div>
       </div>
-      {request === undefined ? null : (
+      {/* {request === undefined ? null : (
         <ConfirmRequest req={request} setReq={setRequest} />
-      )}
+      )} */}
     </div>
   );
 }

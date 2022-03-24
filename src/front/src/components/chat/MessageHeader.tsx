@@ -11,6 +11,7 @@ import {
 import StyledBadge from '../../styles/StyleBage';
 import GroupInfo from './GroupInfo';
 import GroupSettings from './GroupSettings';
+import groupIcon from '../../assets/group_icon.jpeg';
 
 interface Prop {
   chatInfo: ChatInfo | undefined;
@@ -91,6 +92,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
     return () => {
       document.getElementById('parent')?.removeEventListener('click', clicker);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatInfo, useContext(Context), otherPartecipant, click]);
 
   function clicker(e: any) {
@@ -103,6 +105,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
 
   useEffect(() => {
     getPartecipantInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatInfo]);
 
   const navigate = useNavigate();
@@ -133,9 +136,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
               <Avatar
                 alt="Img"
                 src={
-                  chatInfo?.avatar === undefined
-                    ? './group_icon.png'
-                    : chatInfo?.avatar
+                  chatInfo?.avatar === undefined ? groupIcon : chatInfo?.avatar
                 }
               />
             </StyledBadge>
@@ -144,11 +145,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
         <div className="user_info">
           <span>{chatInfo?.username}</span>
           <span id="action_menu_btn" style={{ zIndex: 0 }}>
-            <i
-              id="prova"
-              className="fas fa-ellipsis-v"
-              /* onClick={(e) => setClick(!click)} */
-            ></i>
+            <i id="prova" className="fas fa-ellipsis-v"></i>
           </span>
           {chatInfo?.avatar === undefined && click === true ? (
             <div className="action_menu" style={{ zIndex: 1 }}>

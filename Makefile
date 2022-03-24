@@ -15,7 +15,7 @@ ps:
 re: clear all
 
 clear: 
-		./cleanup.sh
+		docker-compose down ; docker rm -f $(shell docker ps -a -q) ; docker volume rm $(shell docker volume ls -q)
 
 
 fast_git:	

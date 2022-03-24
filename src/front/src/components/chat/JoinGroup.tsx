@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import { JoinChannelPkg, ShortChannel } from '../../models/Chat.interface';
 import CheckPass from './CheckPass';
 import { Context } from '../../App';
+import groupIcon from '../../assets/group_icon.jpeg';
 
 interface Prop {
   isVisible: string;
@@ -133,7 +134,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                 >
                   <div className="img_cont" style={{ marginTop: '20px' }}>
                     <Stack direction="row" spacing={2}>
-                      <Avatar alt="Img" src={'./group_icon.png'} />
+                      <Avatar alt="Img" src={groupIcon} />
                     </Stack>
                   </div>
                   <div className="user_info">

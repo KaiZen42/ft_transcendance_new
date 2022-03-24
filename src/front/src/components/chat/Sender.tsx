@@ -49,14 +49,3 @@ export function Sender({ packet, room }: Prop) {
     </div>
   );
 }
-
-{
-  /* <div>
-<form onSubmit={handleSubmit} >
-	<label>
-		<input type="text" value={msg} onChange={e => setMessage(e.target.value)}/>
-	</label>
-	<input type="submit" value="Send" />
-</form>
-</div> */
-}

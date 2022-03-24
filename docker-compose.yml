@@ -2,9 +2,7 @@ version: "3"
 
 services:
   nginx:
-    build:
-      context: .
-      dockerfile: nginx-Dockerfile
+    build: "./src/proxy/"
     container_name: nginx
     ports:
       - "80:80"
@@ -21,16 +19,14 @@ services:
       - "back"
 
   front:
-    build:
-      context: .
-      dockerfile: react-Dockerfile
+    build: "./src/front/"
     container_name: front_react
     restart: always
     image: react
-    ports:
-      - "3000:3000"
     expose:
       - "3000"
+    command: sh -c "npm install; npm run start"
+    #command: sh -c "npm install; npm run build; npm install serve; npx serve -s build"
     environment:
       REACT_APP_CLIENT_ID: "${CLIENT_ID}"
       REACT_APP_REDIRECT_URI: "${REDIRECT_URI}"
@@ -44,15 +40,15 @@ services:
       - "back"
 
   back:
-    build:
-      context: .
-      dockerfile: nest-Dockerfile
+    build: "./src/back/"
     container_name: back_nest
     restart: always
     expose:
       - "4000"
       - "4001"
       - "4002"
+    #command: sh -c "npm install; npm run build; npm run start:prod"
+    command: sh -c "npm install; npm run start:dev"
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"
@@ -77,8 +73,8 @@ services:
     image: postgres:latest
     container_name: database
     restart: always
-    ports:
-      - 5432:5432
+    expose:
+      - "5432"
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"

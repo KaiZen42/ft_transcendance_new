@@ -7,6 +7,7 @@ import {
   Partecipant,
 } from '../../models/Chat.interface';
 import UserGroup from './UserGroup';
+import groupIcon from '../../assets/group_icon.jpeg';
 
 interface Prop {
   isVisible: boolean;
@@ -104,7 +105,7 @@ export default function GroupInfo(Prop: Prop) {
               <div className="info-username-image">
                 <img
                   alt="profile"
-                  src={'./group_icon.png'}
+                  src={groupIcon}
                   className="profile-info-img"
                   style={{ marginTop: '10px' }}
                 />

@@ -59,6 +59,7 @@ export function Chat() {
     return () => {
       socket?.removeListener('viewedRoom');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pkg, socket, chatInfo]);
 
   useEffect(() => {
@@ -70,6 +71,7 @@ export function Chat() {
     return () => {
       socket?.removeListener('createRoom');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
   return cont.socket === undefined ? null : (

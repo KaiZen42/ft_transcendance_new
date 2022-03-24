@@ -45,6 +45,7 @@ export function UserList() {
   useEffect(() => {
     if (ch !== undefined && ch?.otherUser !== userId)
       socket?.emit('createRoom', ch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ch]);
 
   return (

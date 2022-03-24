@@ -64,13 +64,14 @@ export function ChannelList({ room, setChatInfo }: Prop) {
     await fetch(`/api/chat/ChannelsInfo/${userId}`, { credentials: 'include' })
       .then((response) => response.json())
       .then((result) => {
-        result.map((chan: ChannelInfo) => {
+        for (let i = 0; i < result.length; i++) {
+          const chan = result[i];
           const opnePkj: OpenRoomPkg = {
             idUser: userId,
             room: chan.id.toString(),
           };
           socket?.emit('openRoom', opnePkj);
-        });
+        }
         setChannel(result);
       });
   }

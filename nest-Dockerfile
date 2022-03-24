@@ -1,18 +1,9 @@
-# Mac M1 CPU
-FROM node:latest
 
-# Intel CPU
-# FROM node:lts-alpine
+FROM node:latest
 
 WORKDIR /app
 
 RUN mkdir imgs
 
 COPY ./src/back/package*.json .
-
-RUN npm install
-
-# RUN npm run build
-
-CMD ["npm", "run", "start:dev"]
 

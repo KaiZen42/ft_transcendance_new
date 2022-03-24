@@ -43,7 +43,7 @@ export default function UserGroup({
   useEffect(() => {}, [part]);
 
   return (
-    <div className="d-flex bd-highlight" style={{ cursor: 'pointer' }}>
+    <div className="d-flex bd-highlight" style={{ cursor: 'pointer', minWidth: 'fit-content' }}>
       <div className="img_cont">
         <Stack direction="row" spacing={2}>
           <NavLink to={'/users/' + user.username}>
@@ -112,11 +112,9 @@ export default function UserGroup({
           )}
         </span>
       )}
-      <Stack direction={'column'}>
         {request !== undefined && request.reciver === user.id ? (
           <ConfirmRequest req={request} setReq={setRequest} />
         ) : null}
-      </Stack>
     </div>
   );
 }

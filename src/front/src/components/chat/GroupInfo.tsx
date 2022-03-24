@@ -87,10 +87,11 @@ export default function GroupInfo(Prop: Prop) {
       className="overlay container-fluid row justify-content-center"
       tabIndex={1}
       onKeyDown={(e) => handleKeyDown(e)}
+      
     >
       <div className="col-ms-10">
-        <div className="mb-sm-3 mb-md-0 contacts_card group-info">
-          <div className="card-header" style={{ height: 'fit-content' }}>
+        <div className="mb-sm-3 mb-md-0 contacts_card group-info" /* style={{minWidth: 'fit-content', maxWidth: 'fit-content'}} */>
+          <div className="card-header">
             <span className="close_btn">
               <i
                 className="fas fa-times fa-lg"
@@ -130,8 +131,7 @@ export default function GroupInfo(Prop: Prop) {
                 </p>
               </div>
             </div>
-            <div className="group-info-box">
-              ``
+            <div className="group-info-box" /* style={{maxWidth:'fit-content', minWidth: 'fit-content'}} */>
               <div className="info-username-image">
                 <p className="profile-info-text username">Partecipants</p>
                 <div className="card-body contacts_body">

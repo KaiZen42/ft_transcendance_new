@@ -17,6 +17,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const [errorVisibility, setErrorVisibility] = useState('hidden');
   const [banVisibility, setBanVisibility] = useState('hidden');
   const [groupName, setGroupName] = useState('');
+  const [selectedChan, setSelectedChan] = useState<ShortChannel>()
   const [joinReq, setReq] = useState<JoinChannelPkg>({
     idUser: userId,
     room: '',
@@ -40,10 +41,13 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   };
 
   function selectChannel(e: any, chan: ShortChannel) {
+    setSelectedChan(chan);
     const req = joinReq;
     req.room = '' + chan.id;
     setReq(req);
     setErrorVisibility('hidden');
+    console.log(chan);
+
     if (chan.mode === 'PRO') return setPassVisibility('visible');
     setPassVisibility('hidden');
     socket?.emit('joinRoom', req);
@@ -163,6 +167,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
             request={joinReq}
             banVisibility={banVisibility}
             setBanVisibility={setBanVisibility}
+            chan={selectedChan}
           />
         )}
       </div>

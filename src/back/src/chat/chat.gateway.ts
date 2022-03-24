@@ -194,9 +194,8 @@ export class ChatGateway
       data.idUser,
       +data.room,
     );
-    console.log(user)
+    //console.log(user)
     if (user !== undefined && user.mod === 'b') {
-      this.server.to(client.id).emit('createRoom', data.room);
       this.logger.log(`[${data.idUser}] JOIN TO ${data.room} FAIL BECAUSE BAN`);
       return { event: 'joinedStatus', data: -1 };
     } 

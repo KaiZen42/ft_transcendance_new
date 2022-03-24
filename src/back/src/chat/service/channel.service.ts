@@ -81,7 +81,7 @@ export class ChannelService {
 		.leftJoin("partecipant.userId", "users" )
 		.orderBy("channel.id", "ASC")
 		.getMany()
-		// //console.log("CHANNEL INFO", res)
+		//console.log("CHANNEL INFO", res)
 		 return res;
 	}
 

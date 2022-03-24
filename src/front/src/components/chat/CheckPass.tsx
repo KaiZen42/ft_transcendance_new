@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Context } from '../../App';
-import { JoinChannelPkg } from '../../models/Chat.interface';
+import { JoinChannelPkg, ShortChannel } from '../../models/Chat.interface';
 
 interface Prop {
   setVisibility: Function;
@@ -10,6 +10,7 @@ interface Prop {
   banVisibility: string;
   setBanVisibility: Function;
   setErrorVisibility: Function;
+  chan: ShortChannel | undefined;
 }
 
 export default function CheckPass({
@@ -20,6 +21,7 @@ export default function CheckPass({
   banVisibility,
   setBanVisibility,
   setErrorVisibility,
+  chan,
 }: Prop) {
   const [pass, setPass] = useState('');
   const socket = useContext(Context).socket;
@@ -43,33 +45,37 @@ export default function CheckPass({
     >
       <div className="mb-sm-3 contacts_card" onKeyDown={enterSubmit}>
         <div className="check-pass-header pass-check">
+          <span className="input-group-text close_btn">
+            <i
+              className="fas fa-times fa-lg"
+              onClick={(e) => {
+                setVisibility('hidden');
+                setBanVisibility('hidden');
+                setErrorVisibility('hidden');
+              }}
+            ></i>
+          </span>
           <div className="contacts_body card-body scrollable-searchGroup">
-            <div className="glow">Insert password</div>
-            <div className="input-group">
-              <input
-                type="text"
-                placeholder="Password..."
-                name=""
-                value={pass}
-                className="form-control search"
-                onChange={(e) => setPass(e.target.value)}
-              />
-              <div className="input-group-prepend">
-                <span className="input-group-text search_btn ">
-                  <i className="fas fa-key"></i>
-                </span>
-                <span className="input-group-text close_btn">
-                  <i
-                    className="fas fa-times fa-lg"
-                    onClick={(e) => {
-                      setVisibility('hidden');
-                      setBanVisibility('hidden');
-                      setErrorVisibility('hidden');
-                    }}
-                  ></i>
-                </span>
-              </div>
-            </div>
+            {chan?.mode !== 'PRO' ? null : (
+              <>
+                <div className="glow">Insert password</div>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    placeholder="Password..."
+                    name=""
+                    value={pass}
+                    className="form-control search"
+                    onChange={(e) => setPass(e.target.value)}
+                  />
+                  <div className="input-group-prepend">
+                    <span className="input-group-text search_btn ">
+                      <i className="fas fa-key"></i>
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
             {banVisibility === 'visible' && errorVisibility === 'hidden' ? (
               <div className="glow" style={{ color: 'red' }}>
                 YOU ARE BANNED

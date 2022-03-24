@@ -1,8 +1,8 @@
 import { Avatar, Stack } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
-import { JoinChannelPkg, ShortChannel } from '../../../models/Chat.interface';
+import { JoinChannelPkg, ShortChannel } from '../../models/Chat.interface';
 import CheckPass from './CheckPass';
-import { Context } from '../../../App';
+import { Context } from '../../App';
 
 interface Prop {
   isVisible: string;
@@ -16,7 +16,8 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const [passVisibility, setPassVisibility] = useState('hidden');
   const [errorVisibility, setErrorVisibility] = useState('hidden');
   const [banVisibility, setBanVisibility] = useState('hidden');
-  const [groupName, setGroupName] = useState('');  const [joinReq, setReq] = useState<JoinChannelPkg>({
+  const [groupName, setGroupName] = useState('');
+  const [joinReq, setReq] = useState<JoinChannelPkg>({
     idUser: userId,
     room: '',
     key: '',
@@ -42,7 +43,7 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
     const req = joinReq;
     req.room = '' + chan.id;
     setReq(req);
-    setErrorVisibility('hidden')
+    setErrorVisibility('hidden');
     if (chan.mode === 'PRO') return setPassVisibility('visible');
     setPassVisibility('hidden');
     socket?.emit('joinRoom', req);
@@ -56,10 +57,10 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
 
   useEffect(() => {
     socket?.on('joinedStatus', (status) => {
-      console.log("STATUS ", status);
+      console.log('STATUS ', status);
       if (status === 1) {
         setPassVisibility('hidden');
-        setErrorVisibility('hidden')
+        setErrorVisibility('hidden');
         setVisibility('hidden');
       } else if (status === 0) {
         setPassVisibility('visible');
@@ -165,21 +166,6 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
           />
         )}
       </div>
-      {/* {banVisibility !== 'visible' ? null : (
-        <div
-          className="card-footer"
-          style={{
-            visibility: banVisibility,
-            opacity: '1',
-          }}
-        >
-          <div className="group-search mb-sm-3 mb-md-0 contacts_card ">
-            <div className="card-header flexibility">
-              <div className="glow">YOU ARE BANNED OR DOING SOMETHINGS WRONG</div>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

@@ -9,8 +9,8 @@ import {
   ShortChannel,
 } from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
-import { CreateGroup } from './GroupComponent/CreateGroup';
-import { JoinGroup } from './GroupComponent/JoinGroup';
+import { CreateGroup } from './CreateGroup';
+import { JoinGroup } from './JoinGroup';
 
 interface Prop {
   room: string;

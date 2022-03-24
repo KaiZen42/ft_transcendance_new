@@ -4,9 +4,9 @@ import {
   channelRequestPkj,
   FullPartecipant,
   Partecipant,
-} from '../../../models/Chat.interface';
-import StyledBadge from '../../../styles/StyleBage';
-import { Context } from '../../../App';
+} from '../../models/Chat.interface';
+import StyledBadge from '../../styles/StyleBage';
+import { Context } from '../../App';
 import { NavLink } from 'react-router-dom';
 import ConfirmRequest from './ConfirmRequest';
 
@@ -18,7 +18,13 @@ interface Prop {
   request: channelRequestPkj | undefined;
 }
 
-export default function UserGroup({ part, on, myInfo, setRequest, request }: Prop) {
+export default function UserGroup({
+  part,
+  on,
+  myInfo,
+  setRequest,
+  request,
+}: Prop) {
   const user = part.userId;
   const cont = useContext(Context);
 
@@ -106,8 +112,11 @@ export default function UserGroup({ part, on, myInfo, setRequest, request }: Pro
           )}
         </span>
       )}
-      <Stack direction={'column'}>{request !== undefined &&  request.reciver === user.id ? <ConfirmRequest req={request} setReq={setRequest} /> : null}</Stack>
-      
+      <Stack direction={'column'}>
+        {request !== undefined && request.reciver === user.id ? (
+          <ConfirmRequest req={request} setReq={setRequest} />
+        ) : null}
+      </Stack>
     </div>
   );
 }

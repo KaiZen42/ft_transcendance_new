@@ -9,7 +9,6 @@ export function UserList() {
   const onlines = useContext(Context).online;
   const socket = useContext(Context).socket;
   const userId = useContext(Context).userId;
-  const [otherUser, setOtherUser] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [ch, setCreationChannel] = useState<CreationChannelPkg>();
   const [searchName, setSearchName] = useState('');
@@ -17,10 +16,9 @@ export function UserList() {
   const nameSubmit = (name: string) => {
     if (name) {
       (async () => {
-        const data = await fetch(
-          `/api/users/likeusername/${name}`,
-          { credentials: 'include' }
-        );
+        const data = await fetch(`/api/users/likeusername/${name}`, {
+          credentials: 'include',
+        });
         const result = data.json();
         result.then((res) => {
           setUsers(
@@ -40,7 +38,7 @@ export function UserList() {
       pass: '',
       name: '',
       mode: 'PRI',
-      invites: []
+      invites: [],
     });
   }
 
@@ -49,8 +47,6 @@ export function UserList() {
       socket?.emit('createRoom', ch);
   }, [ch]);
 
-  // setClicked(false)
-  //
   return (
     <div className="col-md-3 col-xl-3 chat flexibility">
       <div className="card-search mb-sm-3 mb-md-0 contacts_card">
@@ -61,10 +57,12 @@ export function UserList() {
               placeholder="Search..."
               name=""
               className="form-control search"
-              onChange={(e) => {if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)){
-                setSearchName(e.target.value)
-                nameSubmit(e.target.value);
-              };}}
+              onChange={(e) => {
+                if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)) {
+                  setSearchName(e.target.value);
+                  nameSubmit(e.target.value);
+                }
+              }}
               value={searchName}
             />
             <div className="input-group-prepend">
@@ -122,34 +120,5 @@ export function UserList() {
         <div className="card-footer"></div>
       </div>
     </div>
-
-    // <div>
-    // 	<form className="form-inline"  onSubmit={nameSubmit}>
-    // 			<div className="form-group mb-2">
-    // 				<label>
-    // 					<input type="text" value={name} onChange={e => setName(e.target.value)}/>
-    // 				</label>
-    // 				<input  type="submit" value="search" />
-    // 			</div>
-    // 	</form>
-    // 		<List dense sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-    // 			{
-    // 				users.map(user =>
-    // 				{
-    // 					return (
-    // 					<ListItem key={user.id}
-    // 					onClick={e => selectUser(e, user.id)}>
-    // 						<ListItemButton>
-    // 							<ListItemAvatar>
-    // 								<Avatar src={user.avatar}/>
-    // 							</ListItemAvatar>
-    // 							<ListItemText id={"" + user.id} primary={user.username}/>
-    // 						</ListItemButton>
-    // 					</ListItem>
-    // 				);
-    // 				})
-    // 			}
-    // 		</List>
-    // 	</div>
   );
 }

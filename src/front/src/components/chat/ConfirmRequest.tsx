@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import { channelRequestPkj } from '../../../models/Chat.interface';
-import { Context } from '../../../App';
+import { Context } from '../../App';
+import { channelRequestPkj } from '../../models/Chat.interface';
 
 interface Prop {
   req: channelRequestPkj | undefined;
@@ -35,7 +35,7 @@ export default function ConfirmRequest({ req, setReq }: Prop) {
 
   useEffect(() => {}, [time]);
   return (
-    <ul style={{display: 'inline-block'}}>
+    <ul style={{ display: 'inline-block' }}>
       <div className="glow">
         Confirm to {req?.type} {req?.reciverName}
         {req?.type !== 'mute' ? null : (

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import { Context } from '../../../App';
-import { JoinChannelPkg } from '../../../models/Chat.interface';
+import { Context } from '../../App';
+import { JoinChannelPkg } from '../../models/Chat.interface';
 
 interface Prop {
   setVisibility: Function;
@@ -61,24 +61,25 @@ export default function CheckPass({
                 <span className="input-group-text close_btn">
                   <i
                     className="fas fa-times fa-lg"
-                    onClick={(e) => {setVisibility('hidden'); setBanVisibility('hidden'); setErrorVisibility('hidden')}}
+                    onClick={(e) => {
+                      setVisibility('hidden');
+                      setBanVisibility('hidden');
+                      setErrorVisibility('hidden');
+                    }}
                   ></i>
                 </span>
               </div>
             </div>
-            {banVisibility === 'visible' && errorVisibility === 'hidden' ? <div
-              className="glow"
-              style={{ color: 'red' }}
-            >
-              YOU ARE BANNED
-              {console.log(banVisibility, errorVisibility)}
-            </div> : banVisibility === 'hidden' && errorVisibility === 'visible' ? 
-            <div
-              className="glow"
-              style={{ color: 'red' }}
-            >
-              Wrong Password
-            </div> : null }
+            {banVisibility === 'visible' && errorVisibility === 'hidden' ? (
+              <div className="glow" style={{ color: 'red' }}>
+                YOU ARE BANNED
+                {console.log(banVisibility, errorVisibility)}
+              </div>
+            ) : banVisibility === 'hidden' && errorVisibility === 'visible' ? (
+              <div className="glow" style={{ color: 'red' }}>
+                Wrong Password
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

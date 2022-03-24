@@ -9,8 +9,8 @@ import {
   Partecipant,
 } from '../../models/Chat.interface';
 import StyledBadge from '../../styles/StyleBage';
-import GroupInfo from './GroupComponent/GroupInfo';
-import GroupSettings from './GroupComponent/GroupSettings';
+import GroupInfo from './GroupInfo';
+import GroupSettings from './GroupSettings';
 
 interface Prop {
   chatInfo: ChatInfo | undefined;

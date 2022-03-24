@@ -1,9 +1,9 @@
 import { Avatar, Checkbox, Stack } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
-import { CreationChannelPkg } from '../../../models/Chat.interface';
-import { User } from '../../../models/User.interface';
-import StyledBadge from '../../../styles/StyleBage';
-import { Context } from '../../../App';
+import { Context } from '../../App';
+import { CreationChannelPkg } from '../../models/Chat.interface';
+import { User } from '../../models/User.interface';
+import StyledBadge from '../../styles/StyleBage';
 
 interface Prop {
   isVisible: string;

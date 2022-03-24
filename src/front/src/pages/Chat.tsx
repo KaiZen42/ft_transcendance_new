@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext } from 'react';
 import { Socket } from 'socket.io-client';
-import { Sender } from './Sender';
-import Wrapper from '../../components/Wrapper';
-import MessageBox from './MessageBox';
-import { MessagePkg } from '../../models/Chat.interface';
-import { UserList } from './UserList';
-import './testChat.css';
-import { ChannelList } from './ChannelList';
-import MessageHeader from './MessageHeader';
-import { ChatInfo } from '../../models/Chat.interface';
-import { context, Context } from '../../App';
+import { Sender } from '../components/chat/Sender';
+import Wrapper from '../components/Wrapper';
+import MessageBox from '../components/chat/MessageBox';
+import { MessagePkg } from '../models/Chat.interface';
+import { UserList } from '../components/chat/UserList';
+import '../styles/Chat.css';
+import { ChannelList } from '../components/chat/ChannelList';
+import MessageHeader from '../components/chat/MessageHeader';
+import { ChatInfo } from '../models/Chat.interface';
+import { context, Context } from '../App';
 
 export function Chat() {
   const cont: context = useContext(Context);

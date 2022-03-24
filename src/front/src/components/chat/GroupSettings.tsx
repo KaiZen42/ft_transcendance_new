@@ -4,9 +4,9 @@ import {
   ChatInfo,
   updateChannelPkj,
   ViewRoomPkg,
-} from '../../../models/Chat.interface';
-import { Context } from '../../../App';
-import { Partecipant } from '../../../models/Chat.interface';
+  Partecipant,
+} from '../../models/Chat.interface';
+import { Context } from '../../App';
 
 interface Prop {
   isVisible: boolean;
@@ -171,12 +171,13 @@ export default function GroupSettings(Prop: Prop) {
                       name="Change Group Name"
                       type="text"
                       className="form-control"
-                      onChange={(e) =>{
-                      if(/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)){
-                        setUpdatedGroup({
-                          ...updatedGroup,
-                          name: e.target.value,
-                        })}
+                      onChange={(e) => {
+                        if (/^[a-zA-Z0-9-_]{0,20}$/.test(e.target.value)) {
+                          setUpdatedGroup({
+                            ...updatedGroup,
+                            name: e.target.value,
+                          });
+                        }
                       }}
                       value={updatedGroup.name}
                     />

@@ -1,13 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
+import { Context } from '../../App';
 import {
   channelRequestPkj,
   ChatInfo,
   FullPartecipant,
-} from '../../../models/Chat.interface';
-import { Context } from '../../../App';
-import { Partecipant } from '../../../models/Chat.interface';
+  Partecipant,
+} from '../../models/Chat.interface';
 import UserGroup from './UserGroup';
-import ConfirmRequest from './ConfirmRequest';
 
 interface Prop {
   isVisible: boolean;

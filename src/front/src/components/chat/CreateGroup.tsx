@@ -146,7 +146,15 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
                     Private
                   </div>
                 </div>
-                <div className="glow profile-info-text">
+                <div
+                  className="glow profile-info-text"
+                  style={{
+                    width: '95%',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '1rem',
+                  }}
+                >
                   Added Users:{' '}
                   {invite.map((inv: User) => (
                     <span key={inv.id}> {inv.username} </span>

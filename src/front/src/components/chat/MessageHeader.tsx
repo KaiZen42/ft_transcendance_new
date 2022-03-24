@@ -39,14 +39,16 @@ export default function MessageHeader({ chatInfo }: Prop) {
       })
       .catch(() => {});
 
+    console.log('CIAOOOO', chatInfo);
     if (chatInfo?.userId !== undefined) {
+      console.log('CI SONO');
       await fetch(
         `/api/chat/GetPartecipantByUserAndChan/${chatInfo?.roomId}/${chatInfo?.userId}`,
         { credentials: 'include' }
       )
         .then((response) => response.json())
         .then((result) => {
-          setPartecipantInfo(result);
+          setOtherPartecipant(result);
         })
         .catch(() => {});
     }
@@ -66,6 +68,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
         reciverName: chatInfo.username,
         time: 0,
       };
+      console.log(otherPartecipant);
       socket?.emit('BlockUser', req);
       const ot = otherPartecipant;
       ot.mod = req.type === 'Block' ? 'b' : 'm';
@@ -180,6 +183,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
                   otherPartecipant.mod !== 'b'
                     ? 'Block'
                     : 'Unblock'}
+                  {console.log(otherPartecipant)}
                 </li>
               </ul>
             </div>

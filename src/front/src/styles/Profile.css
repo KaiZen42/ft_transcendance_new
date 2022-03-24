@@ -146,6 +146,10 @@
   position: relative;
 }
 
+.image-username.no-hover {
+  cursor: default;
+}
+
 .image-username > .my-dot {
   top: 48px;
   left: 40px;
@@ -153,6 +157,10 @@
 
 .image-username:hover {
   opacity: 0.8;
+}
+
+.image-username.no-hover:hover {
+  opacity: 1;
 }
 
 .match-item p {

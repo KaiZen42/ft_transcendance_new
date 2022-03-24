@@ -12,6 +12,11 @@ export class RelationService {
   ) {}
 
   async create(relationData: CreateRelationDto): Promise<Relation> {
+    const relation = await this.getFriendStatus(
+      relationData.requesting,
+      relationData.receiving,
+    );
+    if (relation) return;
     return this.relationDB.save({
       requesting: relationData.requesting,
       receiving: relationData.receiving,

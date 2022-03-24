@@ -305,8 +305,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
                           ? selectUser(chan)?.username
                           : chan?.name}
                       </span>
-                      <p>{chan?.name}</p>
-                      {/* TODO: aggiungere stato effettivo */}
+                      <p>{chan.isPrivate ? '' : '#' + chan?.id}</p>
                     </div>
                   </div>
                 </li>

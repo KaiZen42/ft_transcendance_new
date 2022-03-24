@@ -1,5 +1,5 @@
 .env
-./package*.json
+package*.json
 
 # compiled output
 /dist

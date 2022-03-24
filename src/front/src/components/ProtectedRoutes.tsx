@@ -24,7 +24,7 @@ export default function ProtectedRoute({
         setPage(<Navigate to="/signin" state={{ from: location }} replace />);
     }
     getUser();
-  });
+  }, []);
 
   return page;
 }

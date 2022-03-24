@@ -5,5 +5,5 @@ WORKDIR /app
 
 RUN mkdir imgs
 
-COPY ./src/back/package*.json .
+COPY ./package*.json .
 

@@ -1,5 +1,5 @@
 FROM nginx:latest
 
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./proxy.conf /etc/nginx/conf.d/default.conf
 
 ENTRYPOINT ["/usr/sbin/nginx", "-g","daemon off;"]

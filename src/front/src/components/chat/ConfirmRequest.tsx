@@ -24,11 +24,6 @@ export default function ConfirmRequest({ req, setReq }: Prop) {
     setReq(undefined);
   }
 
-  function keyDown(e: any) {
-    if (e.key !== 'Enter') return;
-    confirm();
-  }
-
   function decline() {
     setReq(undefined);
   }

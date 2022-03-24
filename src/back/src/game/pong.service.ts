@@ -50,8 +50,8 @@ export class PongService {
 
     const paddleTop = paddle.y;
     const paddleBottom = paddle.y + paddle.height;
-    const paddleLeft = paddle.x;
-    const paddleRight = paddle.x + paddle.width;
+    const paddleLeft = paddle.x - 5;
+    const paddleRight = paddle.x + paddle.width + 5;
 
     return (
       ballRight > paddleLeft &&
@@ -119,7 +119,7 @@ export class PongService {
       ball.velocityY = ball.speed * Math.sin(angleRad);
 
       // increase speed
-      if (ball.speed < 17.5) ball.speed += 0.5;
+      if (ball.speed < 18) ball.speed += 0.5;
     }
     return 0;
   }
@@ -165,7 +165,7 @@ export class PongService {
       ball.velocityY = ball.speed * Math.sin(angleRad);
 
       // increase speed
-      if (ball.speed < 17.5) ball.speed += 0.5;
+      if (ball.speed < 18) ball.speed += 0.5;
     }
 
     const madePoint = ball.x < state.fieldWidth / 2 ? 1 : 0;

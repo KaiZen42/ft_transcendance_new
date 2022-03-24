@@ -89,7 +89,7 @@ export default function GamePopUp({
                     <img
                       alt="profile"
                       src={users[0]?.avatar}
-                      className="game-popup-image"
+                      className="game-popup-image no-hover"
                     />
                     <p className="game-popup-text nice-shadow">
                       {users[0]?.username}
@@ -146,7 +146,7 @@ export default function GamePopUp({
                     <img
                       alt="profile"
                       src={users[0]?.avatar}
-                      className="game-popup-image"
+                      className="game-popup-image no-hover"
                     />
                     <p className="game-popup-text nice-shadow">
                       {users[0]?.username}

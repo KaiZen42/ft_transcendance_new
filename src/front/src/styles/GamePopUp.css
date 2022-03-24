@@ -32,8 +32,16 @@
   cursor: pointer;
 }
 
+.game-popup-image.no-hover {
+  cursor: default;
+}
+
 .game-popup-image:hover {
   opacity: 0.8;
+}
+
+.game-popup-image.no-hover:hover {
+  opacity: 1;
 }
 
 .game-popup-text {

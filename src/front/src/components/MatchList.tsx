@@ -120,7 +120,7 @@ function MatchItem({
             me.points > opponent.points ? 'win' : 'loss'
           }`}
         >
-          <div className="image-username">
+          <div className="image-username no-hover">
             <img
               alt="profile"
               src={me.avatar}

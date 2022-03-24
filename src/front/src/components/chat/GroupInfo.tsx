@@ -136,7 +136,7 @@ export default function GroupInfo(Prop: Prop) {
               <div className="info-username-image">
                 <p className="profile-info-text username">Partecipants</p>
                 <div className="card-body contacts_body">
-                  <ul className="contacts scrollable-search">
+                  <ul className="contacts scrollable-info-partecipants">
                     {partecipants === undefined || partecipantInfo === undefined
                       ? null
                       : partecipants.map((part: FullPartecipant) => {

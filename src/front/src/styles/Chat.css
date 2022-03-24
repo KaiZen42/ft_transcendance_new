@@ -33,6 +33,14 @@
     object-position: 50% 50%;
 }
 
+.scrollable-info-partecipants {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 300px;
+    padding: 25px;
+    object-position: 50% 50%;
+}
+
 .scrollable-msg {
     overflow-y: auto;
     overflow-x: hidden;
@@ -566,7 +574,7 @@ input[type='password']:hover {
     width: 50%;
     margin-left: auto;
     margin-right: auto;
-    height: fit-content;
+    height: 444px;
 }
 
 .group-search-box {

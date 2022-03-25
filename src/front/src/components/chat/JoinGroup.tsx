@@ -4,6 +4,7 @@ import { JoinChannelPkg, ShortChannel } from '../../models/Chat.interface';
 import CheckPass from './CheckPass';
 import { Context } from '../../App';
 import groupIcon from '../../assets/group_icon.jpeg';
+import { useNavigate } from 'react-router-dom';
 
 interface Prop {
   isVisible: string;
@@ -18,20 +19,28 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const [errorVisibility, setErrorVisibility] = useState('hidden');
   const [banVisibility, setBanVisibility] = useState('hidden');
   const [groupName, setGroupName] = useState('');
-  const [selectedChan, setSelectedChan] = useState<ShortChannel>()
+  const [selectedChan, setSelectedChan] = useState<ShortChannel>();
   const [joinReq, setReq] = useState<JoinChannelPkg>({
     idUser: userId,
     room: '',
     key: '',
   });
 
+  const navigate = useNavigate();
+
   const nameSubmit = (str: string) => {
     if (str) {
       (async () => {
-        const data = await fetch(`/api/chat/ChannelByName/${str}`, {
+        const response = await fetch(`/api/chat/ChannelByName/${str}`, {
           credentials: 'include',
         });
-        const result = data.json();
+        if (response.status !== 200) {
+          setChannels([]);
+          navigate('/signin');
+          return;
+        }
+
+        const result = response.json();
         result.then((res) => {
           setChannels(res);
         });
@@ -47,7 +56,6 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
     req.room = '' + chan.id;
     setReq(req);
     setErrorVisibility('hidden');
-    console.log(chan);
 
     if (chan.mode === 'PRO') return setPassVisibility('visible');
     setPassVisibility('hidden');
@@ -62,7 +70,6 @@ export function JoinGroup({ isVisible = 'hidden', setVisibility }: Prop) {
 
   useEffect(() => {
     socket?.on('joinedStatus', (status) => {
-      console.log('STATUS ', status);
       if (status === 1) {
         setPassVisibility('hidden');
         setErrorVisibility('hidden');

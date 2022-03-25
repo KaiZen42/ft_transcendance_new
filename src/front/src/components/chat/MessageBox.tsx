@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { channelResponsePkj, MessagePkg } from '../../models/Chat.interface';
 import { Context } from '../../App';
+import { useNavigate } from 'react-router-dom';
 
 interface Prop {
   room: string;
@@ -11,11 +12,14 @@ export default function MessageBox({ room }: Prop) {
   const socket = useContext(Context).socket;
   const [chats, setChats] = useState<MessagePkg[]>([]);
 
+  const navigate = useNavigate();
+
   const messageListener = (message: MessagePkg) => {
-    if (message.room === room)
+    if (message.room === room) {
       setChats((prevChat) => {
         return [...prevChat, message];
       });
+    }
   };
 
   useEffect(() => {}, [socket, room]);
@@ -23,17 +27,23 @@ export default function MessageBox({ room }: Prop) {
   useEffect(() => {
     if (chats.length === 0 || chats[0].room !== room) {
       fetch(`/api/chat/CHmessage/${+room}`, { credentials: 'include' })
-        .then((response) => response.json())
-        .then((result) => {
-          setChats(result);
-        });
+        .then((response) => {
+          if (response.status !== 200) {
+            navigate('/signin');
+          } else {
+            response.json().then((result) => {
+              setChats(result);
+            });
+          }
+        })
+        .catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room]);
 
   useEffect(() => {
     socket?.on('messageUpdate', (res: channelResponsePkj) => {
-      if (res.room !== +room) return
+      if (res.room !== +room) return;
       const serverMex: MessagePkg = {
         data: `${res.reciverName} was ${
           res.type === 'ban'

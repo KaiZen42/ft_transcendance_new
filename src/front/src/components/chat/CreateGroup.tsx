@@ -1,5 +1,6 @@
 import { Avatar, Checkbox, Stack } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Context } from '../../App';
 import { CreationChannelPkg } from '../../models/Chat.interface';
 import { User } from '../../models/User.interface';
@@ -20,14 +21,20 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   const [privateGroup, setPrivateStatus] = useState(false);
   const [groupPass, setGroupPass] = useState('');
 
+  const navigate = useNavigate();
+
   const nameSubmit = async (event: any) => {
     if (event.target.value) {
       event.preventDefault();
-      const data = await fetch(
+      const response = await fetch(
         `/api/users/likeusername/${event.target.value}`,
         { credentials: 'include' }
       );
-      data.json().then((res) => {
+      if (response.status !== 200) {
+        navigate('/signin');
+        return;
+      }
+      response.json().then((res) => {
         setUsers(
           res.sort((a: User, b: User) => a.username.localeCompare(b.username))
         );
@@ -77,8 +84,6 @@ export function CreateGroup({ isVisible = 'hidden', setVisibility }: Prop) {
   function handleClose() {
     setVisibility('hidden');
   }
-
-  useEffect(() => {}, [invite]);
 
   return (
     <div

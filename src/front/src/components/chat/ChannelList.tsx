@@ -1,5 +1,6 @@
 import { Avatar, Stack } from '@mui/material';
 import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Context } from '../../App';
 import {
   ChannelInfo,
@@ -27,6 +28,8 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   const [click, setClick] = useState(false);
   const [visibleJoin, setVisibleJoin] = useState('hidden');
   const [visibleCreate, setVisibleCreate] = useState('hidden');
+
+  const navigate = useNavigate();
 
   function chatInfo(current: ChannelInfo | undefined) {
     if (!current) return;
@@ -79,9 +82,12 @@ export function ChannelList({ room, setChatInfo }: Prop) {
   async function getRoom(chanId: string) {
     await fetch(`/api/chat/ChannelsInfoId/${chanId}`, {
       credentials: 'include',
-    })
-      .then((response) => response.json())
-      .then((result) => {
+    }).then((response) => {
+      if (response.status !== 200) {
+        navigate('/signin');
+        return;
+      }
+      response.json().then((result) => {
         const opnePkj: OpenRoomPkg = {
           idUser: userId,
           room: result.id.toString(),
@@ -92,6 +98,7 @@ export function ChannelList({ room, setChatInfo }: Prop) {
         });
         chatInfo(result);
       });
+    });
   }
 
   useEffect(() => {

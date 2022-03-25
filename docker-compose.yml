@@ -25,8 +25,8 @@ services:
     image: react
     expose:
       - "3000"
-    command: sh -c "npm install; npm run start"
-    #command: sh -c "npm install; npm run build; npm install serve; npx serve -s build"
+    #command: sh -c "npm install; npm run start"
+    command: sh -c "npm install; npm run build; npm install serve; npx serve -s build"
     environment:
       REACT_APP_CLIENT_ID: "${CLIENT_ID}"
       REACT_APP_REDIRECT_URI: "${REDIRECT_URI}"
@@ -47,8 +47,8 @@ services:
       - "4000"
       - "4001"
       - "4002"
-    #command: sh -c "npm install; npm run build; npm run start:prod"
-    command: sh -c "npm install; npm run start:dev"
+    command: sh -c "npm install; npm run build; npm run start:prod"
+    #command: sh -c "npm install; npm run start:dev"
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"

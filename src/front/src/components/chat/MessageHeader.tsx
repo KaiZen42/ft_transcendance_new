@@ -27,6 +27,9 @@ export default function MessageHeader({ chatInfo }: Prop) {
   const [click, setClick] = useState(false);
   const [partecipantInfo, setPartecipantInfo] = useState<Partecipant>();
   const [otherPartecipant, setOtherPartecipant] = useState<Partecipant>();
+  const [noUpdate, setNoUpdate] = useState(false);
+
+  const navigate = useNavigate();
 
   async function getPartecipantInfo() {
     await fetch(
@@ -67,8 +70,12 @@ export default function MessageHeader({ chatInfo }: Prop) {
       };
       socket?.emit('BlockUser', req);
       const ot = otherPartecipant;
+
       ot.mod = req.type === 'Block' ? 'b' : 'm';
-      setOtherPartecipant(ot);
+      setOtherPartecipant((prev) => ({
+        ...prev!,
+        mod: req.type === 'Block' ? 'b' : 'm',
+      }));
     }
   }
 
@@ -81,18 +88,23 @@ export default function MessageHeader({ chatInfo }: Prop) {
   }
 
   useEffect(() => {
+    if (noUpdate) return;
     if (chatInfo?.userId !== undefined) {
       setOn(
         onlines.find((el) => chatInfo.userId === el || chatInfo.userId === -el)
       );
     }
+  }, [chatInfo, onlines]);
+
+  useEffect(() => {
     //--------click event listener---------
     document.getElementById('parent')?.addEventListener('click', clicker);
     return () => {
+      setNoUpdate(true);
       document.getElementById('parent')?.removeEventListener('click', clicker);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatInfo, useContext(Context), otherPartecipant, click]);
+  }, [click]);
 
   function clicker(e: any) {
     if (document.getElementById('prova') === e.target) {
@@ -103,11 +115,13 @@ export default function MessageHeader({ chatInfo }: Prop) {
   }
 
   useEffect(() => {
+    if (noUpdate) return;
     getPartecipantInfo();
+    return () => {
+      setNoUpdate(true);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatInfo]);
-
-  const navigate = useNavigate();
 
   return (
     <div className="card-header msg_head">
@@ -173,7 +187,7 @@ export default function MessageHeader({ chatInfo }: Prop) {
                 >
                   <i className="fas fa-user"></i> User Profile
                 </li>
-                <li onClickCapture={(e) => blockUser()}>
+                <li onClickCapture={blockUser}>
                   <i className="fas fa-ban"></i>{' '}
                   {otherPartecipant !== undefined &&
                   otherPartecipant.mod !== 'b'

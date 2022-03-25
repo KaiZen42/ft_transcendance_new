@@ -377,9 +377,14 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
       },
       body: JSON.stringify({ points, wins, losses }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setUpdatedUser({ ...data, score: 0 });
+      .then((response) => {
+        if (response.status !== 200) {
+          navigate('/signin');
+          return;
+        }
+        response.json().then((data) => {
+          setUpdatedUser({ ...data, score: 0 });
+        });
       })
       .catch((error) => {
         console.error('Error:', error);

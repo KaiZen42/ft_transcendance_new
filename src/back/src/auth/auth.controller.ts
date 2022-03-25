@@ -96,8 +96,6 @@ export class AuthController {
     const cookie = request.cookies['token'];
     if (typeof cookie === 'undefined') return { id: null };
     const data = await this.jwt.verifyAsync(cookie);
-
-    //return "ritorno cookie errore";
     const user = await this.user.userCookie(cookie);
     return { ...user, two_fa: data['two_fa'] };
   }

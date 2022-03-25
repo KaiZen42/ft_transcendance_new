@@ -33,7 +33,6 @@ import { ChannelService } from './service/channel.service';
 import { MessageService } from './service/message.service';
 import { PartecipantService } from './service/partecipant.service';
 
-
 interface SocketMap {
   [id: number]: string;
 }
@@ -80,7 +79,9 @@ export class ChatGateway
       mex.userId.id,
       +mex.room,
     );
-   
+    if (!sender) {
+      return;
+    }
 
     const ch = await this.channelService.getById(+mex.room);
     if (sender.mod === 'b') {
@@ -103,14 +104,12 @@ export class ChatGateway
     }
 
     const msg: Message = new Message();
-    //this.logger.log(`MSG ID ${msg.id}`);
     msg.userId = mex.userId.id;
     msg.data = mex.data;
     msg.sendDate = this.date;
     msg.channelId = +mex.room;
     this.messageService.create(msg);
     this.server.to(mex.room).emit('message', mex);
-    // this.server.to(mex.room).emit('notification', mex);
     this.logger.log(
       `Data recived is: ${mex.data} From: ${mex.userId.id} to ${
         mex.room === undefined ? 'UNA' : mex.room
@@ -136,7 +135,7 @@ export class ChatGateway
         return; //{event: "viewedRoom", data: "" + chan.id} ;
       }
     }
-    
+
     const chan: Channel = new Channel();
     chan.isPrivate = data.otherUser !== undefined;
     chan.name = chan.isPrivate
@@ -147,17 +146,11 @@ export class ChatGateway
 
     if (chan.isPrivate)
       chan.id = (
-        await this.channelService.create(chan, [
-          data.idUser,
-          data.otherUser
-        ])
+        await this.channelService.create(chan, [data.idUser, data.otherUser])
       ).id;
     else
       chan.id = (
-        await this.channelService.create(chan, [
-          data.idUser,
-          ...data.invites
-        ])
+        await this.channelService.create(chan, [data.idUser, ...data.invites])
       ).id;
 
     socket.join('' + chan.id);
@@ -168,15 +161,13 @@ export class ChatGateway
         idUser: data.otherUser,
         room: '' + chan.id,
       });
-    else
-    {
-      data.invites.map(i => 
-        {
-          this.server.emit('createdPrivateRoom', {
-            idUser: i,
-            room: '' + chan.id,
-          });
-        })
+    else {
+      data.invites.map((i) => {
+        this.server.emit('createdPrivateRoom', {
+          idUser: i,
+          room: '' + chan.id,
+        });
+      });
     }
 
     this.logger.log(
@@ -198,14 +189,11 @@ export class ChatGateway
     if (user !== undefined && user.mod === 'b') {
       this.logger.log(`[${data.idUser}] JOIN TO ${data.room} FAIL BECAUSE BAN`);
       return { event: 'joinedStatus', data: -1 };
-    } 
-    else if (user !== undefined && user.mod !== 'b')
-    {
+    } else if (user !== undefined && user.mod !== 'b') {
       this.logger.log(`[${data.idUser}] JOIN TO ${data.room} ALREADY IN CHAN`);
       this.server.to(client.id).emit('createRoom', data.room);
       return { event: 'joinedStatus', data: 1 };
-    }
-    else if (user === undefined && (await this.channelService.join(data))) {
+    } else if (user === undefined && (await this.channelService.join(data))) {
       this.logger.log(`[${data.idUser}] JOIN TO ${data.room} SUCCESS`);
       this.server.to(client.id).emit('createRoom', data.room);
       return { event: 'joinedStatus', data: 1 };
@@ -397,7 +385,6 @@ export class ChatGateway
     this.server.to(req.channelId.toString()).emit('messageUpdate', response);
     return { event: 'ChannelRequest' };
   }
-  //this.server.to(req.channelId.toString()).emit('memberNotification', response);
 
   @SubscribeMessage('friendlyMatch')
   handleFriendlyMatch(
@@ -410,8 +397,6 @@ export class ChatGateway
     const receivingId = this.socketOnlines[data.receving];
     this.server.to(receivingId).emit('friendlyMatch', data.requesting);
   }
-
-  //this.server.to(req.channelId.toString()).emit('memberNotification', response);
 
   @SubscribeMessage('DeleteChan')
   async deleteRoom(client: Socket, data: viewRoomDto) {
@@ -454,5 +439,4 @@ export class ChatGateway
       });
     }
   }
-
 }

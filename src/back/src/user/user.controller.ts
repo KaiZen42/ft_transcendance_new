@@ -83,12 +83,11 @@ export class UserController {
 
   @Put('update/:id')
   async updateUser(@Param('id') id: number, @Body() userData: UpdateUser) {
-    console.log(userData);
     await this.user.update(id, userData);
     return this.user.getById(id);
   }
 
-  @Put('updatepoints/:id')
+  @Put('updatePoints/:id')
   async updatePoints(
     @Param('id') id: number,
     @Body() userData: { points: number; wins: number; losses: number },

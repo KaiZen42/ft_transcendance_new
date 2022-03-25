@@ -29,6 +29,7 @@ export class AuthController {
     private readonly userService: UserService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Post('generate')
   @UseInterceptors(ClassSerializerInterceptor)
   async check(@Body('id') id: number, @Res() response: Response) {
@@ -39,6 +40,7 @@ export class AuthController {
     return this.twoFaAuthService.pipeQrCodeStream(response, otpauthUrl);
   }
 
+  @UseGuards(AuthGuard)
   @Post('turn2fa')
   @HttpCode(200)
   async turnOnTwoFactorAuthentication(
@@ -80,8 +82,12 @@ export class AuthController {
     @Query('state') path: string,
     @Res({ passthrough: true }) response: Response,
   ): Promise<any> {
-    await this.user.login(code, response);
-    return response.redirect(`http://${process.env.BASE_IP}${path}`);
+    const { user, first } = await this.user.login(code, response);
+    if (first)
+      return response.redirect(
+        `http://${process.env.BASE_IP}/users/${user.username}`,
+      );
+    else return response.redirect(`http://${process.env.BASE_IP}${path}`);
   }
 
   @UseGuards(AuthGuard)

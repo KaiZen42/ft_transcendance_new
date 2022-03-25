@@ -97,7 +97,10 @@ export class UserService {
     return this.userDB.delete({ id });
   }
 
-  async login(mycode: string, res: Response): Promise<User> {
+  async login(
+    mycode: string,
+    res: Response,
+  ): Promise<{ user: User; first: boolean }> {
     const body: any = {
       grant_type: 'authorization_code',
       client_id: process.env.CLIENT_ID,
@@ -123,8 +126,10 @@ export class UserService {
       two_fa: user ? user.two_fa_auth : false,
     });
     res.cookie('token', token, { httpOnly: true });
-    if (!user) return this.create(data);
-    else return user;
+    if (!user) {
+      const user2 = await this.create(data);
+      return { user: user2, first: true };
+    } else return { user, first: false };
   }
 
   async userCookie(cookie): Promise<any> {

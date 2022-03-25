@@ -7,11 +7,14 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateRelationDto } from './dto/create-relation.dto';
 import { RelationService } from './relation.service';
 
 @Controller('relations')
+@UseGuards(AuthGuard)
 export class RelationController {
   constructor(private readonly relation: RelationService) {}
 

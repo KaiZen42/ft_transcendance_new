@@ -13,10 +13,13 @@ export class UpdateUserName {
 }
 
 export class UpdateUser {
-  
-  readonly username: string;
-  readonly avatar: string;
-  readonly two_fa_auth: boolean;
   @IsNotEmpty()
-  readonly twoFaAuthCode: string;
+  readonly id: number;
+  @IsNotEmpty()
+  readonly username: string;
+  @IsNotEmpty()
+  readonly avatar: string;
+  @IsNotEmpty()
+  readonly two_fa_auth: boolean;
+  readonly twoFaAuthCode?: string;
 }

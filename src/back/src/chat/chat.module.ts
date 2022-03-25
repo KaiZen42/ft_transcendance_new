@@ -9,12 +9,16 @@ import { PartecipantService } from './service/partecipant.service';
 import { ChannelService } from './service/channel.service';
 import { Partecipant } from './models/partecipant.entity';
 import { Channel } from './models/channel.entity';
-import { RelationModule } from 'src/relation/relation.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     UserModule,
     TypeOrmModule.forFeature([Message, Partecipant, Channel]),
+    JwtModule.register({
+      secret: 'secret',
+      signOptions: { expiresIn: '1d' },
+    }),
   ],
   controllers: [chatController],
   providers: [ChatGateway, MessageService, PartecipantService, ChannelService],

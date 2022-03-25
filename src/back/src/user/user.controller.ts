@@ -9,6 +9,7 @@ import {
   Req,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -17,8 +18,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { UpdateUser } from './dto/update-user.dto';
 
 @Controller('users')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(
     private readonly user: UserService,
@@ -77,8 +81,9 @@ export class UserController {
     response.sendFile(path, { root: 'imgs' });
   }
 
-  @Put('update/:id') //TOFIX userdata da any a dto
-  async updateUser(@Param('id') id: number, @Body() userData: any) {
+  @Put('update/:id')
+  async updateUser(@Param('id') id: number, @Body() userData: UpdateUser) {
+    console.log(userData);
     await this.user.update(id, userData);
     return this.user.getById(id);
   }

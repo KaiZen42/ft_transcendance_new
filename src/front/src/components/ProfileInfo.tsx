@@ -58,14 +58,18 @@ export default function ProfileInfo({
       });
   }, [user, myProfilePage, me, username]);
 
-  const updateUser = async (updatedUser: User) => {
-    await axios.put(`/api/users/update/${updatedUser.id}`, { ...updatedUser });
-    setUsername(updatedUser.username);
-    setUser((prevUser) => ({
-      ...prevUser,
-      ...updatedUser,
-    }));
-    navigate('/users/' + updatedUser.username);
+  const updateUser = (updatedUser: User) => {
+    axios
+      .put(`/api/users/update/${updatedUser.id}`, { ...updatedUser })
+      .catch(() => {})
+      .then(() => {
+        setUsername(updatedUser.username);
+        setUser((prevUser) => ({
+          ...prevUser,
+          ...updatedUser,
+        }));
+        navigate('/users/' + updatedUser.username);
+      });
   };
 
   const sendFriendRequest = () => {

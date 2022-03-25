@@ -4,6 +4,8 @@ export default function SignIn() {
   let location = useLocation();
 
   let from: any = location.state;
+  if (!from) from = { from: { pathname: '/' } };
+
   const url: string =
     'https://api.intra.42.fr/oauth/authorize?client_id=' +
     process.env.REACT_APP_CLIENT_ID +

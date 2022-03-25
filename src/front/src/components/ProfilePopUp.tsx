@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ChangeEvent, createRef, FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User } from '../models/User.interface';
 import '../styles/ProfilePopUp.css';
 
@@ -39,6 +40,7 @@ export default function ProfilePopUp({
     file: createRef(),
     auth_code: '',
   });
+  const navigate = useNavigate();
 
   const closeHandler = () => {
     updatedUser.file.current!.value = '';
@@ -97,9 +99,15 @@ export default function ProfilePopUp({
 
   async function validateInput(): Promise<boolean> {
     if (updatedUser.username !== user.username) {
-      const { data } = await axios.get(
-        `/api/users/username/${updatedUser.username}`
-      );
+      const { data } = await axios
+        .get(`/api/users/username/${updatedUser.username}`)
+        .catch(() => {
+          return { data: null };
+        });
+      if (!data) {
+        navigate('/signin');
+        return false;
+      }
       if (data.id) {
         setValid((prevValid) => ({
           ...prevValid,

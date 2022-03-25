@@ -7,7 +7,7 @@
 }
 
 .profile-box {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(80, 80, 80, 0.4);
   border-radius: 20px;
 }
 
@@ -200,7 +200,7 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  background-color: rgba(119, 107, 97, 0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   padding: 0.5rem 0;
   border-radius: 5px;
   margin-bottom: 1rem;

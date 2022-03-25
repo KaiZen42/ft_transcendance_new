@@ -113,6 +113,10 @@ export class UserService {
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     });
+    if (response.status != 200) {
+      return { user: null, first: false };
+    }
+
     let data = (await response.json()) as any;
     let token: string = data.access_token;
     response = await fetch('https://api.intra.42.fr/v2/me', {

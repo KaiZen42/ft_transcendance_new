@@ -34,7 +34,7 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
   const [opponent, setOpponent] = useState<User>();
   const [winner, setWinner] = useState<number>();
   const [safe, setSafe] = useState<Socket>();
-
+  const [startMusic, setStartMusic] = useState(false);
   const navigate = useNavigate();
   const friend: GameFriend = useLocation().state as GameFriend;
 
@@ -203,6 +203,7 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
     }));
     setWinner(winner);
     contextSocket.emit('NotInGame', userId);
+    setStartMusic(false);
   };
 
   const handleGameOver = (winner: number, scores: number[]) => {
@@ -293,6 +294,7 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
   };
 
   const startCountdown = () => {
+    setStartMusic(true);
     let num = 3;
     setTimeout(() => {
       drawRect(canvas.width / 2 - 20, 62, 40, 40, 'black');
@@ -480,6 +482,11 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
         <source src="./movie2.webm" type="video/webm" />
         <source src="../movie2.webm" type="video/webm" />
       </video>
+      {startMusic ? (
+        <audio autoPlay loop>
+          <source src="../play_music.mp3" type="audio/mp3" />
+        </audio>
+      ) : null}
     </>
   );
 }

@@ -135,7 +135,21 @@ export default function GamePopUp({
                       win ? 'title-win' : 'title-lost'
                     }`}
                   >
-                    {win ? 'YOU WON!' : 'YOU LOST'}
+                    {win ? (
+                      <>
+                        YOU WON!
+                        <audio autoPlay preload="auto">
+                          <source src="../you_win.mp3" type="audio/mp3" />
+                        </audio>
+                      </>
+                    ) : (
+                      <>
+                        YOU LOSE!
+                        <audio autoPlay preload="auto">
+                          <source src="../game_over.mp3" type="audio/mp3" />
+                        </audio>
+                      </>
+                    )}
                   </h2>
                   <p className="game-popup-text fnt-30 nice-shadow">
                     Final Result

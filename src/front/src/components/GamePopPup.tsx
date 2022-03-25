@@ -138,14 +138,14 @@ export default function GamePopUp({
                     {win ? (
                       <>
                         YOU WON!
-                        <audio autoPlay preload="auto">
+                        <audio autoPlay>
                           <source src="../you_win.mp3" type="audio/mp3" />
                         </audio>
                       </>
                     ) : (
                       <>
                         YOU LOSE!
-                        <audio autoPlay preload="auto">
+                        <audio autoPlay>
                           <source src="../game_over.mp3" type="audio/mp3" />
                         </audio>
                       </>

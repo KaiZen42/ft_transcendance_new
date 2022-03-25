@@ -370,7 +370,7 @@ export default function Pong({ inverted }: { inverted?: boolean }) {
   };
 
   async function updatePoints(points: number, wins: number, losses: number) {
-    fetch(`/api/users/update/${user!.id}`, {
+    fetch(`/api/users/updatePoints/${user!.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

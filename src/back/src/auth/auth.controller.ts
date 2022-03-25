@@ -58,7 +58,7 @@ export class AuthController {
 
   @Post('auth2fa')
   @HttpCode(200)
-  async auth2fa(@Req() request: Request, @Body() data: UpdateUser) {
+  async auth2fa(@Req() request: Request, @Body() data: { twoFaAuthCode: string }) {
     const cookie = request.cookies['token'];
 
     const user = await this.user.userCookie(cookie);

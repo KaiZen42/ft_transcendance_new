@@ -256,7 +256,11 @@ export function ChannelList({ room, setChatInfo }: Prop) {
                 <li
                   className={selected && activeID === chan.id ? 'active' : ''}
                   key={chan.id}
-                  style={{ border: '1px solid white', borderRadius: '10px' }}
+                  style={{
+                    border: '1px solid white',
+                    borderRadius: '10px',
+                    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  }}
                 >
                   <div
                     className="d-flex"

@@ -45,6 +45,12 @@ export class UserService {
   }
 
   async create(userData: CreateUserDto): Promise<User> {
+    const exists = await this.getByUsername(userData.login);
+    if (exists) {
+      const rnd = Math.floor(Math.random() * 100);
+      return this.create({ ...userData, login: userData.login + rnd });
+    }
+
     return this.userDB.save({
       id: userData.id,
       username: userData.login,

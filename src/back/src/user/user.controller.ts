@@ -17,7 +17,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request } from 'express';
-import { userInfo } from 'os';
 
 @Controller('users')
 export class UserController {
@@ -64,8 +63,7 @@ export class UserController {
     const data = await this.jwt.verifyAsync(cookie);
     const fs = require('fs');
     const prevPath = (await this.user.getById(data['id'])).avatar;
-    if(prevPath.indexOf("/api/users/imgs") > -1)
-    {
+    if (prevPath.indexOf('/api/users/imgs') > -1) {
       fs.unlinkSync('.' + prevPath.substring(10));
     }
     this.user.addImage(data['id'], `/api/users/${newImage.path}`);
